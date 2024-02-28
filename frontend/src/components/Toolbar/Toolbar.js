@@ -7,6 +7,7 @@ import AlignmentControls from './AlignmentControls.js';
 import InsertImage from './InsertImage.js';
 import Actions from './Actions.js';
 import FormattingControls from './FormattingControls.js';
+import InsertTable from './InsertTable.js';
 
 const MyToolbar = ({ editor, historyEditor }) => {
   return (
@@ -19,6 +20,7 @@ const MyToolbar = ({ editor, historyEditor }) => {
         <AlignmentControls editor={editor}/>       
         <FormattingControls editor={editor}/>
         <InsertImage editor={editor} />
+        <InsertTable editor={editor}/>
       </Toolbar>
     </AppBar>
   );

@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import { ButtonGroup, TextField, IconButton, Tooltip, Select, MenuItem } from '@mui/material';
-import { FormatBold, FormatItalic,FormatUnderlined, Add, Remove } from '@mui/icons-material';
+import { FormatBold, FormatItalic, FormatUnderlined, Add, Remove, FormatColorText } from '@mui/icons-material';
 import { faStrikethrough } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import FormatColorTextIcon from '@mui/icons-material/FormatColorText';
 
 import './Toolbar.css';
-import CustomEditor from '../Editor/CustomEditor';
+import CustomEditor from '../editor/CustomEditor.js';
 import CustomIconButton from './CustomIconButton.js';
-import ColorPickerPortal from '../Portals/ColorPickerPortal.js';
+import ColorPickerPortal from '../portals/ColorPickerPortal.js';
 
 const fontFamilies = [
     'AMATIC SC', 'Arial', 'Caveat', 'Comfortaa', 'Comic Sans MS', 
@@ -43,9 +42,9 @@ const FontControls = ({ editor }) => {
     }, {
       title: 'Strikethrough',
       onClick: () => CustomEditor.toggleMark(editor, 'strikethrough'),
-      icon:     <FontAwesomeIcon icon={faStrikethrough} />
+      icon: <FontAwesomeIcon icon={faStrikethrough} />
     },
-  ]
+  ];
 
   const changeFontSize = (e) => {
     const size = Number(e.target.value);
@@ -61,19 +60,19 @@ const FontControls = ({ editor }) => {
   const changeFontFamily = (e) => {
     e.preventDefault();
     setFontFamily(e.target.value);
-    CustomEditor.setFontFamily(editor, e.target.value);
+    CustomEditor.addMark(editor, 'fontFamily', e.target.value);
   };
 
   const adjustFontSize = (increment) => {
     const size = fontSize + increment;
     const clampedSize = Math.min(Math.max(size, 1), 400);
     setFontSize(clampedSize);
-    CustomEditor.setFontSize(editor, clampedSize);
+    CustomEditor.addMark(editor, 'fontSize', clampedSize);
   };
 
   const handleColorChange = (newColor) => {
     setFontColor(newColor);
-    CustomEditor.setTextColor(editor, newColor);
+    CustomEditor.addMark(editor, 'color', newColor);
     setOpenColorPicker(false);
   };
 
@@ -146,8 +145,8 @@ const FontControls = ({ editor }) => {
           className='button'
           onClick={(e) => toggleColorPicker(e)}
         >
-        <div style={{ position: 'relative', bottom: '-4px' }}>
-          <FormatColorTextIcon />
+        <div className='color-indicator'>
+          <FormatColorText />
           <span
             className='pallete'
             style={{ backgroundColor: fontColor, }}

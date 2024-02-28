@@ -1,18 +1,24 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { Slate, Editable, withReact } from 'slate-react';
 import { createEditor } from 'slate';
 import { HistoryEditor, withHistory } from 'slate-history';
 
 import '../../App.css';
-import DefaultElement from '../Renderers/DefaultElement.js';
-import CodeElement from '../Renderers/CodeElement.js';
-import QuoteElement from '../Renderers/QuoteElement.js';
-import Leaf from '../Renderers/Leaf.js';
-import H1Element from '../Renderers/H1Element.js';
-import H2Element from '../Renderers/H2Element.js';
 import CustomEditor from './CustomEditor.js';
 import MyToolbar from '../Toolbar/Toolbar.js';
-import ImageElement from '../Renderers/ImageElement.js';
+import Leaf from '../renderers/Leaf.js';
+import DefaultElement from '../renderers/DefaultElement.js';
+import CodeElement from '../renderers/CodeElement.js';
+import QuoteElement from '../renderers/QuoteElement.js';
+import H1Element from '../renderers/H1Element.js';
+import H2Element from '../renderers/H2Element.js';
+import ImageElement from '../renderers/ImageElement.js';
+import BulletedListElement from '../renderers/BulletedListElement.js';
+import NumberedListElement from '../renderers/NumberedListElement.js';
+import TableElement from '../renderers/TableElement.js';
+import TableRow from '../renderers/TableRow.js';
+import TableCell from '../renderers/TableCell.js';
+
 
 const initialValue = [
     {
@@ -27,7 +33,7 @@ const initialValue = [
   ];
 
 const MyEditor = () => {
-    const [editor] = useState(() => withReact(withHistory(createEditor())));
+    const editor = useMemo(() => withReact(withHistory(createEditor())), []);
 
     const renderElement = useCallback(props => {
         switch (props.element.type) {
@@ -41,6 +47,16 @@ const MyEditor = () => {
                 return <H2Element {...props} />
             case 'image':
                 return <ImageElement {...props} />
+            case 'bulleted-list':
+                return <BulletedListElement {...props} />
+            case 'numbered-list':
+                return <NumberedListElement {...props} />
+            case 'table':
+                return <TableElement {...props} />
+            case 'table-row':
+                return <TableRow {...props} />
+            case 'table-cell':
+                return <TableCell {...props} />
             default:
                 return <DefaultElement {...props}/>
         }
@@ -95,37 +111,42 @@ const MyEditor = () => {
             // Code block
             case '`': {
                 e.preventDefault();
-                CustomEditor.toggleCodeBlock(editor);
+                CustomEditor.toggleBlock(editor, 'code');
                 break;
             }
             // Bold mark
             case 'b': {
                 e.preventDefault();
-                CustomEditor.toggleBoldMark(editor);
+                CustomEditor.toggleMark(editor, 'bold');
                 break;
             }
             // Italic mark
             case 'i': {
                 e.preventDefault();
-                CustomEditor.toggleItalicMark(editor);
+                CustomEditor.toggleMark(editor, 'italic');
                 break;
             }
             // Underline mark
             case 'u': {
                 e.preventDefault();
-                CustomEditor.toggleUnderlineMark(editor);
+                CustomEditor.toggleMark(editor, 'underline');
                 break;
             }
+            // Highlight text
+            // case 'f':
+            //     e.preventDefault();
+            //     return <SearchHighlighting editor={editor}/>
+
             // Redo
             case 'y': {
                 e.preventDefault();
-                CustomEditor.redo(editor, HistoryEditor);
+                HistoryEditor.redo(editor);
                 break;
             }
             // Undo
             case 'z': {
                 e.preventDefault();
-                CustomEditor.undo(editor, HistoryEditor);
+                HistoryEditor.undo(editor);
                 break;
             }
             default:
@@ -134,14 +155,16 @@ const MyEditor = () => {
     };
 
     return (
-            <Slate editor={editor} initialValue={initialValue}>
-                <MyToolbar editor={editor} historyEditor={HistoryEditor}/>
-                <Editable 
-                    renderElement={renderElement}
-                    renderLeaf={renderLeaf}
-                    onKeyDown={e => executeCommand(e)}
-                />
-            </Slate>
+        <Slate editor={editor} initialValue={initialValue}>
+            <MyToolbar editor={editor} historyEditor={HistoryEditor}/>
+            <Editable 
+                renderElement={renderElement}
+                renderLeaf={renderLeaf}
+                onKeyDown={e => executeCommand(e)}
+                spellCheck
+                autoFocus
+            />
+        </Slate>
     )
 };
 
