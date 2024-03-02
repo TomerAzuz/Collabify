@@ -33,21 +33,23 @@ const CustomEditor = {
   toggleBlock(editor, type) {
     const isActive = this.isBlockActive(editor, type);
     const isList = LIST_TYPES.includes(type);
+    
+    Transforms.unwrapNodes(editor, {
+      match: n => 
+        Element.isElement(n) &&
+        LIST_TYPES.includes(n.type),
+      split: true,
+    });
 
-    if (isList && isActive) {
-      Transforms.unwrapNodes(editor, {
-        match: n => 
-          !Editor.isEditor(n) &&
-          Element.isElement(n) &&
-          LIST_TYPES.includes(n.type),
-        split: true,
-      });
-    } else {
-      Transforms.setNodes(editor, type);
-      if (!isActive && isList) {
-        const block = { type, children: [] };
-        Transforms.wrapNodes(editor, block);
-      }
+    const properties = {
+      type: isActive ? 'paragraph' : isList ? 'list-item' : type,
+    };
+
+    Transforms.setNodes(editor, properties);
+
+    if (!isActive && isList) {
+      const block = { type, children: [] };
+      Transforms.wrapNodes(editor, block);
     }
   },
 
@@ -55,7 +57,8 @@ const CustomEditor = {
     Transforms.setNodes(
       editor, 
       { textAlign: value },
-      { match: n => Element.isElement(n) && Editor.isBlock(editor, n) }
+      { match: n => Element.isElement(n) && 
+                    Editor.isBlock(editor, n) }
     )
   },
 
@@ -78,7 +81,6 @@ const CustomEditor = {
       type: 'image',
       data: { src: src },
       children: [{ text: '' }],
-      isVoid: true,
     });
 
     this.insertParagraph(editor);
@@ -92,7 +94,9 @@ const CustomEditor = {
       
       if (selection && Range.isCollapsed(selection)) {
         const [cell] = Editor.nodes(editor, {
-          match: n => !Editor.isEditor(n) && Element.isElement(n) && n.type === 'table-cell',
+          match: n => !Editor.isEditor(n) && 
+                      Element.isElement(n) && 
+                      n.type === 'table-cell',
         });
 
         if (cell) {
@@ -112,7 +116,9 @@ const CustomEditor = {
 
       if (selection && Range.isCollapsed(selection)) {
         const [cell] = Editor.nodes(editor, {
-          match: n => !Editor.isEditor(n) && Element.isElement(n) && n.type === 'table-cell',
+          match: n => !Editor.isEditor(n) && 
+                       Element.isElement(n) && 
+                       n.type === 'table-cell',
         });
 
         if (cell) {
@@ -132,19 +138,18 @@ const CustomEditor = {
 
       if (selection) {
         const [table] = Editor.nodes(editor, {
-          match: n => !Editor.isEditor(n) && Element.isElement(n) && n.type === 'table',
+          match: n => !Editor.isEditor(n) && 
+                      Element.isElement(n) && 
+                      n.type === 'table',
         });
-
-        if (table) {
-          return;
-        }
+        if (table) return;
       }
       insertBreak();
     };
 
-     if (this.isBlockActive(editor, 'table'))  {
-       return;
-     }
+    if (this.isBlockActive(editor, 'table'))  {
+      return;
+    }
 
     const tableCells = [];
 

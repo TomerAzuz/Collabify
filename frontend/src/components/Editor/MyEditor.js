@@ -4,6 +4,7 @@ import { createEditor } from 'slate';
 import { HistoryEditor, withHistory } from 'slate-history';
 
 import '../../App.css';
+import './MyEditor.css';
 import CustomEditor from './CustomEditor.js';
 import MyToolbar from '../Toolbar/Toolbar.js';
 import Leaf from '../renderers/Leaf.js';
@@ -18,22 +19,25 @@ import NumberedListElement from '../renderers/NumberedListElement.js';
 import TableElement from '../renderers/TableElement.js';
 import TableRow from '../renderers/TableRow.js';
 import TableCell from '../renderers/TableCell.js';
-
-
-const initialValue = [
-    {
-      type: 'paragraph',
-      fontSize: 16,
-      children: [
-        { 
-          text: 'A line of text in a paragraph.',
-        },
-      ],
-    },
-  ];
+import ListItemElement from '../renderers/ListItemElement.js';
 
 const MyEditor = () => {
     const editor = useMemo(() => withReact(withHistory(createEditor())), []);
+    const initialValue = useMemo(
+        () => 
+        JSON.parse(localStorage.getItem('content')) || [
+        {
+          type: 'paragraph',
+          fontSize: 16,
+          children: [
+            { 
+              text: 'A line of text in a paragraph.',
+            },
+          ],
+        },
+      ], 
+      []
+    );
 
     const renderElement = useCallback(props => {
         switch (props.element.type) {
@@ -51,6 +55,8 @@ const MyEditor = () => {
                 return <BulletedListElement {...props} />
             case 'numbered-list':
                 return <NumberedListElement {...props} />
+            case 'list-item':
+                return <ListItemElement {...props} />
             case 'table':
                 return <TableElement {...props} />
             case 'table-row':
@@ -106,7 +112,6 @@ const MyEditor = () => {
                     break;
             }
         }
-        
         switch (e.key) {
             // Code block
             case '`': {
@@ -132,10 +137,6 @@ const MyEditor = () => {
                 CustomEditor.toggleMark(editor, 'underline');
                 break;
             }
-            // Highlight text
-            // case 'f':
-            //     e.preventDefault();
-            //     return <SearchHighlighting editor={editor}/>
 
             // Redo
             case 'y': {
@@ -155,15 +156,32 @@ const MyEditor = () => {
     };
 
     return (
-        <Slate editor={editor} initialValue={initialValue}>
+        <Slate 
+            editor={editor} 
+            initialValue={initialValue}
+            onChange={value => {
+                const isAstChange = editor.operations.some(
+                    op => 'set_selection' !== op.type
+                )
+                if (isAstChange) {
+                    const content = JSON.stringify(value);
+                    localStorage.setItem('content', content);
+                }
+            }}
+        >
             <MyToolbar editor={editor} historyEditor={HistoryEditor}/>
-            <Editable 
-                renderElement={renderElement}
-                renderLeaf={renderLeaf}
-                onKeyDown={e => executeCommand(e)}
-                spellCheck
-                autoFocus
-            />
+            <div className='editor-container'>
+                <Editable 
+                    renderElement={renderElement}
+                    renderLeaf={renderLeaf}
+                    onKeyDown={e => executeCommand(e)}
+                    spellCheck
+                    autoFocus
+                    style={{
+                        outline: 'none'
+                    }}
+                />
+            </div>
         </Slate>
     )
 };

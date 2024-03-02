@@ -23,13 +23,7 @@ const FormattingControls = ({ editor }) => {
       title: 'Quote block',
       onClick: () => CustomEditor.toggleBlock(editor, 'quote'),
       icon: <FormatQuote />
-    }, 
-    // {
-    //   title: 'Checklist (Ctrl+Shift+9)',
-    //   onClick: () => {},
-    //   icon: <Checklist />
-    // }, 
-    {
+    }, {
       title: 'Bulleted list (Ctrl+Shift+8)',
       onClick: () => CustomEditor.toggleBlock(editor, 'bulleted-list'),
       icon: <FormatListBulleted />

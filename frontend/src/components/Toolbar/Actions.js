@@ -4,7 +4,6 @@ import { Undo, Redo } from '@mui/icons-material';
 import '../../App.css';
 import './Toolbar.css';
 import CustomIconButton from './CustomIconButton';
-import { useState } from 'react';
 
 const Actions = ({ editor, historyEditor }) => {
   const actions = [{
