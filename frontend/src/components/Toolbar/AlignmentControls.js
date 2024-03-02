@@ -2,7 +2,7 @@ import { ButtonGroup } from '@mui/material';
 import { FormatAlignLeft, FormatAlignCenter, FormatAlignRight } from '@mui/icons-material';
 
 import './Toolbar.css';
-import CustomEditor from '../Editor/CustomEditor';
+import CustomEditor from '../editor/CustomEditor';
 import CustomIconButton from './CustomIconButton';
 
 const AlignmentControls = ({ editor }) => {

@@ -12,11 +12,15 @@
     color: #333;
 }
 
+.button-group {
+    border-radius: 10px;
+}
+
 .select {
     color: black;
     border-radius: 5px;
     border-color: gray;
-  }
+}
   
 .select:hover {
     border-color: gray;
@@ -40,6 +44,11 @@
     border: 1px solid; 
 }
 
+.color-indicator {
+    position: relative;
+    bottom: -4px;
+}
+
 .insert-image {
     color: black;
     border-radius: 5px;
@@ -52,10 +61,6 @@
 
 .insert-image .MuiSelect-select {
     padding: 2px;
-}
-
-.button-group {
-    border-radius: 10px;
 }
 
 .image {

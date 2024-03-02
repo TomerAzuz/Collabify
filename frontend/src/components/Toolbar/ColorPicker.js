@@ -11,7 +11,6 @@ const colors = [
   '#5B1004', '#650204', '#783F10', '#7F6015', '#284E19', '#0D343C', '#1D4584', '#093761', '#20124B', '#4C122F', 
 ];
 
-
 const ColorPicker = ({ handleColorChange }) => {
   const colorsPerRow = 10;
 

@@ -2,17 +2,16 @@ import React, { useState } from 'react';
 import imageExtensions from 'image-extensions';
 import isUrl from 'is-url';
 import { IconButton, Tooltip, Menu, MenuItem } from '@mui/material';
-import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
-import LinkIcon from '@mui/icons-material/Link';
-import FileUploadIcon from '@mui/icons-material/FileUpload';
+import { InsertPhoto, Link, FileUpload } from '@mui/icons-material';
 import DOMPurify from 'dompurify';
 
 import '../../App.css';
 import './Toolbar.css';
-import CustomEditor from '../Editor/CustomEditor';
+import CustomEditor from '../editor/CustomEditor';
 
 const InsertImage = ({ editor }) => {
   const [anchorEl, setAnchorEl] = useState(null);
+  //const [isUrlDialogOpen, setIsUrlDialogOpen] = useState(false);
 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -42,23 +41,27 @@ const InsertImage = ({ editor }) => {
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
-    if (!file)  {
+    if (!file) return;
+
+    // if (!imageExtensions.includes(file.type)) {
+    //   alert('Please select a valid image file.');
+    //   return;
+    // }
+
+    const maxSize = 1024 * 1024 * 5;
+    if (file.size > maxSize) {
+      alert('Image file size is too large. Please choose a file under 5MB.');
       return;
     }
-    console.log(file.type);
-    if (imageExtensions.includes(file.type))  {
-      const url = URL.createObjectURL(file);
-      CustomEditor.insertImage(editor, url);
-    } else {
-      alert('Please select a valid image file.');
-    }
+    const url = URL.createObjectURL(file);
+    CustomEditor.insertImage(editor, url);
   };
 
   return (
     <>
       <Tooltip title="Insert image">
         <IconButton onClick={handleMenuOpen}>
-          <InsertPhotoIcon />
+          <InsertPhoto />
         </IconButton>
       </Tooltip>
       <Menu
@@ -68,18 +71,18 @@ const InsertImage = ({ editor }) => {
         onClose={handleMenuClose}
       >
         <MenuItem component="label" htmlFor="imageUpload">
-        <FileUploadIcon style={{ marginRight: '8px' }} />
-        Upload from computer
-        <input
-          id="imageUpload"
-          type="file"
-          accept="image/*"
-          onChange={handleImageUpload}
-          style={{ display: 'none' }}
-        />
+          <FileUpload style={{ marginRight: '8px' }} />
+          Upload from computer
+          <input
+            id="imageUpload"
+            type="file"
+            accept="image/*"
+            onChange={handleImageUpload}
+            style={{ display: 'none' }}
+          />
         </MenuItem>
         <MenuItem onClick={handleURL}>
-          <LinkIcon style={{ marginRight: '8px' }} />
+          <Link style={{ marginRight: '8px' }} />
           By URL
         </MenuItem>
       </Menu>
