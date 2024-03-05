@@ -1,6 +1,7 @@
 name: Commit Stage
+
 on:
-  push: 
+  push:
     paths:
       - 'backend/document-service/**'
   workflow_dispatch:
@@ -11,25 +12,24 @@ jobs:
     runs-on: ubuntu-22.04
     permissions:
       contents: read
-  steps:
-    - name: Checkout source code
-      uses: actions/checkout@v4
-    - name: Set up JDK
-      uses: actions/setup-java@v4
-      with:
-        distribution: temurin
-        java-version: 17
-        cache: gradle
-    - name: Build and test
-      run: |
-        cd backend
-        cd document-service
-        chmod +x gradlew
-        ./gradlew build
-    - name: Code vulnerability scanning
-      uses: anchore/scan-action@v3
-      id: scan
-      with: 
-        path: "${{ github.workspace }}"
-        fail-build: false
-        severity-cutoff: high
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+          cache: gradle
+      - name: Build and test
+        run: |
+          cd backend/document-service
+          chmod +x gradlew
+          ./gradlew build
+      - name: Code vulnerability scanning
+        uses: anchore/scan-action@v3
+        id: scan
+        with: 
+          path: "${{ github.workspace }}"
+          fail-build: false
+          severity-cutoff: high
