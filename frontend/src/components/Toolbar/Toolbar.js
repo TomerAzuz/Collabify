@@ -13,7 +13,7 @@ const MyToolbar = ({ editor, historyEditor }) => {
   return (
     <AppBar 
       position="sticky" 
-      sx={{ zIndex: 1, backgroundColor: '#f5f5f5', marginTop: '30px' }}>
+      sx={{ zIndex: 1, borderRadius: '10px', marginTop: '30px' }}>
       <Toolbar className='toolbar'>
         <Actions editor={editor} historyEditor={historyEditor} />
         <FontControls editor={editor}/>

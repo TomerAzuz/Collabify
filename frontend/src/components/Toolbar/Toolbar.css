@@ -1,15 +1,20 @@
 .toolbar {
     display: flex;
     justify-content: center;
-    background-color: #f5f5f5;
+    background-color: #EDF2FB;
     border-radius: 10px;
     padding: 0 16px;
 }
 
 .button {
     border: none;
-    background-color: #f3f3f3;
     color: #333;
+}
+
+.button.active {
+    background-color: #D3E3FD;
+    color: #333;
+    border: none;
 }
 
 .button-group {

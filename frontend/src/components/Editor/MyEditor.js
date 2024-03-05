@@ -1,11 +1,17 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Slate, Editable, withReact } from 'slate-react';
 import { createEditor } from 'slate';
 import { HistoryEditor, withHistory } from 'slate-history';
+import isHotkey from 'is-hotkey';
+import html2canvas from 'html2canvas';
+import debounce from 'lodash/debounce';
 
 import '../../App.css';
 import './MyEditor.css';
 import CustomEditor from './CustomEditor.js';
+import { putData } from '../../apiService';
+import MenuBar from '../MenuBar/MenuBar.js';
 import MyToolbar from '../Toolbar/Toolbar.js';
 import Leaf from '../renderers/Leaf.js';
 import DefaultElement from '../renderers/DefaultElement.js';
@@ -21,23 +27,38 @@ import TableRow from '../renderers/TableRow.js';
 import TableCell from '../renderers/TableCell.js';
 import ListItemElement from '../renderers/ListItemElement.js';
 
+const HOTKEYS = {
+    'mod+b': 'bold',
+    'mod+i': 'italic',
+    'mod+u': 'underline',
+    'mod+y': 'redo',
+    'mod+z': 'undo',
+    'mod+`': 'code',
+}
+
 const MyEditor = () => {
     const editor = useMemo(() => withReact(withHistory(createEditor())), []);
-    const initialValue = useMemo(
-        () => 
-        JSON.parse(localStorage.getItem('content')) || [
-        {
-          type: 'paragraph',
-          fontSize: 16,
-          children: [
-            { 
-              text: 'A line of text in a paragraph.',
+    const location = useLocation();
+    const doc = location.state && location.state.document;
+
+    const initialValue = useMemo(() => {
+        if (doc !== null && doc !== undefined) {
+            try {
+                return doc.content;
+            } catch (error) {
+                console.error('Error fetching document content:', error);
+            }
+        }
+        return [
+            {
+              type: 'paragraph',
+              fontSize: 16,
+              children: [{ text: 'A line of text in a paragraph.' }],
             },
-          ],
-        },
-      ], 
-      []
-    );
+          ];
+    }, [doc]);
+
+    const [content, setContent] = useState(initialValue);
 
     const renderElement = useCallback(props => {
         switch (props.element.type) {
@@ -70,13 +91,93 @@ const MyEditor = () => {
 
     const renderLeaf = useCallback(props => {
         return <Leaf {...props} />
-    }, []);
+    }, []);    
 
-    const executeCommand = (e) => {
-        if (!e.ctrlKey) {
-            return;
+    const saveDocument = async (e) => {
+        e.preventDefault();
+        try {
+            const previewUrl = await captureDocumentPreview(e);
+            console.log(previewUrl);
+            const data = {
+                title: "Title",
+                content: content,
+                previewUrl: previewUrl,
+            };
+
+            const response = await putData('documents', doc.id, data);
+            console.log('Document saved successfully.', response);
+        } catch (error) {
+            console.log('Error saving document:', error);
         }
-        if (e.shiftKey) {
+    }
+
+    const captureDocumentPreview = useCallback(async (e) => {
+        try {
+            // Wait for the DOM to update
+            await new Promise(resolve => setTimeout(resolve, 100));
+
+            // Capture document content
+            const documentContent = document.querySelector('.editor-container');
+            const canvas = await html2canvas(documentContent)
+
+            return canvas.toDataURL('image/jpeg');
+
+        } catch (error) {
+          console.error('Error capturing preview:', error);
+          return null;
+        }
+      }, []);
+
+      const debouncedUpdateContent = useMemo(
+        () => debounce((value) => {
+            setContent(value);
+        }, 500),
+        [setContent]
+    );
+     
+    return (
+        <Slate 
+            editor={editor} 
+            initialValue={initialValue}
+            onChange={value => {
+                const isAstChange = editor.operations.some(
+                    op => 'set_selection' !== op.type
+                )
+                if (isAstChange) {                    
+                    debouncedUpdateContent(value);
+                }
+            }}
+        >
+            <MenuBar />
+            <MyToolbar editor={editor} historyEditor={HistoryEditor}/>
+            <div className='editor-container'>
+                <Editable 
+                    renderElement={renderElement}
+                    renderLeaf={renderLeaf}
+                    onKeyDown={e => {
+                        for (const hotkey in HOTKEYS) {
+                            if (isHotkey(hotkey, e)) {
+                                e.preventDefault();
+                                const mark = HOTKEYS[hotkey];
+                                CustomEditor.toggleMark(editor, mark);
+                            }
+                        }
+                        if (e.ctrlKey && e.key === 's') {
+                           saveDocument(e);
+                        }
+                    }}
+                    spellCheck
+                    autoFocus
+                />
+            </div>
+        </Slate>
+    )
+};
+
+export default MyEditor;
+
+/*
+if (e.shiftKey) {
             switch (e.code)  {
                 // Align left
                 case 'KeyL': {
@@ -111,79 +212,4 @@ const MyEditor = () => {
                 default:
                     break;
             }
-        }
-        switch (e.key) {
-            // Code block
-            case '`': {
-                e.preventDefault();
-                CustomEditor.toggleBlock(editor, 'code');
-                break;
-            }
-            // Bold mark
-            case 'b': {
-                e.preventDefault();
-                CustomEditor.toggleMark(editor, 'bold');
-                break;
-            }
-            // Italic mark
-            case 'i': {
-                e.preventDefault();
-                CustomEditor.toggleMark(editor, 'italic');
-                break;
-            }
-            // Underline mark
-            case 'u': {
-                e.preventDefault();
-                CustomEditor.toggleMark(editor, 'underline');
-                break;
-            }
-
-            // Redo
-            case 'y': {
-                e.preventDefault();
-                HistoryEditor.redo(editor);
-                break;
-            }
-            // Undo
-            case 'z': {
-                e.preventDefault();
-                HistoryEditor.undo(editor);
-                break;
-            }
-            default:
-                break;
-        }
-    };
-
-    return (
-        <Slate 
-            editor={editor} 
-            initialValue={initialValue}
-            onChange={value => {
-                const isAstChange = editor.operations.some(
-                    op => 'set_selection' !== op.type
-                )
-                if (isAstChange) {
-                    const content = JSON.stringify(value);
-                    localStorage.setItem('content', content);
-                }
-            }}
-        >
-            <MyToolbar editor={editor} historyEditor={HistoryEditor}/>
-            <div className='editor-container'>
-                <Editable 
-                    renderElement={renderElement}
-                    renderLeaf={renderLeaf}
-                    onKeyDown={e => executeCommand(e)}
-                    spellCheck
-                    autoFocus
-                    style={{
-                        outline: 'none'
-                    }}
-                />
-            </div>
-        </Slate>
-    )
-};
-
-export default MyEditor;
+*/

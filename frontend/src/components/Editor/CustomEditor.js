@@ -10,9 +10,7 @@ const CustomEditor = {
 
   isBlockActive(editor, type) {
     const { selection } = editor;
-    if (!selection) {
-      return false;
-    }
+    if (!selection) return false;
 
     const [match] = Editor.nodes(editor, {
       at: Editor.unhangRange(editor, selection),

@@ -13,3 +13,8 @@ spring:
   data:
     mongodb:
       uri: mongodb://localhost:27017/document_db
+      auditing:
+        enabled: true
+      connection-pool:
+        max-size: 50
+        min-size: 5

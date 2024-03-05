@@ -1,40 +1,11 @@
-import { useState } from 'react';
-import { Grid, Paper, Typography } from '@mui/material';
 import '../../App.css';
 import './Home.css';
+import DocumentsGrid from './DocumentsGrid';
 
-
-const Home = () => {
-  const [showDoc, setShowDoc] = useState(false);
-
-  const showEditor = () => {
-    setShowDoc(!showDoc);
-  } 
-  
+const Home = () => {  
   return (
     <>
-      <Grid container spacing={2}>
-        <Grid item xs={3}>
-          <Paper>
-            
-          </Paper>
-        </Grid>
-        <Grid item xs={3}>
-          <Paper>
-            
-          </Paper>
-        </Grid>
-        <Grid item xs={3}>
-          <Paper>
-            
-          </Paper>
-        </Grid>
-        <Grid item xs={3}>
-          <Paper>
-            
-          </Paper>
-        </Grid>
-      </Grid>
+      <DocumentsGrid />
     </>
   )
 };
