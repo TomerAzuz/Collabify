@@ -1,6 +1,6 @@
 import TableChart from '@mui/icons-material/TableChart';
 import { Grid, Dialog, DialogTitle, DialogActions, DialogContent, Button, TextField } from '@mui/material';
-import CustomEditor from '../editor/CustomEditor';
+import CustomEditor from '../Editor/CustomEditor';
 import { useState } from 'react';
 import CustomIconButton from './CustomIconButton';
 

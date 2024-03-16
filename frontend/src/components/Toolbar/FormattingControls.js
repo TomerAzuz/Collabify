@@ -3,7 +3,7 @@ import { ButtonGroup } from '@mui/material';
 import { LooksOne, LooksTwo, /*Checklist, */FormatListBulleted, FormatListNumbered } from '@mui/icons-material';
 import '../../App.css';
 import './Toolbar.css';
-import CustomEditor from '../editor/CustomEditor';
+import CustomEditor from '../Editor/CustomEditor';
 import CustomIconButton from './CustomIconButton';
 
 const FormattingControls = ({ editor }) => {

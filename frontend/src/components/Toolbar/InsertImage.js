@@ -7,7 +7,7 @@ import DOMPurify from 'dompurify';
 
 import '../../App.css';
 import './Toolbar.css';
-import CustomEditor from '../editor/CustomEditor';
+import CustomEditor from '../Editor/CustomEditor';
 
 const InsertImage = ({ editor }) => {
   const [anchorEl, setAnchorEl] = useState(null);

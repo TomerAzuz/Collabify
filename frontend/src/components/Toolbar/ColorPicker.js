@@ -35,18 +35,20 @@ const ColorPicker = ({ handleColorChange }) => {
               }}
             >
               {colors.slice(index, index + colorsPerRow).map((subColor, subIndex) => (
-                
                 <Tooltip key={subIndex} title={subColor}>
                   <IconButton
+                    key={subIndex}
                     sx={{
                       backgroundColor: subColor,
                       borderRadius: '50%',
                       border: '1px solid grey',
-                      width: '15px',
-                      height: '15px',
+                      width: '30px',
+                      height: '30px',
                       margin: 0.3,
+                      transition: 'box-shadow 0.3s ease-in-out',
                       '&:hover': {
-                        boxShadow: '0px 0px 8px 0px rgba(0,0,0,0.3)',
+                        backgroundColor: subColor,
+                        boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)',
                       },
                     }}
                     onClick={() => handleColorChange(subColor)}

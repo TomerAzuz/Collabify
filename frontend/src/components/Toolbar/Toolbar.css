@@ -6,17 +6,6 @@
     padding: 0 16px;
 }
 
-.button {
-    border: none;
-    color: #333;
-}
-
-.button.active {
-    background-color: #D3E3FD;
-    color: #333;
-    border: none;
-}
-
 .button-group {
     border-radius: 10px;
 }

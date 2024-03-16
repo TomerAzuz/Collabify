@@ -5,16 +5,16 @@ import { faStrikethrough } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import './Toolbar.css';
-import CustomEditor from '../editor/CustomEditor.js';
+import CustomEditor from '../Editor/CustomEditor.js';
 import CustomIconButton from './CustomIconButton.js';
-import ColorPickerPortal from '../portals/ColorPickerPortal.js';
+import ColorPickerPortal from '../Portals/ColorPickerPortal.js';
 
 const fontFamilies = [
     'AMATIC SC', 'Arial', 'Caveat', 'Comfortaa', 'Comic Sans MS', 
     'Courier New', 'EB Garamond', 'Georgia', 'Impact', 'Lexend',
-    'Lobster', 'Lora', 'Merriweather', 'Monteserrat', 'Nunito',
-    'Oswald', 'Pacifico', 'Playfair Display', 'Roboto', 'Roboto Mono', 
-    'Roboto Serif', 'Spectral', 'Times New Roman', 'Trebuchet MS', 'Verdana' 
+    'Lobster', 'Lora', 'Merriweather', 'Nunito', 'Open Sans', 'Oswald',  
+    'Pacifico', 'Playfair Display', 'Roboto', 'Roboto Mono', 'Roboto Serif',  
+    'Spectral', 'Times New Roman', 'Trebuchet MS', 'Verdana' 
   ];
 
 const FontControls = ({ editor }) => {
