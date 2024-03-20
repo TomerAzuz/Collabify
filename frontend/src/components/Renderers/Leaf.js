@@ -5,9 +5,9 @@ const Leaf = (props) => {
     fontStyle: props.leaf.italic ? 'italic' : 'normal',
     textDecoration: `${props.leaf.underline ? 'underline ' : ''} ${props.leaf.strikethrough ? 'line-through' : ''}`,
     color: props.leaf.color || '',
-    // remove these values from the leaf (should be rendered in a block element)
     fontSize: `${props.leaf.fontSize || '16'}pt`,
     fontFamily: props.leaf.fontFamily || '',
+    backgroundColor: props.leaf.backgroundColor ? 'yellow' : '',
   };
 
   return (

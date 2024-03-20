@@ -11,7 +11,6 @@ import CustomEditor from '../Editor/CustomEditor';
 
 const InsertImage = ({ editor }) => {
   const [anchorEl, setAnchorEl] = useState(null);
-  //const [isUrlDialogOpen, setIsUrlDialogOpen] = useState(false);
 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);

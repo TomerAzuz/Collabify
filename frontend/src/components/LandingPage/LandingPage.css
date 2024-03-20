@@ -1,0 +1,43 @@
+.landing-page {
+  display: flex;
+  height: 100vh;
+  margin: auto;
+}
+
+.left-section {
+  background: linear-gradient(to right, #43C6AC, #189AB4);
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 50px;
+  overflow: hidden;
+}
+
+.right-section {
+  background: linear-gradient(to bottom, #FFF9F9, #F2F2F2);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 50px;
+  overflow: hidden;
+}
+
+.left-section,
+.right-section {
+  background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white */
+  min-width: 600px;
+}
+
+.typography {
+  font-family: 'Roboto', sans-serif;
+  text-align: center;
+}
+
+.hero-image {
+  width: 100%;
+  max-width: 400px;
+  margin-top: 20px;
+}

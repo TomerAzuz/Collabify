@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-
 @Service
 public class DocumentService {
 
@@ -20,6 +19,7 @@ public class DocumentService {
             String id = UUID.randomUUID().toString();
             document.setId(id);
             document.setCreatedBy(userId);
+            document.setUpdatedBy(userId);
             documentRepository.save(document);
             return document;
         } catch (RuntimeException e) {
@@ -50,7 +50,7 @@ public class DocumentService {
                 .map(existingDoc -> {
                     existingDoc.setTitle(Optional.ofNullable(document.getTitle()).orElse(existingDoc.getTitle()));
                     existingDoc.setContent(Optional.ofNullable(document.getContent()).orElse(existingDoc.getContent()));
-                    existingDoc.setCollaborators(Optional.ofNullable(document.getCollaborators()).orElse(existingDoc.getCollaborators()));
+                    existingDoc.setPreviewUrl(Optional.ofNullable(document.getPreviewUrl()).orElse(existingDoc.getPreviewUrl()));
                     existingDoc.setRole(Optional.ofNullable(document.getRole()).orElse(existingDoc.getRole()));
                     existingDoc.setUpdatedBy(userId);
                     return documentRepository.save(existingDoc);

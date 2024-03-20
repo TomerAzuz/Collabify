@@ -53,7 +53,6 @@ public class DocumentRepositoryTests {
                 content,
                 "preview",
                 "Tomer",
-                new ArrayList<>(),
                 "Viewer",
                 now,
                 now,
@@ -63,7 +62,6 @@ public class DocumentRepositoryTests {
 
     @Test
     void findAllDocuments() {
-        String userId1 = UUID.randomUUID().toString();
         var document1 = createDocument("123");
         var document2 = createDocument("456");
 

@@ -3,7 +3,7 @@ name: Commit Stage
 on:
   push:
     paths:
-      - 'backend/document-service/**'
+      - 'backend/**'
   workflow_dispatch:
 
 jobs:
@@ -23,7 +23,7 @@ jobs:
           cache: gradle
       - name: Build and test
         run: |
-          cd backend/document-service
+          cd backend
           chmod +x gradlew
           ./gradlew build
       - name: Code vulnerability scanning

@@ -5,28 +5,29 @@ import com.collabify.documentservice.controller.DocumentController;
 import com.collabify.documentservice.model.RichTextDocument;
 import com.collabify.documentservice.service.DocumentService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.firebase.auth.FirebaseAuth;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import static org.mockito.ArgumentMatchers.*;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(DocumentController.class)
+@AutoConfigureMockMvc(addFilters = false)
 public class DocumentControllerMvcTests {
 
     @Autowired
@@ -37,9 +38,6 @@ public class DocumentControllerMvcTests {
 
     @Autowired
     private ObjectMapper objectMapper;
-
-    @MockBean
-    private FirebaseAuth firebaseAuth;
 
     private RichTextDocument createDocument(String id) {
         var now = Instant.now();
@@ -55,7 +53,6 @@ public class DocumentControllerMvcTests {
                 content,
                 "preview",
                 "Tomer",
-                new ArrayList<>(),
                 "Viewer",
                 now,
                 now,
@@ -68,6 +65,7 @@ public class DocumentControllerMvcTests {
         var id = "123";
         given(documentService.getDocumentById(id))
                 .willThrow(DocumentNotFoundException.class);
+
         mockMvc
                 .perform(get("/api/documents/" + id))
                 .andExpect(status().isNotFound());
@@ -94,9 +92,12 @@ public class DocumentControllerMvcTests {
         var doc2 = createDocument(id2);
         doc2.setCreatedBy(id1);
 
-        given(documentService.getAllDocuments(userId)).willReturn(List.of(doc1, doc2));
-        mockMvc
-                .perform(get("/api/documents"))
+        given(documentService.getAllDocuments(anyString())).willReturn(List.of(doc1, doc2));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/documents")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .requestAttr("userId", userId))
                 .andExpect(status().isOk());
     }
 
@@ -107,11 +108,12 @@ public class DocumentControllerMvcTests {
         var document = createDocument(id);
 
         String requestBody = objectMapper.writeValueAsString(document);
-        given(documentService.saveDocument(any(RichTextDocument.class), eq(userId))).willReturn(document); // Use any() and eq() instead of any(Class, String)
-        mockMvc
-                .perform(post("/api/documents")
+        given(documentService.saveDocument(any(RichTextDocument.class), eq(userId))).willReturn(document);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/documents")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
+                        .content(requestBody)
+                        .requestAttr("userId", userId))
                 .andExpect(status().isCreated());
     }
 
@@ -123,10 +125,11 @@ public class DocumentControllerMvcTests {
 
         String requestBody = objectMapper.writeValueAsString(documentToCreate);
         given(documentService.saveDocument(any(RichTextDocument.class), eq(userId))).willReturn(documentToCreate);
-        mockMvc
-                .perform(put("/api/documents/" + id)
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/documents/" + id)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
+                        .content(requestBody)
+                        .requestAttr("userId", userId))
                 .andExpect(status().isOk());
     }
 

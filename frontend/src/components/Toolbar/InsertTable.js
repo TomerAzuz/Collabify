@@ -21,9 +21,11 @@ const InsertTable = ({ editor }) => {
   return (
     <>
       <CustomIconButton 
-        title="Insert table" 
-        onClick={() => setIsDimensionsOpen(true)}
-        icon={<TableChart />}
+        button={{
+          title: "Insert table",
+          onClick: () => setIsDimensionsOpen(true),
+          icon: <TableChart />
+        }}
       />
       <Dialog open={isDimensionsOpen} onClose={() => setIsDimensionsOpen(false)}>
         <DialogTitle>Insert Table</DialogTitle>

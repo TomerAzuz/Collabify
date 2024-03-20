@@ -1,6 +1,7 @@
 package com.collabify.documentservice.controller;
 
 import com.collabify.documentservice.advice.DocumentNotFoundException;
+import com.collabify.documentservice.dto.DocumentMetadata;
 import com.collabify.documentservice.model.RichTextDocument;
 import com.collabify.documentservice.service.DocumentService;
 
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/documents")
@@ -21,7 +22,6 @@ public class DocumentController {
 
     @Autowired
     private DocumentService documentService;
-
 
     @PostMapping
     public ResponseEntity<RichTextDocument> createDocument(@RequestBody RichTextDocument document,
@@ -33,10 +33,13 @@ public class DocumentController {
     }
 
     @GetMapping
-    public ResponseEntity<List<RichTextDocument>> getAllDocuments(@RequestAttribute("userId") String userId) {
+    public ResponseEntity<List<DocumentMetadata>> getAllDocuments(@RequestAttribute("userId") String userId) {
         log.info("Getting all documents for user id {}.", userId);
         List<RichTextDocument> documents = documentService.getAllDocuments(userId);
-        return ResponseEntity.ok(documents);
+        List<DocumentMetadata> documentSummaries = documents.stream()
+                .map(DocumentMetadata::mapToDocumentMetadata)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(documentSummaries);
     }
 
     @GetMapping("{id}")

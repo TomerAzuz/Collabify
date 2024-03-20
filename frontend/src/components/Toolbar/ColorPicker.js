@@ -1,4 +1,8 @@
-import { Paper, IconButton, Tooltip } from '@mui/material';
+import React, { useState, useMemo } from 'react';
+import { Paper, Popover, IconButton, Tooltip } from '@mui/material';
+import { FormatColorText } from '@mui/icons-material';
+
+import CustomEditor from '../Editor/CustomEditor';
 
 const colors = [
   '#000000', '#434343', '#666666', '#999999', '#B7B7B7', '#CCCCCC', '#D9D9D9', '#EFEFEF', '#F3F3F3', '#FFFFFF', 
@@ -11,56 +15,94 @@ const colors = [
   '#5B1004', '#650204', '#783F10', '#7F6015', '#284E19', '#0D343C', '#1D4584', '#093761', '#20124B', '#4C122F', 
 ];
 
-const ColorPicker = ({ handleColorChange }) => {
+const ColorPicker = ({ editor }) => {
+  const [fontColor, setFontColor] = useState('black');
+  const [openColorPicker, setOpenColorPicker] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+
   const colorsPerRow = 10;
 
+  const colorButtons = useMemo(() => {
+    return colors.reduce((rows, color, index) => {
+      if (index % colorsPerRow === 0) rows.push([]);
+      rows[rows.length - 1].push(color);
+      return rows;
+    }, []);
+  }, [colorsPerRow]);
+
+  const toggleColorPicker = (e) => {
+    e.preventDefault();
+    setOpenColorPicker(!openColorPicker);
+    setAnchorEl(anchorEl ? null : e.currentTarget);
+  };
+
+  const handleColorChange = (newColor) => {
+    handleCloseColorPicker();
+    setFontColor(newColor);
+    CustomEditor.addMark(editor, 'color', newColor);
+  };
+
+  const handleCloseColorPicker = () => {
+    setOpenColorPicker(false);
+    setAnchorEl(null);
+  };
+
   return (
-    <Paper
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        padding: '10px', 
-        borderRadius: '8px', 
-        boxShadow: '0px 8px 8px rgba(0, 0, 0, 0.1)',
-      }}
-    >
-      {colors.map((color, index) => {
-        if (index % colorsPerRow === 0) {
-          return (
-            <div
-              key={index}
-              style={{
-                display: 'flex',
-                flexWrap: 'wrap',
-              }}
-            >
-              {colors.slice(index, index + colorsPerRow).map((subColor, subIndex) => (
-                <Tooltip key={subIndex} title={subColor}>
-                  <IconButton
-                    key={subIndex}
-                    sx={{
-                      backgroundColor: subColor,
-                      borderRadius: '50%',
-                      border: '1px solid grey',
-                      width: '30px',
-                      height: '30px',
-                      margin: 0.3,
-                      transition: 'box-shadow 0.3s ease-in-out',
-                      '&:hover': {
-                        backgroundColor: subColor,
-                        boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)',
-                      },
-                    }}
-                    onClick={() => handleColorChange(subColor)}
-                  />
-                </Tooltip>
+    <>
+     <Tooltip title="Text color">
+        <IconButton
+          className='button'
+          onClick={(e) => toggleColorPicker(e)}
+        >
+        <div className='color-indicator'>
+          <FormatColorText />
+          <span
+            className='pallete'
+            style={{ backgroundColor: fontColor, }}
+          />
+        </div>
+        </IconButton>
+      </Tooltip>
+      <Popover
+        open={openColorPicker}
+        anchorEl={anchorEl}
+        onClose={handleCloseColorPicker}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+      >
+        <Paper sx={{ padding: '10px' }}>
+          {colorButtons.map((rowColors, rowIndex) => (
+            <div key={rowIndex} style={{ display: 'flex', marginBottom: '5px' }}>
+              {rowColors.map((color, colorIndex) => (
+                <IconButton
+                  key={colorIndex}
+                  sx={{
+                    backgroundColor: color,
+                    borderRadius: '50%',
+                    border: '1px solid grey',
+                    width: '30px',
+                    height: '30px',
+                    margin: 0.3,
+                    transition: 'box-shadow 0.3s ease-in-out',
+                    '&:hover': {
+                      backgroundColor: color,
+                      boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)',
+                    },
+                  }}
+                  onClick={() => handleColorChange(color)}
+                />
               ))}
             </div>
-          );
-        }
-        return null;
-      })}
-    </Paper>
+          ))}
+        </Paper>
+      </Popover>
+    </>
   );
 };
 

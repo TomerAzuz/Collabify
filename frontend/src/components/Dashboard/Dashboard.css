@@ -1,4 +1,4 @@
-.home-container {
+.dashboard-container {
   padding: 20px;
 }
 
@@ -26,4 +26,28 @@
 
 .section-header h5 {
   margin-right: 10px;
+}
+
+.template {
+  width: 150px; 
+  height: 200px; 
+  display: flex; 
+  align-items: center; 
+  border: 1px solid transparent; 
+  transition: border 0.3s ease, transform 0.3s ease; 
+  box-sizing: border-box;
+}
+
+.template:hover {
+  border-color: #2196f3;
+  cursor: pointer;
+  transform: scale(1.05);
+}
+
+.user-greeting {
+  background: linear-gradient(to right, #30cfd0 0%, #330867 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+  animation: gradient 5s linear infinite;
 }

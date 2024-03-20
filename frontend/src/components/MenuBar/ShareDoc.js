@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { FormControl, Select, MenuItem, Button, Dialog, DialogContent, DialogTitle, DialogActions, Typography } from '@mui/material';
 import { Public } from '@mui/icons-material';
 
-import './MyEditor.css';
+import './MenuBar.css';
 import { putData } from '../../apiService';
 
-const ShareDoc = ({ doc }) => {
+const ShareDoc = ({ doc, user }) => {
   const roles = ['Viewer', 'Editor'];
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
   const [role, setRole] = useState(roles[0]);
@@ -28,7 +28,7 @@ const ShareDoc = ({ doc }) => {
       const response = await putData('documents', doc.id, {
         role: role,
       });
-      console.log(`Document role was successfully updated to ${role}:`. response);
+      console.log(`Document role was successfully updated to ${role}:`, response);
     } catch (error) {
       console.error('Error updating document role:', error);
     }
@@ -38,7 +38,7 @@ const ShareDoc = ({ doc }) => {
     <>
       <Button 
         onClick={() => setIsShareDialogOpen(true)}
-        disabled={!doc}
+        disabled={!doc || doc.createdBy !== user.uid}
         startIcon={<Public />}
       >
         Share
@@ -47,9 +47,9 @@ const ShareDoc = ({ doc }) => {
         open={isShareDialogOpen}
         onClose={() => setIsShareDialogOpen(false)}
       >
-        <DialogTitle>Share 'title'</DialogTitle>
+        <DialogTitle>Share '{doc && doc.title}'</DialogTitle>
         <DialogContent>
-          <Typography>Anyone on the internet with the link can view</Typography>
+          <Typography>Anyone on the internet with the link can {role === 'Viewer' ? 'view' : 'edit'}</Typography>
           <div className='select-role'>          
             <FormControl fullWidth>
               <Select

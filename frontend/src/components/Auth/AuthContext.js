@@ -70,7 +70,7 @@ export const AuthProvider = ({ children }) => {
         default:
           break;
       }
-      userCredential && navigate("/");
+      userCredential && navigate("/dashboard");
 
     } catch (error) {
       console.log('Authentication failed: ', error);
@@ -102,11 +102,12 @@ export const AuthProvider = ({ children }) => {
   const handleSignOut = useCallback(async () => {
     try {
       await signOut(auth);
+      navigate("/auth/login");
       setUser(null);
     } catch (error) {
       setAlertMessage('Error signing out:', error.message);
     }
-  }, []);
+  }, [navigate]);
 
   const register = async(email, password) => {
     try {
@@ -123,7 +124,7 @@ export const AuthProvider = ({ children }) => {
     // Set the authorization header
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     setUser(currentUser);
-    setAlertMessage(`Hello, ${currentUser.displayName}!`);
+    setAlertMessage(`Hello, ${currentUser.displayName || currentUser.email}!`);
   }, [setUser]);
   
   useEffect(() => {

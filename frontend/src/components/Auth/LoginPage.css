@@ -4,8 +4,29 @@
   align-items: center;
 }
 
+.gradient-text {
+  background: linear-gradient(45deg, #ff8a00, #e52e71);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -moz-background-clip: text; 
+  -o-background-clip: text; 
+  -webkit-text-fill-color: transparent;
+}
+
 .login-paper {
   width: 800px;
   margin: 100px auto;
   padding: 40px;
+}
+
+.login-button {
+  background-color: #ff8a00;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.login-button:hover {
+  background-color: #e52e71;
 }

@@ -96,7 +96,7 @@ const SignupForm = () => {
                 <Typography 
                   variant='body1' 
                   sx={{ marginTop: 2, color: 'text.secondary' }}>
-                    <Link to='/login'>Already have an account?</Link>
+                    <Link to='/auth/login'>Already have an account?</Link>
                 </Typography>
               </Grid>
             </Grid>

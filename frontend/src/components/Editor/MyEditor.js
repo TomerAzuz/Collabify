@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { Slate, Editable, withReact } from 'slate-react';
 import { Editor, createEditor, Transforms } from 'slate';
 import { HistoryEditor, withHistory } from 'slate-history';
@@ -11,11 +11,12 @@ import { withYjs, withCursors, YjsEditor } from '@slate-yjs/core'
 import '../../App.css';
 import './MyEditor.css';
 
+import { fetchDataById, putData } from '../../apiService';
 import CustomEditor from './CustomEditor';
-import { putData } from '../../apiService';
 import blankTemplate from '../Templates/blankTemplate';
-import MyToolbar from '../Toolbar/Toolbar.js';
-import Leaf from '../Renderers/Leaf.js';
+import MyToolbar from '../Toolbar/Toolbar';
+import MenuBar from '../MenuBar/MenuBar';
+import Leaf from '../Renderers/Leaf';
 import DefaultElement from '../Renderers/DefaultElement';
 import CodeElement from '../Renderers/CodeElement';
 import QuoteElement from '../Renderers/QuoteElement';
@@ -24,12 +25,11 @@ import H2Element from '../Renderers/H2Element';
 import ImageElement from '../Renderers/ImageElement';
 import BulletedListElement from '../Renderers/BulletedListElement';
 import NumberedListElement from '../Renderers/NumberedListElement';
-import TableElement from '../Renderers/TableElement.js';
+import TableElement from '../Renderers/TableElement';
 import TableRow from '../Renderers/TableRow';
 import TableCell from '../Renderers/TableCell';
 import ListItemElement from '../Renderers/ListItemElement';
 import { Cursors } from './Cursors';
-import ShareDoc from './ShareDoc.js';
 import { useAuth } from '../Auth/AuthContext';
 
 const HOTKEYS = {
@@ -41,20 +41,32 @@ const HOTKEYS = {
     'mod+`': 'code',
 };
 
-/* TODO: Extract the document id from the url and fetch it.
-    note that roles do not work until this is fixed
-*/
 const MyEditor = ({ sharedType, provider }) => {
-    const location = useLocation();
-    const doc = location.state && location.state.document;
     const { user } = useAuth();
+    const { id } = useParams();
+    const [doc, setDoc] = useState(null);
+
+    useEffect(() => {
+        const fetchDocument = async () => {
+            try {
+                const response = await fetchDataById('documents', id);
+                setDoc(response);
+            } catch (error) {
+                console.log('Failed to fetch document with id ', id, ": ", error);
+            } 
+        };
+        fetchDocument();
+    }, [id]);
+
     const initialValue = useMemo(() => {
         return doc?.content || blankTemplate();
-    }, [doc]);
+    }, []);
 
-    let cursorColors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', 
-                        '#00ffff', '#ff9900', '#9900ff', '#0099ff', '#ff0099', 
-                        '#99ff00', '#00ff99', '#ff6600', '#6600ff'];
+    let cursorColors = [
+        '#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', 
+        '#00ffff', '#ff9900', '#9900ff', '#0099ff', '#ff0099', 
+        '#99ff00', '#00ff99', '#ff6600', '#6600ff'
+      ];
 
     const getRandomColor = () => {
         const index = Math.floor(Math.random() * cursorColors.length);
@@ -86,8 +98,6 @@ const MyEditor = ({ sharedType, provider }) => {
         return e;
       }, [sharedType, initialValue, provider.awareness]);
 
-    const [content, setContent] = useState(initialValue);
-
     useEffect(() => {
         YjsEditor.connect(editor);
         return () => YjsEditor.disconnect(editor)
@@ -118,7 +128,7 @@ const MyEditor = ({ sharedType, provider }) => {
             case 'table-cell':
                 return <TableCell {...props} />
             default:
-                return <DefaultElement {...props}/>
+                return <DefaultElement {...props} />
         }
     }, []);
 
@@ -132,7 +142,7 @@ const MyEditor = ({ sharedType, provider }) => {
             const previewUrl = await captureDocumentPreview(e);            
             const document = {
                 title: doc.title,
-                content: content,
+                content: doc.content,
                 previewUrl: previewUrl,
             };
             const response = await putData('documents', doc.id, document);
@@ -144,36 +154,42 @@ const MyEditor = ({ sharedType, provider }) => {
 
     const captureDocumentPreview = useCallback(async () => {
         try {
-            // Wait for the DOM to update
-            await new Promise(resolve => setTimeout(resolve, 100));
-
-            // Capture document content
-            const documentContent = document.querySelector('.editor-container');
-            if (!documentContent) {
-                console.warn('Document container not found. Returning null.');
-                return null;
-              }
-              const canvas = await html2canvas(documentContent);
-              
-            return canvas.toDataURL('image/jpeg', 0.5);
-
+          console.log('Waiting for DOM updates...');
+          await new Promise(resolve => setTimeout(resolve, 100));
+      
+          const documentContent = document.querySelector('.editor-container');
+          if (!documentContent) {
+            console.warn('Document container not found. Returning null.');
+            return null;
+          }
+          console.log('Found document content element.');
+      
+          const canvas = await html2canvas(documentContent);
+          return canvas.toDataURL('image/jpeg');
+      
         } catch (error) {
           console.error('Error capturing preview:', error);
           return null;
         }
       }, []);
 
+      const updateContent = (newValue) => {
+        setDoc(prevDoc => ({
+            ...prevDoc,
+            content: newValue
+        }));
+    };
+
     const debouncedUpdateContent = useMemo(
         () => debounce((value) => {
-            setContent(value);
+            updateContent(value);
         }, 500),
-        [setContent]
-    );
+        []);
      
     return (
         <Slate 
             editor={editor} 
-            initialValue={content}
+            initialValue={initialValue}
             onChange={value => {
                 const isAstChange = editor.operations.some(
                     op => 'set_selection' !== op.type
@@ -183,15 +199,17 @@ const MyEditor = ({ sharedType, provider }) => {
                 }
             }}
         >
+            <MenuBar doc={doc} user={user} />
             <MyToolbar editor={editor} historyEditor={HistoryEditor}/>
-            <ShareDoc doc={doc} />
             <div className='editor-container'>
                 <Cursors>
                     <Editable 
-                        //readOnly={!doc || !doc.role || doc.role === 'Viewer'}
+                        readOnly={doc && doc.createdBy && doc.createdBy !== user.uid && doc.role === 'Viewer'}
                         placeholder='Start typing here...'
                         renderElement={renderElement}
                         renderLeaf={renderLeaf}
+                        spellCheck
+                        autoFocus
                         onKeyDown={e => {
                             for (const hotkey in HOTKEYS) {
                                 if (isHotkey(hotkey, e)) {
@@ -205,8 +223,6 @@ const MyEditor = ({ sharedType, provider }) => {
                                 saveDocument(e);
                             }
                         }}
-                        spellCheck
-                        autoFocus
                     />
                 </Cursors>
             </div>

@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { Grid } from '@mui/material';
 
-import { fetchData, deleteData } from '../../apiService';
-import DocumentItem from './DocumentItem';
 import './Dashboard.css';
+import SearchBar from './SearchBar';
+import DocumentItem from './DocumentItem';
+import { fetchData, deleteData } from '../../apiService';
 
 const DocumentsGrid = () => {
   const [documents, setDocuments] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
 
-  // Content is not needed
   useEffect(() => {
     async function getDocuments() {
       try {
@@ -42,18 +43,24 @@ const DocumentsGrid = () => {
     return <div>Error: {error.message}</div>
   }
 
+  const filteredDocuments = documents?.filter(document => 
+    document.title.toLowerCase().includes(searchTerm.toLowerCase()));
+
   return (
-    <Grid container spacing={2} sx={{ padding: '16px' }}>
-      {documents && documents?.map((document) => (
-        <Grid item key={document.id}>
-          <DocumentItem 
-            document={document} 
-            onDeleteDocument={handleDeleteDocument} 
-          />
+    <div>
+      <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+      <Grid container spacing={2} sx={{ padding: '16px' }}>
+        {filteredDocuments?.map((document) => (
+          <Grid item key={document.id}>
+            <DocumentItem 
+              document={document} 
+              onDeleteDocument={handleDeleteDocument} 
+            />
+          </Grid>
+        ))}
       </Grid>
-    ))}
-    </Grid>
-  )
+    </div>
+  );
 };
 
 export default DocumentsGrid;

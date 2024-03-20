@@ -40,7 +40,6 @@ public class DocumentServiceTest {
                 content,
                 "preview",
                 "Tomer",
-                new ArrayList<>(),
                 "Viewer",
                 now,
                 now,
@@ -53,6 +52,7 @@ public class DocumentServiceTest {
         var id = "123";
 
         when(documentRepository.findById(id)).thenReturn(Optional.empty());
+
         assertThatThrownBy(() -> documentService.getDocumentById(id))
                 .isInstanceOf(DocumentNotFoundException.class)
                 .hasMessage("The document with id " + id + " was not found.");

@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { ButtonGroup } from '@mui/material';
 import { FormatAlignLeft, FormatAlignCenter, FormatAlignRight } from '@mui/icons-material';
 
@@ -6,19 +7,22 @@ import CustomEditor from '../Editor/CustomEditor';
 import CustomIconButton from './CustomIconButton';
 
 const AlignmentControls = ({ editor }) => {
-  const alignment = [{
+  const alignment = useMemo(() => [{
+      format: 'left',
       title: 'Left align (Ctrl+Shift+L)',
       onClick: () => CustomEditor.alignText(editor, 'left'),
       icon: <FormatAlignLeft />
     }, {
+      format: 'center',
       title: 'Center align (Ctrl+Shift+E)',
       onClick: () => CustomEditor.alignText(editor, 'center'),
       icon: <FormatAlignCenter />
     }, {
+      format: 'right',
       title: 'Right align (Ctrl+Shift+R)',
       onClick: () => CustomEditor.alignText(editor, 'right'),
       icon: <FormatAlignRight />
-    }];
+    }], [editor]);
     
     return (
       <ButtonGroup 
@@ -29,9 +33,8 @@ const AlignmentControls = ({ editor }) => {
         {alignment.map((align) => (
           <CustomIconButton 
             key={align.title}
-            title={align.title} 
-            onClick={align.onClick} 
-            icon={align.icon} 
+            button={align}
+            isBlock={true}
           />
         ))}
       </ButtonGroup>

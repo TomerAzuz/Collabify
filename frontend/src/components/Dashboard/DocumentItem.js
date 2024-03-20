@@ -29,9 +29,7 @@ const DocumentItem = ({ document, onDeleteDocument }) => {
   const navigate = useNavigate();
 
   const handleDocumentClick = () => {
-    navigate(`/document/${document.id}`, {
-      state: { document: document }
-    });
+    navigate(`/document/${document.id}`);
   };
 
   const deleteDocument = async () => {
@@ -46,7 +44,6 @@ const DocumentItem = ({ document, onDeleteDocument }) => {
   };
 
   const updateDocumentTitle = async () => {
-    handleMenuClose();
     const prevTitle = document.title;
     try {
       const response = await putData('documents', document.id, {
@@ -54,38 +51,35 @@ const DocumentItem = ({ document, onDeleteDocument }) => {
       });
       document.title = editedTitle;
       console.log('Document title update succesfully:', response);
-      
     } catch (error) {
       console.error('Error updating document title:', error);
       document.title = prevTitle;
+    } finally {
+      setIsRenameDialogOpen(false);
     }
   }; 
 
   const handleMenuClick = (e) => {
     setAnchorEl(e.currentTarget);
   };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
   
   const handleRenameItemClick = () => {
-    handleMenuClose();
+    setAnchorEl(null);
     setIsRenameDialogOpen(true);
   };
 
   const handleDeleteItemClick = () => {
-    handleMenuClose();
+    setAnchorEl(null);
     setIsDeleteDialogOpen(true);
   };
 
   const handleOpenInTabClick = () => {
-    handleMenuClose();
+    setAnchorEl(null);
     window.open(`document/${document.id}`, '_blank'); 
-  }
+  };
 
   return (
-      <Card className='document-card'>
+    <Card className='document-card'>
       <CardContent className='card-content'>
         <CardMedia 
           onClick={handleDocumentClick}
@@ -101,7 +95,7 @@ const DocumentItem = ({ document, onDeleteDocument }) => {
             id="item-menu"
             anchorEl={anchorEl}
             open={Boolean(anchorEl)}
-            onClose={handleMenuClose}
+            onClose={() => setAnchorEl(null)}
             anchorOrigin={{
               vertical: 'bottom',
               horizontal: 'right',
