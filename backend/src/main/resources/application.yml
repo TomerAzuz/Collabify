@@ -18,6 +18,11 @@ spring:
       connection-pool:
         max-size: 50
         min-size: 5
+    redis:
+      host: localhost
+      port: 6379
+      connect-timeout: 2s
+      timeout: 1s
   security:
     oauth2:
       resourceserver:

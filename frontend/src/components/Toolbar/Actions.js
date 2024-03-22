@@ -18,8 +18,9 @@ const Actions = ({ editor, historyEditor }) => {
 
   return (
     <ButtonGroup variant='outlined' aria-label="actions" className='button-group'>
-      {actions.map((action) => (
+      {actions.map((action, index) => (
         <CustomIconButton
+          key={index}
           button={action}
           isBlock={false}
         />

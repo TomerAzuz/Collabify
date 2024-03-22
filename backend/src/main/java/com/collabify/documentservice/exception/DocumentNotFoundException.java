@@ -1,4 +1,4 @@
-package com.collabify.documentservice.advice;
+package com.collabify.documentservice.exception;
 
 public class DocumentNotFoundException extends RuntimeException {
 

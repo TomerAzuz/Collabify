@@ -102,12 +102,12 @@ export const AuthProvider = ({ children }) => {
   const handleSignOut = useCallback(async () => {
     try {
       await signOut(auth);
-      navigate("/auth/login");
+      navigate("/");
       setUser(null);
     } catch (error) {
       setAlertMessage('Error signing out:', error.message);
     }
-  }, [navigate]);
+  }, []);
 
   const register = async(email, password) => {
     try {

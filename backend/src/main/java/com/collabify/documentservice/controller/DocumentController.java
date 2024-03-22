@@ -1,6 +1,6 @@
 package com.collabify.documentservice.controller;
 
-import com.collabify.documentservice.advice.DocumentNotFoundException;
+import com.collabify.documentservice.exception.DocumentNotFoundException;
 import com.collabify.documentservice.dto.DocumentMetadata;
 import com.collabify.documentservice.model.RichTextDocument;
 import com.collabify.documentservice.service.DocumentService;

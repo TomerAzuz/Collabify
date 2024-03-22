@@ -3,6 +3,7 @@ services:
   collabify-backend:
     depends_on: 
       - collabify-mongodb
+      - collabify-redis
     image: "ghcr.io/tomerazuz/collabify-backend:latest"
     container_name: "collabify-backend"
     ports:
@@ -20,6 +21,12 @@ services:
     - 9001:9001
     environment:
       - PORT=9001
+  
+  collabify-redis:
+    image: redis:latest
+    container_name: "collabify-redis"
+    ports:
+      - 6379:6379
 
   collabify-mongodb:
     image: mongo:latest  

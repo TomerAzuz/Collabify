@@ -1,6 +1,6 @@
 package com.collabify.documentservice;
 
-import com.collabify.documentservice.advice.DocumentNotFoundException;
+import com.collabify.documentservice.exception.DocumentNotFoundException;
 import com.collabify.documentservice.controller.DocumentController;
 import com.collabify.documentservice.model.RichTextDocument;
 import com.collabify.documentservice.service.DocumentService;
@@ -31,13 +31,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class DocumentControllerMvcTests {
 
     @Autowired
-    private MockMvc mockMvc;
+    MockMvc mockMvc;
 
     @MockBean
-    private DocumentService documentService;
+    DocumentService documentService;
 
     @Autowired
-    private ObjectMapper objectMapper;
+    ObjectMapper objectMapper;
 
     private RichTextDocument createDocument(String id) {
         var now = Instant.now();
