@@ -32,7 +32,7 @@ public class RateLimitingAspect {
         this.redisTemplate = redisTemplate;
     }
 
-    @Before("@annotation(com.collabify.documentservice.annotation.RateLimited)")
+    @Before("@annotation(rateLimited)")
     public void rateLimitCheck(RateLimited rateLimited) {
         String clientId = getClientId();
 

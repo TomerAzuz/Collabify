@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Grid, Typography, Card, Container, CardContent, CardHeader, Alert } from '@mui/material';
-import { Person, Lock, Google, GitHub } from '@mui/icons-material';
+import { Person, Lock } from '@mui/icons-material';
 
 import './LoginPage.css';
 import { useAuth } from './AuthContext';
@@ -32,13 +32,6 @@ const LoginPage = () => {
     icon: <Lock />,
   }];
 
-  const loginMethodsButtons = [{
-    icon: <Google />,
-    method: 'google',
-  }, {
-    icon: <GitHub />,
-    method: 'github',
-  }];
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -47,23 +40,17 @@ const LoginPage = () => {
 
   return (
     <Container className="login-page">
-      <Typography 
-        variant='h3' 
-        textAlign='center' 
-        className="gradient-text">
-          Collabify
-      </Typography>
       <Card className='login-paper' elevation={2}>
         <CardHeader
-          title="Log in"
-          titleTypographyProps={{ variant: 'h4', textAlign: 'center' }}
+          title="Welcome back"
+          titleTypographyProps={{ variant: 'h4', textAlign: 'center', fontWeight: 'bold' }}
         />
         <CardContent>
           <form>
             {error && <Alert severity="error">{error}</Alert>}
             <Grid container spacing={2} align="center">
-              {formFields.map((field) => (
-                <FormField key={field.name} field={field} />
+              {formFields.map((field, index) => (
+                <FormField key={index} field={field} />
               ))}
               <Grid item xs={12}>
                 <Button
@@ -75,22 +62,20 @@ const LoginPage = () => {
                 >
                   Log in
                 </Button>
-                <Button component={Link} to="/auth/signup" variant="contained">
-                  Create account
-                </Button>
-              </Grid>
-              <Grid item xs={12}>
-                <Typography variant='h5' align='center' gutterBottom>
-                  OR
+                <Typography 
+                  variant='body1' 
+                  sx={{ marginTop: 2, color: 'text.secondary' }}>
+                    Don't have an account? <Link to='/auth/signup'>Sign up</Link>
                 </Typography>
               </Grid>
-              {loginMethodsButtons.map((button) => (
-                <LoginButton
-                  key={button.method}
-                  icon={button.icon}
-                  method={button.method}
-                />
-              ))}
+              <Grid item xs={12}>
+                <div className="lineAround">
+                  <Typography variant='paragraph' align='center' gutterBottom>
+                    OR
+                  </Typography>
+                </div>
+              </Grid>
+              <LoginButton />
             </Grid>
           </form>
         </CardContent>

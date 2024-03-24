@@ -6,7 +6,7 @@
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   width: 210mm; /* A4 width */
   height: 297mm; /* A4 height */
-  margin: 20mm; /* A4 margins */
+  margin: 50px auto; 
   min-width: 300px;
   overflow-y: auto;
   outline: none;

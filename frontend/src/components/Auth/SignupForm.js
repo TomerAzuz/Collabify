@@ -7,12 +7,12 @@ import { Container,
          Typography, 
          Grid, 
          Button, 
-         ButtonGroup, 
          Alert } from '@mui/material';
 
 import './LoginPage.css';
 import { useAuth } from './AuthContext';
 import FormField from './FormField';
+import LoginButton from './LoginButton';
 
 const SignupForm = () => {
   const [formData, setFormData] = useState({
@@ -71,8 +71,8 @@ const SignupForm = () => {
     <Container>
       <Card className='login-paper' elevation={2}>
         <CardHeader 
-          title="Sign up"
-          titleTypographyProps={{ variant: 'h4', textAlign: 'center' }} 
+          title="Create an account"
+          titleTypographyProps={{ variant: 'h4', textAlign: 'center', fontWeight: 'bold' }}
         />
         <CardContent>
           <form onSubmit={handleSubmit} >
@@ -82,23 +82,29 @@ const SignupForm = () => {
                   <FormField key={field.name} field={field} />
                 ))}
               <Grid item xs={12}>
-                <ButtonGroup>
-                  <Button
-                    variant='contained'
-                    color='primary'
-                    type='submit'
-                    className='login-button'
-                    style={{ marginRight: '12px' }}
-                  >
-                    Sign up
-                  </Button>
-                </ButtonGroup>
+                <Button
+                  variant='contained'
+                  color='primary'
+                  type='submit'
+                  className='login-button'
+                  style={{ marginRight: '12px' }}
+                >
+                  Sign up
+                </Button>
                 <Typography 
                   variant='body1' 
                   sx={{ marginTop: 2, color: 'text.secondary' }}>
-                    <Link to='/auth/login'>Already have an account?</Link>
+                    Already have an account? <Link to='/auth/login'>Login</Link>
                 </Typography>
               </Grid>
+              <Grid item xs={12}>
+                <div className="lineAround">
+                  <Typography variant='paragraph' align='center' gutterBottom>
+                    OR
+                  </Typography>
+                </div>
+              </Grid>
+              <LoginButton />
             </Grid>
           </form>
         </CardContent>

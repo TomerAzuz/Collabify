@@ -36,10 +36,10 @@ public class DocumentController {
     public ResponseEntity<List<DocumentMetadata>> getAllDocuments(@RequestAttribute("userId") String userId) {
         log.info("Getting all documents for user id {}.", userId);
         List<RichTextDocument> documents = documentService.getAllDocuments(userId);
-        List<DocumentMetadata> documentSummaries = documents.stream()
+        List<DocumentMetadata> documentMetadata = documents.stream()
                 .map(DocumentMetadata::mapToDocumentMetadata)
                 .collect(Collectors.toList());
-        return ResponseEntity.ok(documentSummaries);
+        return ResponseEntity.ok(documentMetadata);
     }
 
     @GetMapping("{id}")

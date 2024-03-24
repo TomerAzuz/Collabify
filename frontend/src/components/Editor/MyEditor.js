@@ -154,7 +154,6 @@ const MyEditor = ({ sharedType, provider }) => {
 
     const captureDocumentPreview = useCallback(async () => {
         try {
-          console.log('Waiting for DOM updates...');
           await new Promise(resolve => setTimeout(resolve, 100));
       
           const documentContent = document.querySelector('.editor-container');
@@ -162,7 +161,6 @@ const MyEditor = ({ sharedType, provider }) => {
             console.warn('Document container not found. Returning null.');
             return null;
           }
-          console.log('Found document content element.');
       
           const canvas = await html2canvas(documentContent);
           return canvas.toDataURL('image/jpeg');

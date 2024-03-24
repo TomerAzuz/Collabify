@@ -20,7 +20,10 @@ const Typewriter = ({ text, speed }) => {
 
   return (
     <div className="typing-animation">
-      <Typography variant="h3" style={{ fontFamily: 'Roboto' }}>
+      <Typography variant="h4" gutterBottom>
+        My Document
+      </Typography>
+      <Typography variant="paragraph" style={{ fontFamily: 'Roboto' }}>
         {currentText}<span className="cursor">|</span>
       </Typography>
     </div>

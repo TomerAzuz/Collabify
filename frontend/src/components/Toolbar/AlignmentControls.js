@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import { ButtonGroup } from '@mui/material';
 import { FormatAlignLeft, FormatAlignCenter, FormatAlignRight } from '@mui/icons-material';
 
 import './Toolbar.css';
@@ -25,11 +24,7 @@ const AlignmentControls = ({ editor }) => {
     }], [editor]);
     
     return (
-      <ButtonGroup 
-        variant='outlined' 
-        aria-label='formatting-options' 
-        className='button-group'
-      >
+      <>
         {alignment.map((align) => (
           <CustomIconButton 
             key={align.title}
@@ -37,7 +32,7 @@ const AlignmentControls = ({ editor }) => {
             isBlock={true}
           />
         ))}
-      </ButtonGroup>
+      </>
     )
 };
 

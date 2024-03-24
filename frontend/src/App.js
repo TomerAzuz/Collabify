@@ -1,6 +1,5 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { Container } from '@mui/material';
 
 import './App.css';
 import { AuthProvider } from './components/Auth/AuthContext';
@@ -13,7 +12,6 @@ import Page from './components/Editor/Page';
 import LandingPage from './components/LandingPage/LandingPage';
 
 const App = () => (
-  <Container sx={{ 'display': 'flex' }}>
     <Router>
       <AuthProvider>
         <div className="App">
@@ -28,7 +26,6 @@ const App = () => (
         </div>
       </AuthProvider>
     </Router>
-  </Container>
 );
 
 export default App;

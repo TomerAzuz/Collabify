@@ -41,10 +41,8 @@ public class FirebaseAuthFilter extends OncePerRequestFilter {
             FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(token);
             String uid = decodedToken.getUid();
             request.setAttribute("userId", uid);
-            logger.info("Token is valid");
             filterChain.doFilter(request, response);
         } catch (FirebaseAuthException e) {
-            logger.error("Token verification failed: " + e.getMessage());
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
         }
     }

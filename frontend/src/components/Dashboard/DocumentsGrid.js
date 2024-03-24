@@ -15,7 +15,6 @@ const DocumentsGrid = () => {
   useEffect(() => {
     async function getDocuments() {
       try {
-        console.log("fetching documents");
         const response = await fetchData('documents');
         setDocuments(response);
       } catch (error) {

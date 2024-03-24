@@ -4,15 +4,6 @@
   align-items: center;
 }
 
-.gradient-text {
-  background: linear-gradient(45deg, #ff8a00, #e52e71);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -moz-background-clip: text; 
-  -o-background-clip: text; 
-  -webkit-text-fill-color: transparent;
-}
-
 .login-paper {
   width: 800px;
   margin: 100px auto;
@@ -29,4 +20,44 @@
 
 .login-button:hover {
   background-color: #e52e71;
+}
+
+.lineAround {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 250px;
+}
+
+.lineAround::before,
+.lineAround::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background-color: gray;
+}
+
+.lineAround::before {
+  margin-right: 10px;
+}
+
+.lineAround::after {
+  margin-left: 10px;
+}
+
+.buttonWrapper {
+  margin-bottom: 15px;
+}
+
+.google {
+  width: 250px;
+  height: 40px;
+  color: red;
+  background-color: red;
+}
+
+
+.github {
+  width: 250px;
+  height: 40px;
 }

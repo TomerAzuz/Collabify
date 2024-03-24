@@ -34,7 +34,6 @@ export async function postData(endpoint, data) {
 
 export async function putData(endpoint, id, data) {
   try {
-    console.log(data);
     const response = await axios.put(`${BASE_URL}/${endpoint}/${id}`, data);
     return response.data;
   } catch (error) {

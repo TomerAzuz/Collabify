@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { ButtonGroup, TextField, IconButton, Tooltip, Select, MenuItem } from '@mui/material';
+import { TextField, IconButton, Tooltip, Select, MenuItem } from '@mui/material';
 import { FormatBold, FormatItalic, FormatUnderlined, Add, Remove, BorderColor } from '@mui/icons-material';
 import { faStrikethrough } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -80,11 +80,7 @@ const FontControls = ({ editor }) => {
   };
 
   return (
-    <ButtonGroup 
-      variant='outlined' 
-      aria-label="formatting-options" 
-      className='button-group'
-    >
+    <>
       {/* Font family */}
       <Tooltip title="Font">
         <Select
@@ -136,7 +132,7 @@ const FontControls = ({ editor }) => {
         />
       ))}
       <ColorPicker editor={editor} />
-    </ButtonGroup>
+    </>
   );
 };
 

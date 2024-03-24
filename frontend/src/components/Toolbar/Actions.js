@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-import { ButtonGroup } from '@mui/material';
 import { Undo, Redo } from '@mui/icons-material';
 
 import './Toolbar.css';
@@ -17,7 +16,7 @@ const Actions = ({ editor, historyEditor }) => {
   }], [editor, historyEditor]);
 
   return (
-    <ButtonGroup variant='outlined' aria-label="actions" className='button-group'>
+    <>
       {actions.map((action, index) => (
         <CustomIconButton
           key={index}
@@ -25,7 +24,7 @@ const Actions = ({ editor, historyEditor }) => {
           isBlock={false}
         />
       ))}
-    </ButtonGroup>
+      </>
   );
 };
 

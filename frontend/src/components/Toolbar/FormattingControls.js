@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
 import { Code, FormatQuote } from '@mui/icons-material';
-import { ButtonGroup } from '@mui/material';
 import { LooksOne, LooksTwo, FormatListBulleted, FormatListNumbered } from '@mui/icons-material';
 
 import '../../App.css';
@@ -43,7 +42,7 @@ const FormattingControls = ({ editor }) => {
   ], [editor]);
   
   return (
-    <ButtonGroup variant="outlined" className='button-group'>
+    <> 
       {formats.map((format) => (
         <CustomIconButton
           key={format.title}
@@ -51,7 +50,7 @@ const FormattingControls = ({ editor }) => {
           isBlock={true}
         />
       ))}
-    </ButtonGroup>
+    </>
   )
 };
 
