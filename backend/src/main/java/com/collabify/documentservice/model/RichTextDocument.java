@@ -26,6 +26,8 @@ public class RichTextDocument {
 
     private List<Map<String, Object>> content;
 
+    private List<Revision> revisions;
+
     private String previewUrl;
 
     private String createdBy;

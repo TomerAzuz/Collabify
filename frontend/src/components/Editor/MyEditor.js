@@ -50,6 +50,7 @@ const MyEditor = ({ sharedType, provider }) => {
         const fetchDocument = async () => {
             try {
                 const response = await fetchDataById('documents', id);
+                console.log(response)
                 setDoc(response);
             } catch (error) {
                 console.log('Failed to fetch document with id ', id, ": ", error);
@@ -171,62 +172,65 @@ const MyEditor = ({ sharedType, provider }) => {
         }
       }, []);
 
-      const updateContent = (newValue) => {
-        setDoc(prevDoc => ({
-            ...prevDoc,
-            content: newValue
-        }));
-    };
 
     const debouncedUpdateContent = useMemo(
         () => debounce((value) => {
-            updateContent(value);
+            setDoc(prevDoc => ({
+                ...prevDoc,
+                content: value
+            }));
         }, 500),
         []);
+    
+    const isReadOnly = doc && doc.createdBy && doc.createdBy !== user.uid && doc.role === 'Viewer';
      
     return (
-        <Slate 
-            editor={editor} 
-            initialValue={initialValue}
-            onChange={value => {
-                const isAstChange = editor.operations.some(
-                    op => 'set_selection' !== op.type
-                )
-                if (isAstChange) {                    
-                    debouncedUpdateContent(value);
-                }
-            }}
+        <Slate
+          editor={editor}
+          initialValue={initialValue}
+          onChange={(value) => {
+            const isAstChange = editor.operations.some(
+              (op) => op.type !== 'set_selection'
+            );
+            if (isAstChange) {
+              debouncedUpdateContent(value);
+            }
+          }}
         >
+          <div style={{ width: '100vw' }}> 
             <MenuBar doc={doc} user={user} />
-            <MyToolbar editor={editor} historyEditor={HistoryEditor}/>
-            <div className='editor-container'>
+          </div>
+          <div style={{ width: '60%', margin: '0 auto' }}> 
+            <MyToolbar editor={editor} historyEditor={HistoryEditor} />
+            <div className="editor-container">
                 <Cursors>
-                    <Editable 
-                        readOnly={doc && doc.createdBy && doc.createdBy !== user.uid && doc.role === 'Viewer'}
-                        placeholder='Start typing here...'
-                        renderElement={renderElement}
-                        renderLeaf={renderLeaf}
-                        spellCheck
-                        autoFocus
-                        onKeyDown={e => {
-                            for (const hotkey in HOTKEYS) {
-                                if (isHotkey(hotkey, e)) {
-                                    e.preventDefault();
-                                    const mark = HOTKEYS[hotkey];
-                                    CustomEditor.toggleMark(editor, mark);
-                                }
-                            }
-                            if (e.ctrlKey && e.key === 's') {
-                                e.preventDefault();
-                                saveDocument(e);
-                            }
-                        }}
-                    />
+                <Editable
+                    readOnly={isReadOnly}
+                    placeholder="Start typing here..."
+                    renderElement={renderElement}
+                    renderLeaf={renderLeaf}
+                    spellCheck
+                    autoFocus
+                    onKeyDown={(e) => {
+                    for (const hotkey in HOTKEYS) {
+                        if (isHotkey(hotkey, e)) {
+                        e.preventDefault();
+                        const mark = HOTKEYS[hotkey];
+                        CustomEditor.toggleMark(editor, mark);
+                        }
+                    }
+                    if (e.ctrlKey && e.key === 's') {
+                        e.preventDefault();
+                        saveDocument(e);
+                    }
+                    }}
+                />
                 </Cursors>
             </div>
+          </div>
         </Slate>
-    );
-};
+      );
+    };
 
 export default MyEditor;
 

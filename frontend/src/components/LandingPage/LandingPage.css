@@ -34,8 +34,6 @@
   -moz-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent; 
-  font-size: 5rem;
   font-weight: bold;
   text-align: center;
 }
-

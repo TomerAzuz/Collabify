@@ -25,6 +25,7 @@
     "firebaseui": "^6.1.0",
     "google-fonts": "^1.0.0",
     "html2canvas": "^1.4.1",
+    "html2pdf.js": "^0.10.1",
     "image-extensions": "^1.1.0",
     "is-hotkey": "^0.2.0",
     "is-url": "^1.2.4",

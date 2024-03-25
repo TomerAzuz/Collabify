@@ -40,6 +40,7 @@ const ShareDoc = ({ doc, user }) => {
         onClick={() => setIsShareDialogOpen(true)}
         disabled={!doc || doc.createdBy !== user.uid}
         startIcon={<Public />}
+        color='inherit'
       >
         Share
       </Button>
