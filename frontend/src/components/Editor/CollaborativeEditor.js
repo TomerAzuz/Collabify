@@ -4,7 +4,9 @@ import LiveblocksProvider from "@liveblocks/yjs";
 import { useEffect, useState } from "react";
 import * as Y from "yjs";
 import { useRoom } from "../../liveblocks.config";
-import MyEditor from "./MyEditor";
+
+import SlateEditor from "./SlateEditor";
+import Loader from '../Common/Loader/Loader.js';
 
 export function CollaborativeEditor() {
   const room = useRoom();
@@ -14,10 +16,10 @@ export function CollaborativeEditor() {
 
   useEffect(() => {
     const yDoc = new Y.Doc();
-    const yProvider = new LiveblocksProvider(room, yDoc);
     const sharedDoc = yDoc.get("slate", Y.XmlText);
+    const yProvider = new LiveblocksProvider(room, yDoc);
+    
     yProvider.on("sync", setConnected);
-
     setSharedType(sharedDoc);
     setProvider(yProvider);
 
@@ -29,8 +31,8 @@ export function CollaborativeEditor() {
   }, [room]);
 
   if (!connected || !sharedType || !provider) {
-    return <div>Loading...</div>
+    return <Loader />
   }
 
-  return <MyEditor sharedType={sharedType} provider={provider} />
+  return <SlateEditor sharedType={sharedType} provider={provider} />
 };

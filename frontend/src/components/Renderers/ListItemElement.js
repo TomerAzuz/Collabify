@@ -1,6 +1,8 @@
 const ListItemElement = props => {    
   return (
-    <li {...props.attributes}>
+    <li 
+      {...props.attributes}
+    >
       {props.children}
     </li>
   );

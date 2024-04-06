@@ -1,7 +1,7 @@
 const TableCell = props => {
   const styles = {
     border: '1px solid black',
-    width: '200px',
+    width: '100px',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     boxSizing: 'border-box',

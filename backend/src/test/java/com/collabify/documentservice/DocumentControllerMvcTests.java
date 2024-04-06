@@ -1,5 +1,6 @@
 package com.collabify.documentservice;
 
+import com.collabify.documentservice.dto.DocumentMetadata;
 import com.collabify.documentservice.exception.DocumentNotFoundException;
 import com.collabify.documentservice.controller.DocumentController;
 import com.collabify.documentservice.model.RichTextDocument;
@@ -16,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -53,6 +55,7 @@ public class DocumentControllerMvcTests {
                 content,
                 "preview",
                 "Tomer",
+                new HashSet<>(),
                 "Viewer",
                 now,
                 now,
@@ -92,7 +95,11 @@ public class DocumentControllerMvcTests {
         var doc2 = createDocument(id2);
         doc2.setCreatedBy(id1);
 
-        given(documentService.getAllDocuments(anyString())).willReturn(List.of(doc1, doc2));
+        List<DocumentMetadata> documentsMetadata = List.of(
+                DocumentMetadata.mapToDocumentMetadata(doc1),
+                DocumentMetadata.mapToDocumentMetadata(doc2));
+
+        given(documentService.getAllDocuments(anyString())).willReturn(documentsMetadata);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/documents")
                         .contentType(MediaType.APPLICATION_JSON)

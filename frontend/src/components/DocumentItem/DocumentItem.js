@@ -1,33 +1,23 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Grid,
-         Card, 
-         CardContent, 
-         CardMedia, 
-         Typography, 
-         TextField, 
-         IconButton, 
-         Dialog, 
-         DialogTitle, 
-         DialogContent, 
-         DialogActions, 
-         Button,
-         Menu,
-         MenuItem } from '@mui/material';
+import { Grid, Card, CardContent, CardMedia, Typography, TextField, 
+         IconButton, Dialog, DialogTitle, DialogContent, DialogActions, 
+         Button, Menu,  MenuItem } from '@mui/material';
 import { Delete, MoreVert, TextFields, OpenInNew } from '@mui/icons-material';
 
-import './Dashboard.css';
 import './DocumentItem.css';
-
-import { putData } from '../../apiService';
+import { useAuth } from '../Auth/AuthContext.js';
+import { updateDocument } from '../Services/documentService.js';
+import Loader from '../Common/Loader/Loader.js';
 
 const DocumentItem = ({ document, onDeleteDocument }) => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [editedTitle, setEditedTitle] = useState(document.title);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isRenameDialogOpen, setIsRenameDialogOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
-
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const handleDocumentClick = () => {
     navigate(`/document/${document.id}`);
@@ -35,28 +25,32 @@ const DocumentItem = ({ document, onDeleteDocument }) => {
 
   const deleteDocument = async () => {
     try {
-      await onDeleteDocument(document.id);
-      console.log("Document deleted successfully.");
+      setLoading(true);
+      await onDeleteDocument(document);
     } catch (error) {
-      console.log('Error deleting document: ', error);
+      console.error('Error deleting document: ', error);
     } finally {
       setIsDeleteDialogOpen(false);
+      setLoading(false);
     }
   };
 
   const updateDocumentTitle = async () => {
-    const prevTitle = document.title;
-    try {
-      const response = await putData('documents', document.id, {
-        title: editedTitle,
-      });
-      document.title = editedTitle;
-      console.log('Document title update succesfully:', response);
-    } catch (error) {
-      console.error('Error updating document title:', error);
-      document.title = prevTitle;
-    } finally {
-      setIsRenameDialogOpen(false);
+    if (document.createdBy === user.uid) {
+      const prevTitle = document.title;
+      try {
+        setLoading(true);
+        await updateDocument(document.id, {
+          title: editedTitle,
+        });
+        document.title = editedTitle;
+      } catch (error) {
+        console.error('Error updating document title:', error);
+        document.title = prevTitle;
+      } finally {
+        setIsRenameDialogOpen(false);
+        setLoading(false);
+      }
     }
   }; 
 
@@ -82,7 +76,8 @@ const DocumentItem = ({ document, onDeleteDocument }) => {
   return (
     <Grid item>
       <Card className='document-card'>
-        <CardContent className='card-content'>
+        {loading && <Loader />}
+        <CardContent>
           <CardMedia 
             onClick={handleDocumentClick}
             className='card-media'

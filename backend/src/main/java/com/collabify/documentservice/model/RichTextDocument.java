@@ -1,10 +1,10 @@
 package com.collabify.documentservice.model;
 
-import com.google.cloud.firestore.annotation.DocumentId;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -12,6 +12,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -19,20 +20,20 @@ import java.util.Map;
 @Document(collection = "documents")
 public class RichTextDocument {
 
-    @DocumentId
+    @Id
     private String id;
 
     private String title;
 
     private List<Map<String, Object>> content;
 
-    private List<Revision> revisions;
-
     private String previewUrl;
 
     private String createdBy;
 
-    private String role;
+    private Set<String> collaborators;
+
+    private String permission;
 
     @CreatedDate
     private Instant createdAt;

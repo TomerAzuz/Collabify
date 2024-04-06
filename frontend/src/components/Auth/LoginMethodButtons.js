@@ -4,15 +4,17 @@ import { Google, GitHub } from '@mui/icons-material';
 import './LoginPage.css';
 import { useAuth } from './AuthContext';
 
-const LoginButton = () => {
+const LoginMethodButtons = () => {
   const { handleAuthentication } = useAuth();
 
   const loginMethodsButtons = [{
     icon: <Google />,
     method: 'google',
+    color: '#4285F4', 
   }, {
     icon: <GitHub />,
     method: 'github',
+    color: '#000000', 
   }];
 
   return (
@@ -23,6 +25,7 @@ const LoginButton = () => {
             className={button.method}
             variant='outlined'
             startIcon={button.icon}
+            style={{ backgroundColor: button.color, color: '#ffffff' }}
             onClick={e => handleAuthentication(e, button.method)}
           >
             Continue with {button.method}
@@ -33,4 +36,4 @@ const LoginButton = () => {
   );
 };
 
-export default LoginButton;
+export default LoginMethodButtons;

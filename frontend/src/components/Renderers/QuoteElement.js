@@ -9,7 +9,7 @@ const QuoteElement = props => {
             {...props.attributes}
             style={styles}
         >
-            <p>{props.children}</p>
+            {props.children}
         </blockquote>
     );
 };

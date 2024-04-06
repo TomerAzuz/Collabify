@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Node } from 'slate';
 import { AppBar, Toolbar, Typography, Button, Menu, MenuItem } from "@mui/material";
 import html2pdf from 'html2pdf.js';
 
 import './MenuBar.css';
 import ShareDoc from './ShareDoc';
+import serialize from '../Serializers/serializer';
+//import RevisionHistory from '../Revisions/RevisionHistory';
 
 const MenuBar = ({ doc, user }) => {
   const navigate = useNavigate();
   const [fileMenuAnchorEl, setFileMenuAnchorEl] = useState(null);
   const [editMenuAnchorEl, setEditMenuAnchorEl] = useState(null);
   const [viewMenuAnchorEl, setViewMenuAnchorEl] = useState(null);
+  const [downloadAnchorEl, setDownloadAnchorEl] = useState(null);
 
   const handleFileMenuOpen = (event) => {
     setFileMenuAnchorEl(event.currentTarget);
@@ -37,26 +39,27 @@ const MenuBar = ({ doc, user }) => {
     setViewMenuAnchorEl(null);
   };
 
-  const serialize = (value) => {
-    return value.map((n) => Node.string(n)).join('\n');
-  };
+  // const serialize = (value) => {
+  //   return value.map((n) => Node.string(n)).join('\n');
+  // };
 
-  const handleSaveAsPDF = () => {
+  const saveAsPDF = () => {
     handleFileMenuClose();
     const filename = doc.title || 'document';
     const opt = {
-      margin:       0.5,
+      margin:       0.8,
       filename:     `${filename}.pdf`,
       image:        { type: 'jpeg', quality: 0.98 },
       html2canvas:  { scale: 2 },
       jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
     };
-    const content = serialize(doc.content);
+    console.log(doc.content);
+    const content = doc.content.map(node => serialize(node)).join('');
     console.log(content);
     html2pdf().from(content).set(opt).save();
   };
 
-  const handleSaveAsRichTextDocument = () => {
+  const saveAsRichTextDocument = () => {
     handleFileMenuClose();
     const content = serialize(doc.content);
     const blob = new Blob([content], { type: 'text/richtext' });
@@ -69,7 +72,7 @@ const MenuBar = ({ doc, user }) => {
     window.URL.revokeObjectURL(url);
   };
 
-const handleSaveAsPlainText = () => {
+  const saveAsPlainText = () => {
     handleFileMenuClose();
     const content = serialize(doc.content);
     const blob = new Blob([content], { type: 'text/plain' });
@@ -84,13 +87,13 @@ const handleSaveAsPlainText = () => {
 
   return (
     <AppBar position="static" sx={{ width: '100%', flexGrow: 0 }}>
-      <Toolbar sx ={{ }}>
+      <Toolbar>
         <Typography 
           variant="h6" 
           sx={{ flexGrow: 0, cursor: 'pointer' }} 
           onClick={() => navigate('/dashboard')}
         >
-          {doc && doc.title}
+          {doc?.title}
         </Typography>
         <div style={{ marginLeft: '60px' }}> 
           <Button
@@ -109,10 +112,18 @@ const handleSaveAsPlainText = () => {
           >
             <MenuItem onClick={handleFileMenuClose}>New</MenuItem>
             <MenuItem onClick={handleFileMenuClose}>Open</MenuItem>
-            <MenuItem>Download</MenuItem>
-            <MenuItem onClick={handleSaveAsPDF}>PDF document (.pdf)</MenuItem>
-            <MenuItem onClick={handleSaveAsRichTextDocument}>Rich text format (.rtf)</MenuItem>
-            <MenuItem onClick={handleSaveAsPlainText}>Plain text (.txt)</MenuItem>
+            <MenuItem onClick={handleFileMenuClose}>Save</MenuItem>
+            <Menu
+              id="download-menu"
+              anchorEl={downloadAnchorEl}
+              open={Boolean(downloadAnchorEl)}
+              onClose={() => setDownloadAnchorEl(false)}
+            >
+              Download
+              <MenuItem onClick={saveAsPDF}>PDF document (.pdf)</MenuItem>
+              <MenuItem onClick={saveAsRichTextDocument}>Rich text format (.rtf)</MenuItem>
+              <MenuItem onClick={saveAsPlainText}>Plain text (.txt)</MenuItem>
+            </Menu>
             <MenuItem>Rename</MenuItem>
             <MenuItem>Details</MenuItem>
             <MenuItem>Print</MenuItem>
@@ -157,7 +168,10 @@ const handleSaveAsPlainText = () => {
             <MenuItem onClick={handleViewMenuClose}>Full Screen</MenuItem>
           </Menu>
         </div>
-        <ShareDoc doc={doc} user={user} />
+        <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center' }}>
+          {/* <RevisionHistory editor={editor} doc={doc} /> */}
+          <ShareDoc doc={doc} user={user} />
+        </div>
       </Toolbar>
     </AppBar>
   );

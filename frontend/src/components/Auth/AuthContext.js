@@ -2,6 +2,7 @@ import React, { useEffect, createContext, useContext, useState, useCallback } fr
 import axios from 'axios';
 import { initializeApp } from 'firebase/app';
 import { getAuth, 
+        EmailAuthProvider,
         createUserWithEmailAndPassword, 
         updateProfile,
         signInWithEmailAndPassword, 
@@ -9,9 +10,11 @@ import { getAuth,
         signInWithPopup,
         signOut,
         getIdToken, 
-        GithubAuthProvider} from 'firebase/auth';
+        GithubAuthProvider,
+        reauthenticateWithCredential } from 'firebase/auth';
 import { useNavigate } from "react-router-dom";
-import { Snackbar } from '@mui/material';
+
+import Loader from '../Common/Loader/Loader';
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -34,29 +37,18 @@ export const useAuth = () => useContext(AuthContext);
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [alertMessage, setAlertMessage] = useState(null);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
-
-  const handleSnackbarClose = (reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setAlertMessage(null);
-  };
 
   const handleAuthentication = async(e, action, formData) => {
     e.preventDefault();
-
-    let userCredential;
     try {
       setLoading(true);
+      let userCredential;
 
       switch (action) {
         case 'register':
-          userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
-          await updateProfile(userCredential.user, {
-            displayName: formData.displayName
-          });
+          userCredential = await register(formData);
           break;
         case 'email':
           userCredential = await signInWithEmailAndPassword(auth, formData.email, formData.password);
@@ -68,91 +60,112 @@ export const AuthProvider = ({ children }) => {
           userCredential = await signInWithPopup(auth, githubProvider);
           break;
         default:
-          break;
+          throw new Error('Invalid action');
       }
-      userCredential && navigate("/dashboard");
 
+      userCredential && navigate("/dashboard");
     } catch (error) {
-      console.log('Authentication failed: ', error);
+      console.error(error.message);
+      setError('Authentication failed. Please check your credentials.');
     } finally {
       setLoading(false)
     }
   };
   
-  const signIn = async (method, ...args) => {
-    try {
-      switch (method) {
-        case 'email':
-          await signInWithEmailAndPassword(auth, ...args);
-          break;
-        case 'google':
-          await signInWithPopup(auth, googleProvider);
-          break;
-        case 'github':
-          await signInWithPopup(auth, githubProvider);
-          break;
-          default:
-            setAlertMessage('Invalid sign in method');
-      }   
-    } catch (error) {
-      setAlertMessage('Error signing in:', error.message);
-    }
-  };
-
   const handleSignOut = useCallback(async () => {
     try {
+      setLoading(true);
       await signOut(auth);
       navigate("/");
       setUser(null);
     } catch (error) {
-      setAlertMessage('Error signing out:', error.message);
+      console.error('Sign out failed:', error.message);
+    } finally {
+      setLoading(false);
     }
   }, []);
 
-  const register = async(email, password) => {
+  const register = async(formData) => {
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      setAlertMessage('User registered successfully.');
+      setLoading(true);
+      const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
+      await updateProfile(userCredential.user, { displayName: formData.displayName });
+      return userCredential;
     } catch (error) {
-      setAlertMessage('Error registering:', error.message);
+      console.error('Registration failed:', error.message);
+      setError('Registration failed. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleSuccessfulSignIn = useCallback(async (currentUser) => {
-    // Fetch the id token 
-    const token = await getIdToken(currentUser);
-    // Set the authorization header
-    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    setUser(currentUser);
-    setAlertMessage(`Hello, ${currentUser.displayName || currentUser.email}!`);
+    try {
+      setLoading(true);
+      // Fetch the id token 
+      const token = await getIdToken(currentUser);
+      // Set the authorization header
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      setUser(currentUser);
+    } catch (error) {
+      console.error('Sign in failed:', error.message);
+    } finally {
+      setLoading(false);
+    }
   }, [setUser]);
+
+  const handleReauthentication = async (password) => {
+    try {
+      setLoading(true);
+      if (!user) {
+        throw new Error('User not found.');
+      }
+      const credential = EmailAuthProvider.credential(user.email, password);
+      return await reauthenticateWithCredential(auth.currentUser, credential);
+    } catch (error) {
+      console.error('Reauthentication failed:', error);
+      throw error; 
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const refreshUserToken = async () => {
+      if (user) {
+        try {
+          const refreshedUser = await user.getIdTokenResult(true);
+          setUser(refreshedUser);
+        } catch (error) {
+          console.error('Token refresh failed:', error.message);
+        }
+      }
+    };
+  
+    // Refresh token every hour
+    const interval = setInterval(refreshUserToken, 3600000); 
+  
+    return () => clearInterval(interval);
+  }, [user]);
   
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((currentUser) => {
       currentUser ? handleSuccessfulSignIn(currentUser) : 
-                    handleSignOut();
-      setLoading(false);      
+                    handleSignOut();  
     });
-  
     return () => unsubscribe();
   }, [handleSignOut, handleSuccessfulSignIn]);
 
   return (
     <AuthContext.Provider value={{ user,
-                                   signIn, 
-                                   register,
                                    handleAuthentication,
+                                   handleReauthentication,
                                    handleSignOut, 
-                                   getIdToken
+                                   getIdToken,
+                                   error
                                 }}
     >
-      {!loading && children}
-      <Snackbar
-        open={alertMessage !== null}
-        autoHideDuration={5000}
-        onClose={handleSnackbarClose}
-        message={alertMessage}
-      />
+      {loading ? <Loader /> : children}
     </AuthContext.Provider>
   );
 };

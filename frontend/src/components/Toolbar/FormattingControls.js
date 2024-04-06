@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { Code, FormatQuote } from '@mui/icons-material';
-import { LooksOne, LooksTwo, FormatListBulleted, FormatListNumbered } from '@mui/icons-material';
+import { FormatListBulleted, FormatListNumbered } from '@mui/icons-material';
 
 import '../../App.css';
 import './Toolbar.css';
@@ -9,17 +9,7 @@ import CustomIconButton from './CustomIconButton';
 
 const FormattingControls = ({ editor }) => {
   const formats = useMemo(() => [{
-      format: 'h1',
-      title: 'Heading 1',
-      onClick: () => CustomEditor.toggleBlock(editor, 'h1'),
-      icon: <LooksOne />
-    }, {
-      format: 'h2',
-      title: 'Heading 2',
-      onClick: () => CustomEditor.toggleBlock(editor, 'h2'),
-      icon: <LooksTwo />
-    }, {
-      format: 'h3',
+      format: 'code',
       title: 'Code block (Ctrl+`)',
       onClick: () => CustomEditor.toggleBlock(editor, 'code'),
       icon: <Code />

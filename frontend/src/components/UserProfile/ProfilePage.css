@@ -1,0 +1,25 @@
+.profile-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.profile-info {
+  margin-top: 20px;
+}
+
+.profile-info .MuiTextField-root {
+  margin-bottom: 20px;
+}
+
+.profile-info .MuiButton-root {
+  margin-top: 20px;
+}
+
+.profile-info .MuiAvatar-root {
+  margin-right: 10px;
+}
+
+.profile-info .MuiTypography-root {
+  margin-bottom: 20px;
+}

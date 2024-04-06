@@ -1,85 +1,83 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Add, ExitToApp } from '@mui/icons-material';
-import { AppBar, Toolbar, Typography, Button, Card } from '@mui/material';
+import { Add } from '@mui/icons-material';
+import { Typography, Button, Card, Select, MenuItem } from '@mui/material';
 
 import './Dashboard.css';
-import { postData, fetchData } from '../../apiService';
+import { postDocument, getDocuments } from '../Services/documentService.js';
 import { useAuth } from '../Auth/AuthContext';
-import DocumentsGrid from './DocumentsGrid';
+import DocumentsGrid from '../DocumentGrid/DocumentsGrid';
 import blankTemplate from '../Templates/blankTemplate';
-import SearchBar from './SearchBar';
-
+import DashboardAppBar from './DashboardAppBar.js';
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const { handleSignOut } = useAuth();
+  const { user } = useAuth();
   const [documents, setDocuments] = useState(null);
+  const [filterOption, setFilterOption] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    async function getDocuments() {
+    const fetchDocuments = async () => {
       try {
-        console.log("fetching documents");
-        const response = await fetchData('documents');
-        setDocuments(response);
+        const fetchedDocuments = await getDocuments();
+        setDocuments(fetchedDocuments);
       } catch (error) {
-        setError(error);
+        console.error('Error fetching documents:', error);
       } finally {
         setLoading(false);
       }
-    }
-    getDocuments();
+    };
+
+    fetchDocuments();
   }, []);
 
   const createDocument = async (e) => {
     e.preventDefault();
     try {
+      setLoading(true);
       const document = {
         title: 'untitled document',
         content: blankTemplate(),
         previewUrl: '',
-        //collaborators: [],
-        role: 'Viewer',
+        permission: 'Viewer',
       };
 
-      const response = await postData('documents', document);
-      console.log(response);
+      const response = await postDocument(document);
       navigate(`/document/${response.id}`);
-      console.log('Document created successfully:', response);
     } catch (error) {
-      console.log('Error creating document:', error);
-    }   
+      console.error('Error creating document:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const filteredDocuments = documents?.filter(document => 
+  const handleFilterChange = (event) => {
+    setFilterOption(event.target.value);
+  };
+
+  const filteredDocuments = documents?.filter(document => {
+    if (filterOption === 'owned') {
+      return document.createdBy === user.uid;
+    } else if (filterOption === 'collaborator') {
+      return document.collaborators.includes(user.uid);
+    } else {
+      return true;
+    }
+  }).filter(document => 
     document.title.toLowerCase().startsWith(searchTerm.toLowerCase()));
 
   return (
-      <>
-        <AppBar>
-          <Toolbar sx={{ backgroundColor: '#f5f5f5', boxShadow: 'none' }}>
-            <Typography variant="h3" style={{ fontFamily: 'Montserrat' }}>
-              <span className="collabify-text">Collabify</span>
-            </Typography>
-            <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-            <Button
-                startIcon={<ExitToApp />}
-                onClick={handleSignOut}
-              >
-                Log out
-            </Button>
-          </Toolbar>
-        </AppBar>
-        <div className='dashboard-container'>
-          <div className='card-container'>
-            <Card
-              className='template'
-              onClick={e => createDocument(e)}
-            >
-            </Card>
+    <>
+      <DashboardAppBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+      <div className='dashboard-container'>
+        <div className='card-container'>
+          <Card
+            className='template'
+            onClick={e => createDocument(e)}
+          >
+          </Card>
           <Typography variant="body1" align='center' sx={{ marginTop: '10px' }}>
             Blank document
           </Typography>
@@ -91,17 +89,29 @@ const Dashboard = () => {
           > 
             Create New Document
           </Button>
-          
+          <div className='my-documents-header'>
+          <Typography variant="h5" >
+            My Documents
+          </Typography>
+          <Select
+            value={filterOption}
+            onChange={handleFilterChange}
+            variant='outlined'
+            sx ={{ minWidth: 120, marginTop: 5 }}
+          >
+            <MenuItem value="all">All Documents</MenuItem>
+            <MenuItem value="owned">Owned by me</MenuItem>
+            <MenuItem value="collaborator">Now owned by me</MenuItem>
+          </Select>
         </div>
-        <div>
-          <Typography variant="h5" sx={{ marginTop: '20px' }}>My Documents</Typography>
-        </div>
-        <DocumentsGrid 
-          documents={filteredDocuments} 
-          setDocuments={setDocuments} 
-        />
       </div>
-    </>
+      <DocumentsGrid 
+        documents={filteredDocuments} 
+        setDocuments={setDocuments} 
+        loading={loading}
+      />
+    </div>
+  </>
   )
 };
 

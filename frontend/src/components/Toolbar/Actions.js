@@ -5,6 +5,7 @@ import './Toolbar.css';
 import CustomIconButton from './CustomIconButton';
 
 const Actions = ({ editor, historyEditor }) => {
+
   const actions = useMemo(() => [{
     title: 'Undo (Ctrl+Z)',
     onClick: () => historyEditor.undo(editor),
@@ -24,7 +25,7 @@ const Actions = ({ editor, historyEditor }) => {
           isBlock={false}
         />
       ))}
-      </>
+    </>
   );
 };
 

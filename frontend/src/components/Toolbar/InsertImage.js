@@ -52,8 +52,12 @@ const InsertImage = ({ editor }) => {
       alert('Image file size is too large. Please choose a file under 5MB.');
       return;
     }
-    const url = URL.createObjectURL(file);
-    CustomEditor.insertImage(editor, url);
+    const reader = new FileReader();
+    reader.onload = () => {
+      const base64Image = reader.result;
+      CustomEditor.insertImage(editor, base64Image);
+    };
+    reader.readAsDataURL(file);
   };
 
   return (

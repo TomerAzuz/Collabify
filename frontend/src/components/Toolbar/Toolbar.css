@@ -1,58 +1,41 @@
 .toolbar {
-    display: flex;
-    justify-content: space-between; /* Adjust the alignment of the items */
-    background-color: #EDF2FB;
-    border-radius: 10px;
-    padding: 0 16px;
-  }
+  display: flex;
+  justify-content: space-between; 
+  background-color: #EDF2FB;
+  border-radius: 10px;
+  padding: 0 16px;
+}
   
-  .button-group {
-    display: flex; /* Ensure that the button group is a flex container */
-    border-radius: 10px;
-  }
-  
-  .select, .textfield {
-    font-size: 14px;
-    font-weight: 550;
-  }
-  
-  .pallete {
-    content: '';
-    position: absolute;
-    bottom: 5px;
-    z-index: 1;
-    left: 1px;
-    width: 20px;
-    height: 2.5px;
-    border: 1px solid; 
-  }
-  
-  .color-indicator {
-    position: relative;
-    bottom: -4px;
-  }
-  
-  .insert-image {
-    color: black;
-    border-radius: 5px;
-    border-color: gray.300;
-  }
-  
-  .insert-image:hover {
-    border-color: gray.400;
-  }
-  
-  .insert-image .MuiSelect-select {
-    padding: 2px;
-  }
-  
-  .image {
-    display: block;
-    max-width: 100%;
-    max-height: 25em;
-    margin: auto;
-  }
-  
-  .icon-button {
-    margin-left: 8px; /* Adjust spacing between icon buttons */
+.pallete {
+  content: '';
+  position: absolute;
+  bottom: 5px;
+  z-index: 1;
+  left: 1px;
+  width: 20px;
+  height: 2.5px;
+  border: 1px solid; 
+}
+
+.color-indicator {
+  position: relative;
+  bottom: -4px;
+}
+
+.insert-image {
+  color: black;
+  border-radius: 5px;
+  border-color: gray.300;
+}
+
+.insert-image:hover {
+  border-color: gray.400;
+}
+
+.insert-image .MuiSelect-select {
+  padding: 2px;
+}
+
+.icon-button {
+  margin-left: 8px;
 }

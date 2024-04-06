@@ -2,7 +2,8 @@ import { Link } from 'react-router-dom';
 import { Button, ButtonGroup, Typography, Box } from '@mui/material';
 
 import './LandingPage.css';
-import Typewriter from './TypeWriter';
+import Typewriter from './TypeWrtier/TypeWriter.js';
+import Logo from '../Common/Logo/Logo.js';
 
 const LandingPage = () => {
   const text = 
@@ -23,11 +24,9 @@ const LandingPage = () => {
         <Typewriter text={text} speed={30} />
       </Box>
       <Box className="right-section">
-        <Typography variant="h2" style={{ fontFamily: 'Montserrat' }}>
-          <span className="collabify-text">Collabify</span>
-        </Typography>
-        <Typography variant="h5" gutterBottom>
-          Real-time collaboration made easy. Edit documents together, seamlessly.
+        <Logo variant={'h1'} />
+        <Typography variant="h5" align='center' gutterBottom sx={{ margin: '20px' }}> 
+          Real-time collaboration made easy.<br/> Edit documents together, seamlessly.
         </Typography>
         <ButtonGroup className="button-group">
           <Button 
@@ -35,7 +34,7 @@ const LandingPage = () => {
             to="/auth/signup" 
             size="large" 
             variant="contained"
-            sx={{ marginTop: 8, marginBottom: 4, fontSize: '1.6rem' }}
+            sx={{ marginTop: 8, marginBottom: 4, fontSize: '1.2rem' }}
           >
             Sign up
           </Button>
@@ -44,7 +43,7 @@ const LandingPage = () => {
             to="/auth/login" 
             size="large" 
             variant="contained"
-            sx={{ fontSize: '1.6rem' }}
+            sx={{ fontSize: '1.2rem' }}
           >
             Log in
           </Button>

@@ -3,10 +3,6 @@
   align-items: center;
 }
 
-.grid-container {
-  margin: 20px; 
-}
-
 .card-container {
   display: flex;
   flex-direction: column;
@@ -30,8 +26,8 @@
 }
 
 .template {
-  width: 200px; 
-  height: 300px; 
+  width: 180px; 
+  height: 260px; 
   display: flex; 
   align-items: center; 
   border: 1px solid transparent; 
@@ -45,20 +41,6 @@
   transform: scale(1.05);
 }
 
-.search-bar {
-  display: flex;
-  justify-content: center;
-  width: 40%;
-  margin: auto;
-}
-
-.collabify-text {
-  background: linear-gradient(to right, #1a237e, #2196f3);
-  -webkit-background-clip: text;
-  -moz-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent; 
-  font-weight: bold;
-  text-align: center;
-  user-select: none;
+.my-documents-header {
+  margin-top: 50px;
 }

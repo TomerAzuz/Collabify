@@ -6,66 +6,116 @@ import { Person, Lock } from '@mui/icons-material';
 import './LoginPage.css';
 import { useAuth } from './AuthContext';
 import FormField from './FormField';
-import LoginButton from './LoginButton';
+import LoginMethodButtons from './LoginMethodButtons';
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
   });
-  const [error, setError] = useState('');
-  const { handleAuthentication } = useAuth();
+  const [errors, setErrors] = useState({
+    email: '',
+    password: '',
+  });
+  const { handleAuthentication, error } = useAuth();
+
+  const handleChange = e => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+
+    if (name === 'email') {
+      setErrors({ ...errors, email: value ? '' : 'Email is required' });
+    } else if (name === 'password') {
+      setErrors({ ...errors, password: value ? '' : 'Password is required' });
+    }
+  };
+
+  const handleSubmit = async e => {
+    e.preventDefault();
+
+    let formValid = true;
+    Object.values(formData).forEach(value => {
+      if (!value) {
+        formValid = false;
+      }
+    });
+
+    if (formValid) {
+      try {
+        await handleAuthentication(e, 'email', formData);
+      } catch (error) {
+        console.error('Authentication failed: ', error.message);
+      }
+    } else {
+      setErrors({
+        email: formData.email ? '' : 'Email is required',
+        password: formData.password ? '' : 'Password is required',
+      });
+    }
+  };
 
   const formFields = [{
     name: 'email',
     value: formData.email,
     type: 'text',
     label: 'Email or username',
-    onChange: e => handleChange(e),
+    onChange: handleChange,
     icon: <Person />,
   }, {
     name: 'password',
     value: formData.password,
     type: 'password',
     label: 'Password',
-    onChange: e => handleChange(e),
+    onChange: handleChange,
     icon: <Lock />,
   }];
-
-
-  const handleChange = e => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
 
   return (
     <Container className="login-page">
       <Card className='login-paper' elevation={2}>
         <CardHeader
           title="Welcome back"
-          titleTypographyProps={{ variant: 'h4', textAlign: 'center', fontWeight: 'bold' }}
+          titleTypographyProps={{ 
+            variant: 'h4', 
+            textAlign: 'center', 
+            fontWeight: 'bold' 
+          }}
         />
         <CardContent>
-          <form>
-            {error && <Alert severity="error">{error}</Alert>}
+          <form onSubmit={handleSubmit}>
+            {error && <Alert sx={{ marginBottom: '15px' }} severity="error">{error}</Alert>} 
             <Grid container spacing={2} align="center">
               {formFields.map((field, index) => (
-                <FormField key={index} field={field} />
+                <FormField 
+                  key={index} 
+                  field={field} 
+                  error={errors[field.name]} 
+                />
               ))}
               <Grid item xs={12}>
                 <Button
                   variant='contained'
                   type='submit'
-                  className='login-button'
-                  onClick={e => { handleAuthentication(e, 'email', formData) }}
-                  style={{ marginRight: '12px' }}
+                  sx={{
+                    backgroundColor: '#4caf50',
+                    color: '#ffffff',
+                    borderRadius: '5px',
+                    cursor: 'pointer',
+                    transition: 'background-color 0.3s ease',
+                    '&:hover': {
+                      backgroundColor: '#388e3c',
+                    },
+                  }}
                 >
                   Log in
                 </Button>
-                <Typography 
-                  variant='body1' 
-                  sx={{ marginTop: 2, color: 'text.secondary' }}>
-                    Don't have an account? <Link to='/auth/signup'>Sign up</Link>
+                <Typography variant='body1' 
+                  sx={{ 
+                    marginTop: 2, 
+                    color: 'text.secondary' 
+                    }}
+                  >
+                  Don't have an account? <Link to='/auth/signup'>Sign up</Link>
                 </Typography>
               </Grid>
               <Grid item xs={12}>
@@ -75,7 +125,7 @@ const LoginPage = () => {
                   </Typography>
                 </div>
               </Grid>
-              <LoginButton />
+              <LoginMethodButtons />
             </Grid>
           </form>
         </CardContent>

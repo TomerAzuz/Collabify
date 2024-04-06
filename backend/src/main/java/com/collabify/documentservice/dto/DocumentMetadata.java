@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.Instant;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -19,9 +20,9 @@ public class DocumentMetadata {
 
     private String createdBy;
 
-    private String role;
-
     private Instant createdAt;
+
+    private Set<String> collaborators;
 
     private Instant updatedAt;
 
@@ -35,8 +36,8 @@ public class DocumentMetadata {
                 document.getTitle(),
                 document.getPreviewUrl(),
                 document.getCreatedBy(),
-                document.getRole(),
                 document.getCreatedAt(),
+                document.getCollaborators(),
                 document.getUpdatedAt(),
                 document.getUpdatedBy(),
                 document.getVersion()

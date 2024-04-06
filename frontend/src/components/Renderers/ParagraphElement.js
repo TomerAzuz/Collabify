@@ -1,7 +1,7 @@
-const DefaultElement = props => {    
+const ParagraphElement = props => {    
     const styles = {
         textAlign: props.element.textAlign || '',
-        fontSize: `${props.element.fontSize || '16'}pt`,
+        fontSize: `${props.element.fontSize || '14'}pt`,
         fontFamily: props.element.fontFamily || '',
     };
     
@@ -15,4 +15,4 @@ const DefaultElement = props => {
     );
 };
 
-export default DefaultElement;
+export default ParagraphElement;

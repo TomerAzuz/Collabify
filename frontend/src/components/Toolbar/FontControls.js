@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from 'react';
+import { Editor } from 'slate';
 import { TextField, IconButton, Tooltip, Select, MenuItem } from '@mui/material';
 import { FormatBold, FormatItalic, FormatUnderlined, Add, Remove, BorderColor } from '@mui/icons-material';
 import { faStrikethrough } from '@fortawesome/free-solid-svg-icons';
@@ -13,22 +14,23 @@ const fontFamilies = [
   'AMATIC SC', 'Arial', 'Caveat', 'Comfortaa', 'Comic Sans MS', 
   'Courier New', 'EB Garamond', 'Georgia', 'Impact', 'Lexend',
   'Lobster', 'Lora', 'Merriweather', 'Nunito', 'Open Sans', 'Oswald',  
-  'Pacifico', 'Playfair Display', 'Roboto', 'Roboto Mono', 'Roboto Serif',  
-  'Spectral', 'Times New Roman', 'Trebuchet MS', 'Verdana' 
+  'Pacifico', 'Playfair Display', 'PT Mono', 'Roboto', 'Roboto Mono', 'Roboto Serif',  
+  'Source Code Pro', 'Spectral', 'Times New Roman', 'Trebuchet MS', 'Verdana' 
 ];
 
 const FontControls = ({ editor }) => {
-  const [fontSize, setFontSize] = useState(16);
+  const [fontSize, setFontSize] = useState(14);
   const [fontFamily, setFontFamily] = useState('Arial');
 
-  const adjustFontSize = useCallback((increment) => {
-    setFontSize(prevSize => {
-      const size = prevSize + increment;
-      const clampedSize = Math.min(Math.max(size, 1), 400);
-      CustomEditor.setFontSize(editor, clampedSize);
-      return clampedSize;
-    });
-  }, [editor]);
+  const getFontSize = () => {
+    const marks = Editor.marks(editor);
+    return marks && marks.fontSize !== undefined ? marks.fontSize : fontSize;
+  };
+
+  const getFontFamily = () => {
+    const marks = Editor.marks(editor);
+    return marks && marks.fontFamily !== undefined ? marks.fontFamily : fontFamily;
+  };
 
   const styles = [{
       title: 'Increase font size (Ctrl+Shift+.)',
@@ -62,6 +64,15 @@ const FontControls = ({ editor }) => {
     }
   ];  
 
+  const adjustFontSize = useCallback((increment) => {
+    setFontSize(prevSize => {
+      const size = prevSize + increment;
+      const clampedSize = Math.min(Math.max(size, 1), 400);
+      CustomEditor.setFontSize(editor, clampedSize);
+      return clampedSize;
+    });
+  }, [editor]);
+
   const changeFontSize = (e) => {
     const size = Number(e.target.value);
     setFontSize(size);
@@ -86,8 +97,8 @@ const FontControls = ({ editor }) => {
         <Select
           labelId="font-select-label"
           id="font-family"
-          className='select'
-          value={fontFamily}
+          sx={{ width: '100px', textAlign: 'center' }}
+          value={getFontFamily()}
           onChange={changeFontFamily}
         >
           {fontFamilies.map(font => (
@@ -118,8 +129,8 @@ const FontControls = ({ editor }) => {
           id='font-size'
           type="text"
           variant="outlined"
-          className='textfield'
-          value={fontSize}
+          sx={{ width: '50px', textAlign: 'center' }}
+          value={getFontSize()}
           onChange={(e) => changeFontSize(e)}
         />
       </Tooltip>

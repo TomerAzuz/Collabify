@@ -37,19 +37,19 @@ function Selection({ data, selectionRects, caretPosition }) {
       ))}
       {caretPosition && <Caret caretPosition={caretPosition} data={data} />}
     </>
-  )
+  );
 }
 
 function Caret({ caretPosition, data }) {
   const caretStyle = {
     ...caretPosition,
     background: data?.color,
-  }
+  };
 
   const labelStyle = {
     transform: 'translateY(-100%)',
     background: data?.color,
-  }
+  };
 
   return (
     <div style={caretStyle} className="caretMarker">
@@ -57,5 +57,5 @@ function Caret({ caretPosition, data }) {
         {data?.name}
       </div>
     </div>
-  )
+  );
 }

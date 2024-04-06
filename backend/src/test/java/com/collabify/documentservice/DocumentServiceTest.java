@@ -4,6 +4,7 @@ import com.collabify.documentservice.exception.DocumentNotFoundException;
 import com.collabify.documentservice.model.RichTextDocument;
 import com.collabify.documentservice.repository.DocumentRepository;
 import com.collabify.documentservice.service.DocumentService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -40,6 +41,7 @@ public class DocumentServiceTest {
                 content,
                 "preview",
                 "Tomer",
+                new HashSet<>(),
                 "Viewer",
                 now,
                 now,
@@ -59,7 +61,7 @@ public class DocumentServiceTest {
     }
 
     @Test
-    void whenDocumentExistsThenReturns() {
+    void whenDocumentExistsThenReturns() throws JsonProcessingException {
         var id = "123";
         var document = createDocument(id);
 

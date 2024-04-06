@@ -12,17 +12,22 @@ import { Container,
 import './LoginPage.css';
 import { useAuth } from './AuthContext';
 import FormField from './FormField';
-import LoginButton from './LoginButton';
+import LoginMethodButtons from './LoginMethodButtons';
 
-const SignupForm = () => {
+const SignupPage = () => {
   const [formData, setFormData] = useState({
     displayName: '',
     email: '',
     password: '',
     passwordConfirm: '',
   });
-  const [error, setError] = useState('');
-  const { handleAuthentication } = useAuth();
+  const [errors, setErrors] = useState({
+    displayName: '',
+    email: '',
+    password: '',
+    passwordConfirm: '',
+  });
+  const { handleAuthentication, error } = useAuth();
 
   const formFields = [{
       name: 'displayName',
@@ -57,44 +62,84 @@ const SignupForm = () => {
       ...formData,
       [name]: value,
     });
+
+    if (name === 'email') {
+      setErrors({ ...errors, email: value ? '' : 'Email is required' });
+    } else if (name === 'password') {
+      setErrors({ ...errors, password: value ? '' : 'Password is required' });
+    }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = e => {
     e.preventDefault();
-    if (formData.password !== formData.passwordConfirm) {
-      return setError("Passwords do not match");
+
+    let formValid = true;
+    Object.values(formData).forEach(value => {
+      if (!value) {
+        formValid = false;
+      }
+    });
+
+    if (formValid) {
+      if (formData.password !== formData.passwordConfirm) {
+        setErrors({ ...errors, passwordConfirm: 'Passwords do not match' });
+      } else {
+        handleAuthentication(e, 'register', formData);
+      }
+    } else {
+      setErrors({
+        displayName: formData.displayName ? '' : 'Full name is required',
+        email: formData.email ? '' : 'Email is required',
+        password: formData.password ? '' : 'Password is required',
+        passwordConfirm: formData.passwordConfirm ? '' : 'Confirm password is required',
+      });
     }
-    handleAuthentication(e, 'register', formData);
   };
 
   return (
     <Container>
       <Card className='login-paper' elevation={2}>
-        <CardHeader 
+        <CardHeader
           title="Create an account"
-          titleTypographyProps={{ variant: 'h4', textAlign: 'center', fontWeight: 'bold' }}
+          titleTypographyProps={{ 
+            variant: 'h4', 
+            textAlign: 'center', 
+            fontWeight: 'bold' 
+          }}
         />
         <CardContent>
-          <form onSubmit={handleSubmit} >
-            {error && <Alert severity="error">{error}</Alert>}
+          <form onSubmit={handleSubmit}>
+            {error && <Alert sx={{ marginBottom: '15px' }} severity="error">{error}</Alert>} 
             <Grid container spacing={2} align="center">
               {formFields.map((field) => (
-                  <FormField key={field.name} field={field} />
-                ))}
+                <FormField 
+                  key={field.name} 
+                  field={field} 
+                  error={errors[field.name]} 
+                />
+              ))}
               <Grid item xs={12}>
                 <Button
                   variant='contained'
                   color='primary'
                   type='submit'
-                  className='login-button'
-                  style={{ marginRight: '12px' }}
+                  sx={{
+                    backgroundColor: '#4caf50',
+                    color: '#ffffff',
+                    borderRadius: '5px',
+                    cursor: 'pointer',
+                    transition: 'background-color 0.3s ease',
+                    '&:hover': {
+                      backgroundColor: '#388e3c',
+                    },
+                  }}
                 >
                   Sign up
                 </Button>
-                <Typography 
-                  variant='body1' 
+                <Typography
+                  variant='body1'
                   sx={{ marginTop: 2, color: 'text.secondary' }}>
-                    Already have an account? <Link to='/auth/login'>Login</Link>
+                  Already have an account? <Link to='/auth/login'>Login</Link>
                 </Typography>
               </Grid>
               <Grid item xs={12}>
@@ -104,7 +149,7 @@ const SignupForm = () => {
                   </Typography>
                 </div>
               </Grid>
-              <LoginButton />
+              <LoginMethodButtons />
             </Grid>
           </form>
         </CardContent>
@@ -113,4 +158,4 @@ const SignupForm = () => {
   );
 };
 
-export default SignupForm;
+export default SignupPage;

@@ -5,6 +5,7 @@ import com.collabify.documentservice.dto.DocumentMetadata;
 import com.collabify.documentservice.model.RichTextDocument;
 import com.collabify.documentservice.service.DocumentService;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/documents")
@@ -35,11 +35,8 @@ public class DocumentController {
     @GetMapping
     public ResponseEntity<List<DocumentMetadata>> getAllDocuments(@RequestAttribute("userId") String userId) {
         log.info("Getting all documents for user id {}.", userId);
-        List<RichTextDocument> documents = documentService.getAllDocuments(userId);
-        List<DocumentMetadata> documentMetadata = documents.stream()
-                .map(DocumentMetadata::mapToDocumentMetadata)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(documentMetadata);
+        List<DocumentMetadata> documentsMetadata = documentService.getAllDocuments(userId);
+        return ResponseEntity.ok(documentsMetadata);
     }
 
     @GetMapping("{id}")
@@ -50,6 +47,8 @@ public class DocumentController {
             return ResponseEntity.ok(document);
         } catch (DocumentNotFoundException e) {
             return ResponseEntity.notFound().build();
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
         }
     }
 

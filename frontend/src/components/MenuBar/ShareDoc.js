@@ -1,14 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FormControl, Select, MenuItem, Button, Dialog, DialogContent, DialogTitle, DialogActions, Typography } from '@mui/material';
 import { Public } from '@mui/icons-material';
 
 import './MenuBar.css';
-import { putData } from '../../apiService';
+import { updateDocument } from '../Services/documentService';
+import Loader from '../Common/Loader/Loader.js';
+import CustomAlert from '../Common/Alert';
 
 const ShareDoc = ({ doc, user }) => {
-  const roles = ['Viewer', 'Editor'];
+  const permissions = ['Viewer', 'Editor'];
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
-  const [role, setRole] = useState(roles[0]);
+  const [permission, setPermission] = useState(permissions[0]);
+  const [loading, setLoading] = useState(false);
+  const [alertMessage, setAlertMessage] = useState(null);
+
+  useEffect(() => {
+    if (alertMessage) {
+      const alertTimeout = setTimeout(() => {
+        setAlertMessage(null);
+      }, 2000);
+
+      return () => clearTimeout(alertTimeout);
+    }
+  }, [alertMessage]);
 
   const handleCopyLink = () => {
     setIsShareDialogOpen(false);
@@ -22,15 +36,19 @@ const ShareDoc = ({ doc, user }) => {
         });
   };
 
-  const updateRole = async () => {
-    setIsShareDialogOpen(false);
+  const updatePermission = async (e) => {
     try {
-      const response = await putData('documents', doc.id, {
-        role: role,
+      setLoading(true);
+      setPermission(e.target.value)
+      await updateDocument(doc.id, {
+        ...doc,
+        permission: e.target.value,
       });
-      console.log(`Document role was successfully updated to ${role}:`, response);
+      setAlertMessage(`Document permission set to: ${e.target.value}`);
     } catch (error) {
-      console.error('Error updating document role:', error);
+      setAlertMessage('Error setting document permission:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -50,32 +68,37 @@ const ShareDoc = ({ doc, user }) => {
       >
         <DialogTitle>Share '{doc && doc.title}'</DialogTitle>
         <DialogContent>
-          <Typography>Anyone on the internet with the link can {role === 'Viewer' ? 'view' : 'edit'}</Typography>
-          <div className='select-role'>          
+          <Typography>
+            Anyone on the internet with the link can {permission === 'Viewer' ? 'view' : 'edit'}
+          </Typography>
+          <div className='select-permission'>          
             <FormControl fullWidth>
               <Select
-                labelId="select-role"
-                id="select-role"
-                value={role}
-                onChange={e => setRole(e.target.value)}
+                labelId="select-permission"
+                id="select-permission"
+                value={permission}
+                onChange={e => updatePermission(e)}
               >
-                {roles.map((roleItem) => (
-                  <MenuItem 
-                    key={roleItem} 
-                    value={roleItem}
-                  >
-                    {roleItem}
+                {permissions.map((permissionItem, index) => (
+                  <MenuItem key={index} value={permissionItem}>
+                    {permissionItem}
                   </MenuItem>
                 ))}
               </Select>
             </FormControl>
+            {doc?.collaborators?.length > 0 && 
+            <Typography variant="subtitle"> 
+              You currently share the document with {doc?.collaborators?.length === 1 ? `${doc.collaborators.length} person` : `${doc.collaborators.length} people`}
+            </Typography>}
           </div>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCopyLink}>Copy link</Button>
-          <Button onClick={updateRole}>Done</Button>
+          <Button onClick={() => setIsShareDialogOpen(false)}>Done</Button>
         </DialogActions>
+        {loading && <Loader />}
       </Dialog>
+      {alertMessage && <CustomAlert message={alertMessage} onClose={() => setAlertMessage(null)} />}
     </>
   );
 };
