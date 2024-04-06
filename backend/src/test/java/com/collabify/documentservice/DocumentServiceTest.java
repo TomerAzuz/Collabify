@@ -90,18 +90,19 @@ public class DocumentServiceTest {
 
     @Test
     void whenExistingDocumentDeletedThenReturns() {
-        var id = "123";
+        String id = "123";
 
-        when(documentRepository.findById(id)).thenReturn(Optional.of(new RichTextDocument()));
+        when(documentRepository.existsById(id)).thenReturn(true);
         documentService.deleteDocumentById(id);
 
+        verify(documentRepository, times(1)).existsById(id);
         verify(documentRepository, times(1)).deleteById(id);
     }
 
     @Test
     void whenNonExistingDocumentDeletedThenThrows() {
         var id = "123";
-        when(documentRepository.findById(id)).thenReturn(Optional.empty());
+        when(documentRepository.existsById(id)).thenReturn(false);
         assertThatThrownBy(() -> documentService.deleteDocumentById(id))
                 .isInstanceOf(DocumentNotFoundException.class)
                 .hasMessage("The document with id " + id + " was not found.");

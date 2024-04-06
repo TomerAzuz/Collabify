@@ -53,6 +53,7 @@ public class DocumentRepositoryTests {
                 content,
                 "preview",
                 "Tomer",
+                new HashSet<>(),
                 "Viewer",
                 now,
                 now,
