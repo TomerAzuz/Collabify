@@ -1,10 +1,13 @@
+import React, { useState } from 'react';
+import { useSlate } from 'slate-react'
 import TableChart from '@mui/icons-material/TableChart';
 import { Grid, Dialog, DialogTitle, DialogActions, DialogContent, Button, TextField } from '@mui/material';
+
 import CustomEditor from '../Editor/CustomEditor';
-import { useState } from 'react';
 import CustomIconButton from './CustomIconButton';
 
-const InsertTable = ({ editor }) => {
+const InsertTable = () => {
+  const editor = useSlate();
   const [rows, setRows] = useState(1);
   const [cols, setCols] = useState(1);
   const [isDimensionsOpen, setIsDimensionsOpen] = useState(false);

@@ -142,6 +142,5 @@ public class DocumentRepositoryTests {
         public ObjectMapper objectMapper() {
             return new ObjectMapper();
         }
-
     }
 }

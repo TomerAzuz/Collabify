@@ -4,20 +4,13 @@
   border-radius: 5px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   width: 210mm; /* A4 width */
-  height: 297mm; /* A4 height */
-  margin: 50px auto; 
+  min-height: 297mm; /* A4 height */
+  height: 100%;
+  margin: 30px auto; 
   min-width: 300px;
-  overflow-y: auto;
-  overflow-x: auto;
-  outline: none;
+  outline: 1px solid #C7C7C7;
+  outline-width: thin;
   overflow-wrap: break-word;
   word-wrap: break-word; 
   box-sizing: border-box;
-  line-height: 1.2;
 }
-
-.blur-background {
-  filter: blur(5px);
-}
-
-

@@ -1,14 +1,15 @@
-import Leaf from '../Renderers/Leaf';
+import Leaf from './Leaf';
 import ParagraphElement from './ParagraphElement';
-import CodeElement from '../Renderers/CodeElement';
-import QuoteElement from '../Renderers/QuoteElement';
-import ImageElement from '../Renderers/ImageElement';
-import BulletedListElement from '../Renderers/BulletedListElement';
-import NumberedListElement from '../Renderers/NumberedListElement';
-import TableElement from '../Renderers/TableElement';
-import TableRow from '../Renderers/TableRow';
-import TableCell from '../Renderers/TableCell';
-import ListItemElement from '../Renderers/ListItemElement';
+import CodeElement from './CodeElement';
+import QuoteElement from './QuoteElement';
+import ImageElement from './ImageElement';
+import BulletedListElement from './BulletedListElement';
+import NumberedListElement from './NumberedListElement';
+import TableElement from './TableElement';
+import TableRow from './TableRow';
+import TableCell from './TableCell';
+import ListItemElement from './ListItemElement';
+import CheckListItem from './CheckListItem';
 
 const Renderer = {
   renderElement(props) {
@@ -31,6 +32,8 @@ const Renderer = {
             return <TableRow {...props} />
         case 'table-cell':
             return <TableCell {...props} />
+        case 'check-list-item':
+            return <CheckListItem {...props} />
         default:
             return <ParagraphElement {...props} />
     }

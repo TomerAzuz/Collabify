@@ -44,6 +44,7 @@ const serialize = node => {
       'text-align': node.textAlign || '',
       'font-size': `${node.fontSize || '16'}pt`,
       'font-family': node.fontFamily || '',
+      'line-height': node.lineHeight || 1.0,
     },
     image: {
       'display': 'block',

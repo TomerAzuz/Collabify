@@ -1,16 +1,21 @@
 import React, { useState } from 'react';
+import { useSlate } from 'slate-react'
 import imageExtensions from 'image-extensions';
 import isUrl from 'is-url';
 import { IconButton, Tooltip, Menu, MenuItem } from '@mui/material';
 import { InsertPhoto, Link, FileUpload } from '@mui/icons-material';
 import DOMPurify from 'dompurify';
+import { toast } from 'react-hot-toast';
 
 import '../../App.css';
 import './Toolbar.css';
 import CustomEditor from '../Editor/CustomEditor';
+import { postFile } from '../Services/s3Service';
+import { isValidImageUrl } from '../Common/Utils/validation';
 
-const InsertImage = ({ editor }) => {
+const InsertImage = () => {
   const [anchorEl, setAnchorEl] = useState(null);
+  const editor = useSlate();
 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -19,8 +24,9 @@ const InsertImage = ({ editor }) => {
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
+  
   const isImageUrl = url => {
-    if (!url || !isUrl(url)) {
+    if (!url || !isUrl(url) || !isValidImageUrl(url)) {
       return false;
     }
     const ext = new URL(url).pathname.split('.').pop();
@@ -32,32 +38,27 @@ const InsertImage = ({ editor }) => {
     const url = window.prompt('Enter the URL of the image:');
     const sanitizedUrl = DOMPurify.sanitize(url, { ALLOWED_TAGS: [], ALLOWED_ATTR: [] });
     if (sanitizedUrl && !isImageUrl(sanitizedUrl))  {
-      alert('URL is not an image');
+      toast.error('URL is not an image');
       return;
     }
     sanitizedUrl && CustomEditor.insertImage(editor, sanitizedUrl);
   };
 
-  const handleImageUpload = (e) => {
+  const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    // if (!imageExtensions.includes(file.type)) {
-    //   alert('Please select a valid image file.');
-    //   return;
-    // }
-
     const maxSize = 1024 * 1024 * 5;
     if (file.size > maxSize) {
-      alert('Image file size is too large. Please choose a file under 5MB.');
+      toast.error('Image file size is too large. Please choose a file under 5MB.');
       return;
     }
-    const reader = new FileReader();
-    reader.onload = () => {
-      const base64Image = reader.result;
-      CustomEditor.insertImage(editor, base64Image);
-    };
-    reader.readAsDataURL(file);
+    try {
+      const imageUrl = await postFile(file);
+      CustomEditor.insertImage(editor, imageUrl); 
+    } catch (error) {
+      toast.error('Failed to upload image');
+    }
   };
 
   return (

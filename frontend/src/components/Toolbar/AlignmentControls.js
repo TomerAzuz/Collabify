@@ -1,12 +1,15 @@
 import { useMemo } from 'react';
+import { useSlate } from 'slate-react'
 import { FormatAlignLeft, FormatAlignCenter, FormatAlignRight } from '@mui/icons-material';
 
 import './Toolbar.css';
 import CustomEditor from '../Editor/CustomEditor';
 import CustomIconButton from './CustomIconButton';
 
-const AlignmentControls = ({ editor }) => {
-  const alignment = useMemo(() => [{
+const AlignmentControls = () => {
+  const editor = useSlate();
+
+  const alignments = useMemo(() => [{
       format: 'left',
       title: 'Left align (Ctrl+Shift+L)',
       onClick: () => CustomEditor.alignText(editor, 'left'),
@@ -25,7 +28,7 @@ const AlignmentControls = ({ editor }) => {
     
     return (
       <>
-        {alignment.map((align) => (
+        {alignments.map((align) => (
           <CustomIconButton 
             key={align.title}
             button={align}

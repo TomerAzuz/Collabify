@@ -1,25 +1,22 @@
 import React, { useCallback, useEffect, useMemo, useState, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { Slate, Editable, withReact } from 'slate-react';
 import { Editor, createEditor, Transforms } from 'slate';
 import { HistoryEditor, withHistory } from 'slate-history';
 import { withYjs, withCursors, YjsEditor } from '@slate-yjs/core'
 import isHotkey from 'is-hotkey';
-import html2canvas from 'html2canvas';
-import debounce from 'lodash/debounce';
+import { toast } from 'react-hot-toast';
 
 import '../../App.css';
 import './SlateEditor.css';
-import { getDocumentById, updateDocument } from '../Services/documentService';
+import { useAuth } from '../Auth/AuthContext.js';
+import useDocumentFunctions from '../CustomHooks/useDocumentFunctions.js';
 import Loader from '../Common/Loader/Loader.js';
-import Logo from '../Common/Logo/Logo.js';
-import CustomEditor from './CustomEditor';
-import blankTemplate from '../Templates/blankTemplate';
-import MyToolbar from '../Toolbar/Toolbar';
-import MenuBar from '../MenuBar/MenuBar';
-import Renderer from '../Renderers/Renderer';
+import CustomEditor from './CustomEditor.js';
+import MyToolbar from '../Toolbar/Toolbar.js';
+import MenuBar from '../MenuBar/MenuBar.js';
+import Renderer from '../SlateElements/Renderer.js';
 import { Cursors } from './Cursors/Cursors.js';
-import { useAuth } from '../Auth/AuthContext';
 
 const HOTKEYS = {
     'mod+b': 'bold',
@@ -35,75 +32,15 @@ const HOTKEYS = {
 
 const SlateEditor = ({ sharedType, provider }) => {
   const { user } = useAuth();
+  const editorRef = useRef(null);
+  const location = useLocation();
   const { id } = useParams();
   const [doc, setDoc] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const editorRef = useRef(null);
-
+  const [mode, setMode] = useState('Editor');
+  const { saveDocument, fetchDocument } = useDocumentFunctions();
+  
   const hasEditorPermission = doc?.permission === 'Editor';
   const canEdit = doc?.createdBy === user?.uid || hasEditorPermission;
-  const canSave = canEdit && !loading;    
-
-  const captureDocumentPreview = async () => {
-    const editorElement = editorRef.current;
-    if (!editorElement) {
-      console.warn('Document container not found. Returning null.');
-      return null;
-    }
-    const canvas = await html2canvas(editorElement);
-    return canvas.toDataURL('image/jpeg');
-  };
-
-  const saveDocument = useCallback(async () => {
-    try {
-      setLoading(true);
-      const previewUrl = await captureDocumentPreview();            
-      const document = {
-        content: editor.children,
-        previewUrl: previewUrl,
-      };
-      const response = await updateDocument(doc.id, document);
-      console.log('Document saved successfully.', response);
-    } catch (error) {
-      console.error('Error saving document:', error.message);
-    } finally {
-      setLoading(false);
-    }
-  }, [doc, captureDocumentPreview]);
-
-
-  const addCollaborator = async (document) => {
-    try {
-      const response = await updateDocument(document.id, {
-        collaborators: [...document.collaborators, user.uid],
-      });
-      console.log("Collaborators updated successfully. ", response);
-    } catch (error) {
-      console.error('Failed to update collaborators: ', error.message);
-    }
-  };
-  
-  const fetchDocument = useCallback(async () => {
-    try {
-      setLoading(true);
-      const response = await getDocumentById(id);
-      setDoc(response);
-      if (response.createdBy !== user.uid) {
-        addCollaborator(response);
-      }
-    } catch (error) {
-      console.error('Failed to fetch document with id ', id, ": ", error.message);
-    } finally {
-      setLoading(false);
-    }
-  }, [id]);
-
-  useEffect(() => {
-    setLoading(true);
-    fetchDocument();
-  }, [fetchDocument]);
-
-  const initialValue = useMemo(() => doc?.content || blankTemplate(), [doc]);
 
   const cursorColors = useMemo(() => [
     '#ff0000', '#00ff00', '#0000ff', '#ff00ff', 
@@ -116,40 +53,55 @@ const SlateEditor = ({ sharedType, provider }) => {
     const index = Math.floor(Math.random() * cursorColors.length);
     const color = cursorColors[index];
     return color;
-  }, []);
+  }, [cursorColors]);
 
-  const editor = useMemo(() => {
+  useEffect(() => {
+    const getDoc = async () => {
+      try {
+        const fetchedDoc = await fetchDocument(id);
+        setDoc(fetchedDoc);
+      } catch (error) {
+        toast.error('Error fetching document:', error);
+      }
+    };
+    if (location.state) {
+      setDoc(location.state.doc);
+    } else {
+      getDoc();
+    }
+
+  }, [location.state, fetchDocument, id]);
+
+  const editor = useMemo(() => { 
+    if (!doc) return null;
+
     const e = withReact(withHistory(withCursors(withYjs(createEditor(), sharedType), 
-              provider.awareness)));
+    provider.awareness, {
+      data: {
+        name: user?.displayName || user?.email,
+        color: getRandomColor(),
+      }
+    })));
 
     const { normalizeNode } = e;
+
     e.normalizeNode = entry => {
       const [node] = entry;
 
       if (!Editor.isEditor(node) || node.children.length > 0) {
         return normalizeNode(entry);
       }
-      Transforms.insertNodes(e, initialValue, { at: [0] });
+      Transforms.insertNodes(e, doc.content, { at: [0] });
     }
-
     return e;
-  }, []);
+  }, [doc]);
   
-  useEffect(() => {
-    if (user) {
-      provider.awareness.setLocalStateField('data', {
-        name: user.displayName || user.email,
-        color: getRandomColor(),
-      });
-    }
-  }, [user]);
-
   useEffect(() => {
     if (editor) {
       YjsEditor.connect(editor);
       return () => YjsEditor.disconnect(editor)
     }
-  }, [editor]);    
+  }, [editor]);   
 
   const handleHotkeyAction = useCallback((e, hotkey) => {
     if (hotkey === 'mod+y') {
@@ -158,68 +110,68 @@ const SlateEditor = ({ sharedType, provider }) => {
       HistoryEditor.undo(editor);
     } else {
       const mark = HOTKEYS[hotkey];
-      CustomEditor.alignText(editor, e.shiftKey ? mark : CustomEditor.toggleMark(editor, mark));
+      CustomEditor.alignText(editor, e.shiftKey ? 
+                              mark : CustomEditor.toggleMark(editor, mark));
     }
   }, [editor]);
     
-  const handleKeyDown = useCallback(e => {
-    if (e.ctrlKey && e.key === 's' && canSave) {
+  const handleKeyDown = useCallback(async (e) => {
+    if (e.ctrlKey && e.key === 's' && canEdit) {
+      // Save document
       e.preventDefault();
-      saveDocument();
+      const response = await saveDocument(doc, editorRef);
+      toast.success('Document saved successfully.');
+      setDoc(response);
     } else {
+      // Check if hotkey is pressed
       const hotkey = Object.keys(HOTKEYS).find(key => isHotkey(key, e));
       if (hotkey) {
         e.preventDefault();
         handleHotkeyAction(e, hotkey);
       }
     }
-  }, [canSave, saveDocument, handleHotkeyAction]);
+  }, [canEdit, handleHotkeyAction, doc, saveDocument]);
 
-  const handleEditorChange = useCallback(
-    debounce(value => {
-      setDoc(prevDoc => ({ ...prevDoc, content: value }));
-    }, 500),
-    [setDoc]
-  );
+  if (!doc) {
+    return <Loader />;
+  }
 
   return (
     <Slate
       editor={editor}
-      initialValue={doc?.content || initialValue}
-      onChange={handleEditorChange}
+      initialValue={doc.content}
     >
-      {loading ? <Loader /> : (
       <>
-        <Logo variant={'h3'} />
-        {(doc?.createdBy === user?.uid || doc?.permission === 'Editor') && (
-        <>
-          <MenuBar 
-            doc={doc} 
-            user={user} 
-            sx={{ width: '100vw'}}
-          />
-          <MyToolbar 
-            editor={editor} 
-            historyEditor={HistoryEditor} 
-            sx={{ width: '80vw' , margin: '0 auto' }} 
-          />
-        </>)
-        }
-        <Cursors>
-          <div ref={editorRef}>
-            <Editable
-              readOnly={!canEdit}
-              renderElement={Renderer.renderElement}
-              renderLeaf={Renderer.renderLeaf}
-              spellCheck
-              autoFocus
-              onKeyDown={e => handleKeyDown(e)}
-              className='editor-container'
+        {(canEdit || doc.permission === 'Editor') && (
+          <>
+            <MenuBar 
+              doc={doc} 
+              editorRef={editorRef}
+              sx={{ width: '100vw' }}
             />
+            <MyToolbar 
+              editor={editor} 
+              historyEditor={HistoryEditor} 
+              mode={mode}
+              setMode={setMode}
+              sx={{ width: '80vw' , margin: '0 auto' }} 
+            />
+          </>
+        )}
+          <div ref={editorRef}>
+            <Cursors>
+              <Editable
+                readOnly={!canEdit || mode !== 'Editor'}
+                renderElement={Renderer.renderElement}
+                renderLeaf={Renderer.renderLeaf}
+                spellCheck
+                autoFocus
+                onKeyDown={e => handleKeyDown(e)}
+                className='editor-container'
+              />
+            </Cursors>
           </div>
-        </Cursors>
       </>
-      )}
     </Slate>
   );
 };

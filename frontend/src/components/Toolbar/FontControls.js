@@ -1,4 +1,5 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
+import { useSlate } from 'slate-react'
 import { Editor } from 'slate';
 import { TextField, IconButton, Tooltip, Select, MenuItem } from '@mui/material';
 import { FormatBold, FormatItalic, FormatUnderlined, Add, Remove, BorderColor } from '@mui/icons-material';
@@ -10,17 +11,18 @@ import CustomEditor from '../Editor/CustomEditor';
 import CustomIconButton from './CustomIconButton';
 import ColorPicker from './ColorPicker';
 
-const fontFamilies = [
-  'AMATIC SC', 'Arial', 'Caveat', 'Comfortaa', 'Comic Sans MS', 
-  'Courier New', 'EB Garamond', 'Georgia', 'Impact', 'Lexend',
-  'Lobster', 'Lora', 'Merriweather', 'Nunito', 'Open Sans', 'Oswald',  
-  'Pacifico', 'Playfair Display', 'PT Mono', 'Roboto', 'Roboto Mono', 'Roboto Serif',  
-  'Source Code Pro', 'Spectral', 'Times New Roman', 'Trebuchet MS', 'Verdana' 
-];
-
-const FontControls = ({ editor }) => {
+const FontControls = () => {
   const [fontSize, setFontSize] = useState(14);
   const [fontFamily, setFontFamily] = useState('Arial');
+  const editor = useSlate();
+
+  const fontFamilies = useMemo(() => [
+    'AMATIC SC', 'Arial', 'Caveat', 'Comfortaa', 'Comic Sans MS', 
+    'Courier New', 'EB Garamond', 'Georgia', 'Impact', 'Lexend',
+    'Lobster', 'Lora', 'Merriweather', 'Montserrat', 'Nunito', 'Open Sans', 'Oswald',  
+    'Pacifico', 'Playfair Display', 'PT Mono', 'Roboto', 'Roboto Mono', 'Roboto Serif',  
+    'Source Code Pro', 'Spectral', 'Times New Roman', 'Trebuchet MS', 'Verdana' 
+  ], []);
 
   const getFontSize = () => {
     const marks = Editor.marks(editor);
@@ -29,10 +31,19 @@ const FontControls = ({ editor }) => {
 
   const getFontFamily = () => {
     const marks = Editor.marks(editor);
-    return marks && marks.fontFamily !== undefined ? marks.fontFamily : fontFamily;
+    return marks && marks.fontFamily !== undefined ? marks.fontFamily : fontFamily;;
   };
 
-  const styles = [{
+  const adjustFontSize = useCallback((increment) => {
+    setFontSize(prevSize => {
+      const size = prevSize + increment;
+      const clampedSize = Math.min(Math.max(size, 1), 400);
+      CustomEditor.setFontSize(editor, clampedSize);
+      return clampedSize;
+    });
+  }, [editor]);
+
+  const styles = useMemo(() => [{
       title: 'Increase font size (Ctrl+Shift+.)',
       onClick: () => adjustFontSize(1),
       icon: <Add sx={{ fontSize: '16px' }} />
@@ -62,16 +73,7 @@ const FontControls = ({ editor }) => {
       onClick: () => CustomEditor.toggleMark(editor, 'backgroundColor'),
       icon: <BorderColor />
     }
-  ];  
-
-  const adjustFontSize = useCallback((increment) => {
-    setFontSize(prevSize => {
-      const size = prevSize + increment;
-      const clampedSize = Math.min(Math.max(size, 1), 400);
-      CustomEditor.setFontSize(editor, clampedSize);
-      return clampedSize;
-    });
-  }, [editor]);
+  ], [editor]);  
 
   const changeFontSize = (e) => {
     const size = Number(e.target.value);
@@ -134,7 +136,6 @@ const FontControls = ({ editor }) => {
           onChange={(e) => changeFontSize(e)}
         />
       </Tooltip>
-      
       {styles.map((style, index) => (
         <CustomIconButton
           key={index}
@@ -142,7 +143,7 @@ const FontControls = ({ editor }) => {
           isBlock={false}
         />
       ))}
-      <ColorPicker editor={editor} />
+      <ColorPicker />
     </>
   );
 };

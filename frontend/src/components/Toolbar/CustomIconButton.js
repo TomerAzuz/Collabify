@@ -16,7 +16,7 @@ const CustomIconButton = ({ button, isBlock }) => {
         onClick={button.onClick}
         sx={{
           backgroundColor: isActive ? '#CCD1D9' : 'transparent',
-          borderRadius: '50%',
+          borderRadius: '50%'
         }}
       >
         {button.icon}

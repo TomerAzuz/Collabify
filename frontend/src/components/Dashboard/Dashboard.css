@@ -1,46 +1,23 @@
 .dashboard-container {
-  justify-content: space-between;
-  align-items: center;
-}
-
-.card-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  position: relative;
+  padding: 10px;
+  height: 100vh;
   margin-top: 120px;
 }
 
-.create-doc-button {
-  margin: 10px;
-}
-
-.section-header {
-  position: fixed;
+.my-documents {
+  display: flex;
   align-items: center;
-  margin-bottom: 10px;
-  left: 30;
+  justify-content: space-between;
+  margin: 20px; 
+  height: 50px;
+  width: 100%;
 }
 
-.section-header h5 {
-  margin-right: 10px;
+.MuiSelect-select {
+  padding: 10px;
 }
 
-.template {
-  width: 180px; 
-  height: 260px; 
-  display: flex; 
-  align-items: center; 
-  border: 1px solid transparent; 
-  transition: border 0.3s ease, transform 0.3s ease; 
-  box-sizing: border-box;
-}
-
-.template:hover {
-  border-color: #2196f3;
-  cursor: pointer;
-  transform: scale(1.05);
-}
-
-.my-documents-header {
-  margin-top: 50px;
+.MuiMenuItem-root { 
+  height: 40px; 
 }

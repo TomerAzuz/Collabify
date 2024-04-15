@@ -1,38 +1,34 @@
-import React, { useState, useEffect } from 'react';
-import { FormControl, Select, MenuItem, Button, Dialog, DialogContent, DialogTitle, DialogActions, Typography } from '@mui/material';
+import React, { useState } from 'react';
+import { FormControl, 
+         Select, 
+         MenuItem, 
+         Button, 
+         Dialog, 
+         DialogContent, 
+         DialogTitle, 
+         DialogActions, 
+         Typography } from '@mui/material';
 import { Public } from '@mui/icons-material';
+import { toast } from 'react-hot-toast';
 
-import './MenuBar.css';
 import { updateDocument } from '../Services/documentService';
 import Loader from '../Common/Loader/Loader.js';
-import CustomAlert from '../Common/Alert';
 
 const ShareDoc = ({ doc, user }) => {
-  const permissions = ['Viewer', 'Editor'];
+  const permissions = ['Viewer', 'Editor']; // change to boolean
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
   const [permission, setPermission] = useState(permissions[0]);
   const [loading, setLoading] = useState(false);
-  const [alertMessage, setAlertMessage] = useState(null);
-
-  useEffect(() => {
-    if (alertMessage) {
-      const alertTimeout = setTimeout(() => {
-        setAlertMessage(null);
-      }, 2000);
-
-      return () => clearTimeout(alertTimeout);
-    }
-  }, [alertMessage]);
 
   const handleCopyLink = () => {
     setIsShareDialogOpen(false);
     const link = window.location.href;
     navigator.clipboard.writeText(link)
         .then(() => {
-            console.log('URL copied to clipboard');
+            toast.success('URL copied to clipboard.');
         })
         .catch(error => {
-            console.error('Failed to copy link', error);
+            toast.error('Failed to copy link.');
         });
   };
 
@@ -44,9 +40,9 @@ const ShareDoc = ({ doc, user }) => {
         ...doc,
         permission: e.target.value,
       });
-      setAlertMessage(`Document permission set to: ${e.target.value}`);
+      toast.success(`Document permission set to: ${e.target.value}`);
     } catch (error) {
-      setAlertMessage('Error setting document permission:', error);
+      toast.error('Error setting document permission:', error);
     } finally {
       setLoading(false);
     }
@@ -55,10 +51,20 @@ const ShareDoc = ({ doc, user }) => {
   return (
     <>
       <Button 
+        variant="text"
         onClick={() => setIsShareDialogOpen(true)}
         disabled={!doc || doc.createdBy !== user.uid}
         startIcon={<Public />}
-        color='inherit'
+        sx={{
+          backgroundColor: '#64B5F6',
+          color: 'white',
+          broderRadius: '50%',
+          transition: 'background-color 0.3s',
+          '&:hover': {
+            backgroundColor: '#1976D2', 
+            color: 'white', 
+          },
+        }}
       >
         Share
       </Button>
@@ -71,7 +77,7 @@ const ShareDoc = ({ doc, user }) => {
           <Typography>
             Anyone on the internet with the link can {permission === 'Viewer' ? 'view' : 'edit'}
           </Typography>
-          <div className='select-permission'>          
+          <div>          
             <FormControl fullWidth>
               <Select
                 labelId="select-permission"
@@ -79,17 +85,22 @@ const ShareDoc = ({ doc, user }) => {
                 value={permission}
                 onChange={e => updatePermission(e)}
               >
-                {permissions.map((permissionItem, index) => (
-                  <MenuItem key={index} value={permissionItem}>
-                    {permissionItem}
+                {permissions.map((per, index) => (
+                  <MenuItem key={index} value={per}>
+                    {per}
                   </MenuItem>
                 ))}
               </Select>
             </FormControl>
             {doc?.collaborators?.length > 0 && 
             <Typography variant="subtitle"> 
-              You currently share the document with {doc?.collaborators?.length === 1 ? `${doc.collaborators.length} person` : `${doc.collaborators.length} people`}
-            </Typography>}
+              You currently share the document with 
+              {doc?.collaborators?.length === 1 ? 
+                `${doc.collaborators.length} person` : 
+                `${doc.collaborators.length} people`
+              }
+            </Typography>
+            }
           </div>
         </DialogContent>
         <DialogActions>
@@ -98,7 +109,6 @@ const ShareDoc = ({ doc, user }) => {
         </DialogActions>
         {loading && <Loader />}
       </Dialog>
-      {alertMessage && <CustomAlert message={alertMessage} onClose={() => setAlertMessage(null)} />}
     </>
   );
 };

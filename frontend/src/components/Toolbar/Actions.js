@@ -1,10 +1,12 @@
 import React, { useMemo } from 'react';
+import { useSlate } from 'slate-react'
 import { Undo, Redo } from '@mui/icons-material';
 
 import './Toolbar.css';
 import CustomIconButton from './CustomIconButton';
 
-const Actions = ({ editor, historyEditor }) => {
+const Actions = ({ historyEditor }) => {
+  const editor = useSlate();
 
   const actions = useMemo(() => [{
     title: 'Undo (Ctrl+Z)',

@@ -11,7 +11,10 @@ import { getAuth,
         signOut,
         getIdToken, 
         GithubAuthProvider,
-        reauthenticateWithCredential } from 'firebase/auth';
+        reauthenticateWithCredential,
+        reauthenticateWithPopup,
+        sendPasswordResetEmail 
+       } from 'firebase/auth';
 import { useNavigate } from "react-router-dom";
 
 import Loader from '../Common/Loader/Loader';
@@ -85,6 +88,17 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
+  const resetPassword = async(email) => {
+    try {
+      setLoading(true);
+      await sendPasswordResetEmail(auth, email);
+    } catch (error) {
+      console.error('Failed to reset password: ', error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const register = async(formData) => {
     try {
       setLoading(true);
@@ -114,14 +128,26 @@ export const AuthProvider = ({ children }) => {
     }
   }, [setUser]);
 
+  const getProvider = (password) => {
+    const provider = user.providerData[0].providerId;
+    switch (provider) {
+      case 'password': return EmailAuthProvider.credential(user.email, password);
+      case 'google.com': return new GoogleAuthProvider();
+      case 'github.com': return new GithubAuthProvider();
+      default: throw new Error(`Unsupported provider: ${provider}`);
+    }
+  };
+
   const handleReauthentication = async (password) => {
     try {
       setLoading(true);
       if (!user) {
         throw new Error('User not found.');
       }
-      const credential = EmailAuthProvider.credential(user.email, password);
-      return await reauthenticateWithCredential(auth.currentUser, credential);
+      const provider = getProvider(password);
+      return user.providerData[0].providerId === 'password' ? 
+        await reauthenticateWithCredential(auth.currentUser, provider) :
+        await reauthenticateWithPopup(auth.currentUser, provider)
     } catch (error) {
       console.error('Reauthentication failed:', error);
       throw error; 
@@ -134,17 +160,20 @@ export const AuthProvider = ({ children }) => {
     const refreshUserToken = async () => {
       if (user) {
         try {
-          const refreshedUser = await user.getIdTokenResult(true);
-          setUser(refreshedUser);
+          const idToken = await auth.currentUser.getIdToken({ forceRefresh: true });
+          if (idToken) {
+            axios.defaults.headers.common['Authorization'] = `Bearer ${idToken}`;
+          }
         } catch (error) {
-          console.error('Token refresh failed:', error.message);
+          console.error('Token refresh failed.');
+          handleSignOut();
         }
       }
     };
-  
+    refreshUserToken();
     // Refresh token every hour
-    const interval = setInterval(refreshUserToken, 3600000); 
-  
+    const interval = setInterval(refreshUserToken, 3600000);
+
     return () => clearInterval(interval);
   }, [user]);
   
@@ -162,6 +191,7 @@ export const AuthProvider = ({ children }) => {
                                    handleReauthentication,
                                    handleSignOut, 
                                    getIdToken,
+                                   resetPassword,
                                    error
                                 }}
     >

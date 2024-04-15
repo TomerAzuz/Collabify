@@ -16,7 +16,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/documents")
+@RequestMapping("api/v1/documents")
 public class DocumentController {
     private static final Logger log = LoggerFactory.getLogger(DocumentController.class);
 

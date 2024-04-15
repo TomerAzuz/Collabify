@@ -8,19 +8,21 @@ import InsertImage from './InsertImage.js';
 import Actions from './Actions.js';
 import FormattingControls from './FormattingControls.js';
 import InsertTable from './InsertTable.js';
+import Mode from './Mode.js';
 
-const MyToolbar = ({ editor, historyEditor }) => {
+const MyToolbar = ({ historyEditor, mode, setMode }) => {
   return (
     <AppBar 
       position="sticky" 
-      sx={{ zIndex: 1, borderRadius: '10px', marginTop: '30px' }}>
+      sx={{ zIndex: 1, borderRadius: '10px' }}>
       <Toolbar className='toolbar'>
-        <Actions editor={editor} historyEditor={historyEditor} />
-        <FontControls editor={editor}/>
-        <AlignmentControls editor={editor}/>       
-        <FormattingControls editor={editor}/>
-        <InsertImage editor={editor} />
-        <InsertTable editor={editor}/>
+        <Actions historyEditor={historyEditor} />
+        <FontControls />
+        <AlignmentControls />       
+        <FormattingControls />
+        <InsertImage  />
+        <InsertTable />
+        <Mode mode={mode} setMode={setMode} />
       </Toolbar>
     </AppBar>
   );
