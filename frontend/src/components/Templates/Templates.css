@@ -1,0 +1,15 @@
+.template {
+  width: 180px; 
+  height: 260px; 
+  display: flex; 
+  align-items: center; 
+  border: 1px solid transparent; 
+  transition: border 0.3s ease, transform 0.3s ease; 
+  box-sizing: border-box;
+  overflow: auto; 
+}
+
+.template:hover {
+  border-color: #2196f3;
+  cursor: pointer;
+}
