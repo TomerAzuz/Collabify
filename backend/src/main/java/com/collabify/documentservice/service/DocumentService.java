@@ -11,7 +11,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,7 +23,7 @@ public class DocumentService {
         this.documentRepository = documentRepository;
     }
 
-    @RateLimited(limit = 30) // Default window - 1 Min.
+    @RateLimited(limit = 60)
     public RichTextDocument saveDocument(RichTextDocument document, String userId) {
         String id = UUID.randomUUID().toString();
         document.setId(id);
@@ -35,7 +34,7 @@ public class DocumentService {
         return documentRepository.save(document);
     }
 
-    @RateLimited(limit = 10, window = TimeUnit.SECONDS)
+    @RateLimited(limit = 60)
     public List<DocumentMetadata> getAllDocuments(String userId) {
         List<RichTextDocument> documents = documentRepository.findByCreatedByOrCollaboratorsOrderByUpdatedAtDesc(userId, Sort.by(Sort.Direction.DESC, "updatedAt"));
         return documents.stream()
@@ -43,13 +42,13 @@ public class DocumentService {
                 .collect(Collectors.toList());
     }
 
-    @RateLimited(limit = 20)
+    @RateLimited(limit = 30)
     public RichTextDocument getDocumentById(String id) throws JsonProcessingException {
         return documentRepository.findById(id)
                 .orElseThrow(() -> new DocumentNotFoundException(id));
     }
 
-    @RateLimited(limit = 10)
+    @RateLimited(limit = 30)
     public void deleteDocumentById(String id) {
         if (documentRepository.existsById(id)) {
             documentRepository.deleteById(id);
@@ -58,7 +57,7 @@ public class DocumentService {
         }
     }
 
-    @RateLimited(limit = 10, window = TimeUnit.SECONDS)
+    @RateLimited(limit = 60)
     public RichTextDocument updateDocumentById(String id, RichTextDocument document, String userId) {
         return documentRepository.findById(id)
                 .map(existingDoc -> {

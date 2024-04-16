@@ -9,10 +9,12 @@ const Actions = ({ historyEditor }) => {
   const editor = useSlate();
 
   const actions = useMemo(() => [{
+    id: 0,
     title: 'Undo (Ctrl+Z)',
     onClick: () => historyEditor.undo(editor),
     icon: <Undo />,
   }, {
+    id: 1,
     title: 'Redo (Ctrl+Y)',
     onClick: () => historyEditor.redo(editor),
     icon: <Redo />,
@@ -20,9 +22,9 @@ const Actions = ({ historyEditor }) => {
 
   return (
     <>
-      {actions.map((action, index) => (
+      {actions.map((action) => (
         <CustomIconButton
-          key={index}
+          key={action.id}
           button={action}
           isBlock={false}
         />

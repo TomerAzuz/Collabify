@@ -85,8 +85,6 @@ const serialize = node => {
         .map(([key, value]) => `${key}: ${value}`)
         .join('; ');
       return `<p style="${styles}">${children}</p>`;
-    case 'code':
-      return `<pre><code>${children}</code></pre>`;
     case 'bulleted-list':
       return `<ul>${children}</ul>`;
     case 'numbered-list':

@@ -9,44 +9,28 @@ import { toast } from 'react-hot-toast';
 import './DocumentItem.css';
 import { useAuth } from '../../Auth/AuthContext.js';
 import { updateDocument } from '../../Services/documentService.js';
-import useDocumentFunctions from '../../CustomHooks/useDocumentFunctions.js';
 import Loader from '../../Common/Loader/Loader.js';
 
 const DocumentItem = ({ document, onDeleteDocument }) => {
-  const { fetchDocument } = useDocumentFunctions();
   const { user } = useAuth();
   const navigate = useNavigate();
-
   const [editedTitle, setEditedTitle] = useState(document.title);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isRenameDialogOpen, setIsRenameDialogOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [loading, setLoading] = useState(false);
-  
-  const handleDocumentClick = async () => {
-    try {
-      setLoading(true);
-      const response = await fetchDocument(document.id);
-      if (response) {
-        console.log(response)
-        navigate(`/document/${response.id}`, {
-          state: { doc: response }
-        });
-      }
-    } catch (error) {
-      console.error('Error fetching document:', error);
-    } finally {
-      setLoading(false);
-    }    
+
+  const handleDocumentClick = () => {
+    navigate(`/document/${document.id}`);
   };
 
   const deleteDocument = async () => {
     try {
       setLoading(true);
       await onDeleteDocument(document);
-      toast.success('Document deleted successfully.');
+      toast.success('Document deleted');
     } catch (error) {
-      toast.error('Error deleting document.');
+      toast.error('Error deleting document: ', error);
     } finally {
       setIsDeleteDialogOpen(false);
       setLoading(false);
@@ -62,7 +46,7 @@ const DocumentItem = ({ document, onDeleteDocument }) => {
           title: editedTitle,
         });
         document.title = editedTitle;
-        toast.success(`Document title updated to '${editedTitle}'`);
+        toast.success('Document title updated');
       } catch (error) {
         toast.error('Error updating document title:', error);
         document.title = prevTitle;
@@ -130,14 +114,15 @@ const DocumentItem = ({ document, onDeleteDocument }) => {
                 <Delete fontSize='large' className='menu-item-icon' />
                 Remove
               </MenuItem>
-              <MenuItem className='menu-item' onClick={handleOpenInTabClick}>
+              <MenuItem 
+                className='menu-item'
+                onClick={handleOpenInTabClick}
+              >
                 <OpenInNew fontSize="large" className='menu-item-icon'/>
                 Open in a new tab
               </MenuItem>
             </Menu>
           </div>
-
-          {/* Delete dialog */}
           <Dialog 
             open={isDeleteDialogOpen} 
             onClose={() => setIsDeleteDialogOpen(false)}
@@ -152,8 +137,6 @@ const DocumentItem = ({ document, onDeleteDocument }) => {
               <Button onClick={deleteDocument}>Delete</Button>
             </DialogActions>
           </Dialog>
-
-          {/* Rename dialog */}
           <Dialog 
             open={isRenameDialogOpen} 
             onClose={() => setIsRenameDialogOpen(false)}
@@ -175,8 +158,9 @@ const DocumentItem = ({ document, onDeleteDocument }) => {
             </DialogActions>
           </Dialog>
           <Typography
-            className='card-title'
-            onClick={handleDocumentClick}
+              variant='h6'
+              className='card-title'
+              onClick={handleDocumentClick}
           >
             {document.title}
           </Typography>

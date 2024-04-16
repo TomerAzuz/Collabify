@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { useSlate } from 'slate-react'
-import { Code, FormatQuote } from '@mui/icons-material';
+import { FormatQuote } from '@mui/icons-material';
 import { FormatListBulleted, FormatListNumbered, Checklist } from '@mui/icons-material';
 
 import '../../App.css';
@@ -11,12 +11,7 @@ import CustomIconButton from './CustomIconButton';
 const FormattingControls = () => {
   const editor = useSlate();
 
-  const formats = useMemo(() => [{
-      format: 'code',
-      title: 'Code block (Ctrl+`)',
-      onClick: () => CustomEditor.toggleBlock(editor, 'code'),
-      icon: <Code />
-    }, {
+  const buttons = useMemo(() => [{
       format: 'quote',
       title: 'Quote block',
       onClick: () => CustomEditor.toggleBlock(editor, 'quote'),
@@ -41,10 +36,10 @@ const FormattingControls = () => {
   
   return (
     <> 
-      {formats.map((format) => (
+      {buttons.map((button) => (
         <CustomIconButton
-          key={format.title}
-          button={format}
+          key={button.format}
+          button={button}
           isBlock={true}
         />
       ))}

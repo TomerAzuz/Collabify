@@ -5,12 +5,11 @@ import { Editor, createEditor, Transforms } from 'slate';
 import { HistoryEditor, withHistory } from 'slate-history';
 import { withYjs, withCursors, YjsEditor } from '@slate-yjs/core'
 import isHotkey from 'is-hotkey';
-import { toast } from 'react-hot-toast';
 
 import '../../App.css';
 import './SlateEditor.css';
 import { useAuth } from '../Auth/AuthContext.js';
-import useDocumentFunctions from '../CustomHooks/useDocumentFunctions.js';
+import useDocuments from '../CustomHooks/useDocumentFunctions.js';
 import Loader from '../Common/Loader/Loader.js';
 import CustomEditor from './CustomEditor.js';
 import MyToolbar from '../Toolbar/Toolbar.js';
@@ -37,12 +36,12 @@ const SlateEditor = ({ sharedType, provider }) => {
   const { id } = useParams();
   const [doc, setDoc] = useState(null);
   const [mode, setMode] = useState('Editor');
-  const { saveDocument, fetchDocument } = useDocumentFunctions();
+  const { saveDocument, fetchDocument } = useDocuments();
   
   const hasEditorPermission = doc?.permission === 'Editor';
   const canEdit = doc?.createdBy === user?.uid || hasEditorPermission;
 
-  const cursorColors = useMemo(() => [
+  const cursorColors = useCallback(() => [
     '#ff0000', '#00ff00', '#0000ff', '#ff00ff', 
     '#00ffff', '#ff9900', '#9900ff', '#0099ff',  
     '#ff0099', '#99ff00', '#00ff99', '#ff6600', 
@@ -51,8 +50,7 @@ const SlateEditor = ({ sharedType, provider }) => {
 
   const getRandomColor = useCallback(() => {
     const index = Math.floor(Math.random() * cursorColors.length);
-    const color = cursorColors[index];
-    return color;
+    return cursorColors[index];
   }, [cursorColors]);
 
   useEffect(() => {
@@ -61,15 +59,10 @@ const SlateEditor = ({ sharedType, provider }) => {
         const fetchedDoc = await fetchDocument(id);
         setDoc(fetchedDoc);
       } catch (error) {
-        toast.error('Error fetching document:', error);
+        console.error('Error fetching document:', error);
       }
     };
-    if (location.state) {
-      setDoc(location.state.doc);
-    } else {
-      getDoc();
-    }
-
+    location.state ? setDoc(location.state.doc) : getDoc();
   }, [location.state, fetchDocument, id]);
 
   const editor = useMemo(() => { 
@@ -116,13 +109,15 @@ const SlateEditor = ({ sharedType, provider }) => {
   }, [editor]);
     
   const handleKeyDown = useCallback(async (e) => {
-    if (e.ctrlKey && e.key === 's' && canEdit) {
+    if (!canEdit) {
+      return;
+    }
+    if (e.ctrlKey && e.key === 's') {
       // Save document
       e.preventDefault();
-      const response = await saveDocument(doc, editorRef);
-      toast.success('Document saved successfully.');
+      const response = await saveDocument(doc, editorRef, true);
       setDoc(response);
-    } else {
+    } else if (e.ctrlKey) {
       // Check if hotkey is pressed
       const hotkey = Object.keys(HOTKEYS).find(key => isHotkey(key, e));
       if (hotkey) {
@@ -130,7 +125,7 @@ const SlateEditor = ({ sharedType, provider }) => {
         handleHotkeyAction(e, hotkey);
       }
     }
-  }, [canEdit, handleHotkeyAction, doc, saveDocument]);
+  }, [canEdit, handleHotkeyAction]);
 
   if (!doc) {
     return <Loader />;

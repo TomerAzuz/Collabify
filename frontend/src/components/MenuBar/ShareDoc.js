@@ -15,7 +15,7 @@ import { updateDocument } from '../Services/documentService';
 import Loader from '../Common/Loader/Loader.js';
 
 const ShareDoc = ({ doc, user }) => {
-  const permissions = ['Viewer', 'Editor']; // change to boolean
+  const permissions = ['Viewer', 'Editor'];
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
   const [permission, setPermission] = useState(permissions[0]);
   const [loading, setLoading] = useState(false);
@@ -85,8 +85,8 @@ const ShareDoc = ({ doc, user }) => {
                 value={permission}
                 onChange={e => updatePermission(e)}
               >
-                {permissions.map((per, index) => (
-                  <MenuItem key={index} value={per}>
+                {permissions.map((per) => (
+                  <MenuItem key={per} value={per}>
                     {per}
                   </MenuItem>
                 ))}

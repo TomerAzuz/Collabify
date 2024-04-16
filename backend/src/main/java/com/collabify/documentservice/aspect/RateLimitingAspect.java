@@ -53,7 +53,9 @@ public class RateLimitingAspect {
     }
 
     private String getClientId() {
-        HttpServletRequest request = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
+        HttpServletRequest request = ((ServletRequestAttributes) Objects
+                .requireNonNull(RequestContextHolder.getRequestAttributes()))
+                .getRequest();
         String uid = (String) request.getAttribute("userId");
         if (uid != null) {
             return uid;

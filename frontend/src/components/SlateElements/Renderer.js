@@ -1,6 +1,5 @@
 import Leaf from './Leaf';
 import ParagraphElement from './ParagraphElement';
-import CodeElement from './CodeElement';
 import QuoteElement from './QuoteElement';
 import ImageElement from './ImageElement';
 import BulletedListElement from './BulletedListElement';
@@ -14,8 +13,6 @@ import CheckListItem from './CheckListItem';
 const Renderer = {
   renderElement(props) {
     switch (props.element.type) {
-        case 'code':
-            return <CodeElement {...props}/>
         case 'quote':
             return <QuoteElement {...props} />
         case 'image':

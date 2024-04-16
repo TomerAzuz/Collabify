@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 import html2canvas from 'html2canvas';
+import { toast } from 'react-hot-toast';
 
 import { postDocument, getDocuments, getDocumentById, updateDocument } from '../Services/documentService.js';
 import { useAuth } from '../Auth/AuthContext.js';
@@ -20,7 +21,9 @@ const useDocumentFunctions = () => {
       useCORS: true,
       allowTaint: true
     });
-    
+
+    const test = canvas.toDataURL('image/jpeg');
+    console.log(test)
     const blob = await new Promise((resolve) => {
       canvas.toBlob((blob) => {
         resolve(blob);
@@ -43,22 +46,23 @@ const useDocumentFunctions = () => {
     }
   };
 
-  const saveDocument = useCallback(async (doc, editorRef) => {
+  const saveDocument = async (doc, editorRef, displayNotification) => {
     try {
-      const previewUrl = await captureDocumentPreview(editorRef, doc.id);  
-      console.log('preview url: ', previewUrl);
-      console.log(previewUrl);          
+      const previewUrl = await captureDocumentPreview(editorRef, doc.id);         
       const document = {
         content: doc.content,
         previewUrl: previewUrl,
       };
       const response = await updateDocument(doc.id, document);
+      if (response && displayNotification) {
+        toast.success('Document saved');
+      }
       return response;
     } catch (error) {
-      console.error('Error saving document:', error.message);
+      toast.error('Error saving document:', error.message);
       throw error;
     }
-  }, [captureDocumentPreview]);
+  };
 
   const addCollaborator = async (document) => {
     try {

@@ -11,7 +11,7 @@ import TemplatesGrid from '../Templates/TemplatesGrid.js';
 const Dashboard = () => {
   const { user } = useAuth();
   const [documents, setDocuments] = useState(null);
-  const [filterOption, setFilterOption] = useState('all');
+  const [filter, setFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
 
@@ -30,20 +30,17 @@ const Dashboard = () => {
     fetchDocuments();
   }, []);
 
-  const handleFilterChange = (event) => {
-    setFilterOption(event.target.value);
-  };
-
   const filteredDocuments = documents?.filter(document => {
-    if (filterOption === 'owned') {
+    if (filter === 'owned') {
       return document.createdBy === user.uid;
-    } else if (filterOption === 'collaborator') {
+    } else if (filter === 'collaborator') {
       return document.collaborators.includes(user.uid);
     } else {
       return true;
     }
   }).filter(document => 
       document.title.toLowerCase().startsWith(searchTerm.toLowerCase()));
+
 
   return (
     <>
@@ -61,8 +58,8 @@ const Dashboard = () => {
             My Documents
           </Typography>
           <Select
-            value={filterOption} 
-            onChange={handleFilterChange} 
+            value={filter} 
+            onChange={(e) => setFilter(e.target.value)} 
             sx={{ minWidth: '200px', marginLeft: '60px' }}
             MenuProps={{
               disableScrollLock: true,
@@ -75,7 +72,7 @@ const Dashboard = () => {
         </div>
         <DocumentsGrid 
           documents={filteredDocuments} 
-          setDocuments={setDocuments} 
+          setDocuments={setDocuments}
           loading={loading}
         />
       </div>

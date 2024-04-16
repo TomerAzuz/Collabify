@@ -70,7 +70,7 @@ public class DocumentControllerMvcTests {
                 .willThrow(DocumentNotFoundException.class);
 
         mockMvc
-                .perform(get("/api/documents/" + id))
+                .perform(get("/api/v1/documents/" + id))
                 .andExpect(status().isNotFound());
     }
 
@@ -80,7 +80,7 @@ public class DocumentControllerMvcTests {
         var document = createDocument(id);
         given(documentService.getDocumentById(id)).willReturn(document);
         mockMvc
-                .perform(get("/api/documents/" + id))
+                .perform(get("/api/v1/documents/" + id))
                 .andExpect(status().isOk());
     }
 
@@ -101,7 +101,7 @@ public class DocumentControllerMvcTests {
 
         given(documentService.getAllDocuments(anyString())).willReturn(documentsMetadata);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/documents")
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/documents")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .requestAttr("userId", userId))
@@ -117,7 +117,7 @@ public class DocumentControllerMvcTests {
         String requestBody = objectMapper.writeValueAsString(document);
         given(documentService.saveDocument(any(RichTextDocument.class), eq(userId))).willReturn(document);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/documents")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/documents")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody)
                         .requestAttr("userId", userId))
@@ -133,7 +133,7 @@ public class DocumentControllerMvcTests {
         String requestBody = objectMapper.writeValueAsString(documentToCreate);
         given(documentService.saveDocument(any(RichTextDocument.class), eq(userId))).willReturn(documentToCreate);
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/documents/" + id)
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/documents/" + id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody)
                         .requestAttr("userId", userId))
@@ -143,7 +143,7 @@ public class DocumentControllerMvcTests {
     @Test
     void whenDeleteDocumentThenShouldReturn204() throws Exception {
         mockMvc
-                .perform(delete("/api/documents/123"))
+                .perform(delete("/api/v1/documents/123"))
                 .andExpect(status().isNoContent());
     }
 }

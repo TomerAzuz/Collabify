@@ -43,8 +43,8 @@ const FontControls = () => {
     });
   }, [editor]);
 
-  const styles = useMemo(() => [{
-      title: 'Increase font size (Ctrl+Shift+.)',
+  const buttons = useMemo(() => [{
+      title: 'Increase font size',
       onClick: () => adjustFontSize(1),
       icon: <Add sx={{ fontSize: '16px' }} />
     }, {
@@ -73,7 +73,7 @@ const FontControls = () => {
       onClick: () => CustomEditor.toggleMark(editor, 'backgroundColor'),
       icon: <BorderColor />
     }
-  ], [editor]);  
+  ], [editor, adjustFontSize]);  
 
   const changeFontSize = (e) => {
     const size = Number(e.target.value);
@@ -99,13 +99,13 @@ const FontControls = () => {
         <Select
           labelId="font-select-label"
           id="font-family"
-          sx={{ width: '100px', textAlign: 'center' }}
+          sx={{ width: '100px', textAlign: 'center', margin: '2px' }}
           value={getFontFamily()}
           onChange={changeFontFamily}
         >
-          {fontFamilies.map(font => (
+          {fontFamilies.map((font, index) => (
             <MenuItem 
-              key={font} 
+              key={index} 
               value={font}
               style={{ fontFamily: font, fontSize: '20px', }}
             >
@@ -116,7 +116,7 @@ const FontControls = () => {
       </Tooltip> 
 
       {/* Decrease font size */}
-      <Tooltip title="Decrease font size (Ctrl+Shift+,)">
+      <Tooltip title="Decrease font size">
         <IconButton
           className='button'
           onClick={() => adjustFontSize(-1)}
@@ -136,10 +136,10 @@ const FontControls = () => {
           onChange={(e) => changeFontSize(e)}
         />
       </Tooltip>
-      {styles.map((style, index) => (
+      {buttons.map((button, index) => (
         <CustomIconButton
           key={index}
-          button={style}
+          button={button}
           isBlock={false}
         />
       ))}

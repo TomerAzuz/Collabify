@@ -9,7 +9,7 @@ import CustomIconButton from './CustomIconButton';
 const AlignmentControls = () => {
   const editor = useSlate();
 
-  const alignments = useMemo(() => [{
+  const buttons = useMemo(() => [{
       format: 'left',
       title: 'Left align (Ctrl+Shift+L)',
       onClick: () => CustomEditor.alignText(editor, 'left'),
@@ -28,10 +28,10 @@ const AlignmentControls = () => {
     
     return (
       <>
-        {alignments.map((align) => (
+        {buttons.map((button) => (
           <CustomIconButton 
-            key={align.title}
-            button={align}
+            key={button.format}
+            button={button}
             isBlock={true}
           />
         ))}

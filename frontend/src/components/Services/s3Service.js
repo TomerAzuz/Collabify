@@ -12,7 +12,6 @@ export async function postFile(file) {
         'Content-Type': 'multipart/form-data'
       }
     });
-    console.log(response)
     return response.data;
   } catch (error) {
     console.error('Error uploading file: ', error);

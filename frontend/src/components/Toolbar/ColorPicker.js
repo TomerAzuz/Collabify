@@ -25,7 +25,7 @@ const ColorPicker = () => {
 
   const getCurrentColor = () => {
     const marks = Editor.marks(editor);
-    return marks && marks.color !== undefined ? marks.color : fontColor;
+    return marks && marks.color !== undefined ? marks.color : 'black';
   };
 
   useEffect(() => {

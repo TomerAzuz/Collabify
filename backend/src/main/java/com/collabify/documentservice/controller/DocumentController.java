@@ -5,6 +5,7 @@ import com.collabify.documentservice.dto.DocumentMetadata;
 import com.collabify.documentservice.model.RichTextDocument;
 import com.collabify.documentservice.service.DocumentService;
 
+import com.collabify.documentservice.service.S3Service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +23,9 @@ public class DocumentController {
 
     @Autowired
     private DocumentService documentService;
+
+    @Autowired
+    private S3Service s3Service;
 
     @PostMapping
     public ResponseEntity<RichTextDocument> createDocument(@RequestBody RichTextDocument document,
@@ -56,6 +60,8 @@ public class DocumentController {
     public ResponseEntity<Void> deleteDocumentById(@PathVariable("id") String id) {
         log.info("Deleting document with id: {}.", id);
         documentService.deleteDocumentById(id);
+        String previewImageId = id + ".jpg";
+        s3Service.deleteObject(previewImageId);
         return ResponseEntity.noContent().build();
     }
 

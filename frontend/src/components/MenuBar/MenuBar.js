@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Toolbar, Typography, Container, Switch } from "@mui/material";
-import html2pdf from 'html2pdf.js';
 import { Article, Save, Download } from '@mui/icons-material';
+import html2pdf from 'html2pdf.js';
 import { toast } from 'react-hot-toast';
 
 import { useAuth } from '../Auth/AuthContext.js';
-import useDocumentFunctions from '../CustomHooks/useDocumentFunctions.js';
+import useDocuments from '../CustomHooks/useDocumentFunctions.js';
 import ShareDoc from './ShareDoc';
 import serialize from '../Common/Utils/serializer';
 import Logo from '../Common/Logo/Logo.js';
@@ -16,7 +16,7 @@ import MenuBarButton from './MenuBarButton.js';
 const MenuBar = ({ doc, editorRef }) => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const { createDocument, saveDocument } = useDocumentFunctions();
+  const { createDocument, saveDocument } = useDocuments();
   const [isAutosave, setIsAutosave] = useState(false);
 
   const downalodAsPDF = useMemo(() => () => {
@@ -32,25 +32,12 @@ const MenuBar = ({ doc, editorRef }) => {
     html2pdf().from(content).set(opt).save();
   }, [doc]);
 
-  const handleCreateDocument = async () => {
+  const createNewDocument = async () => {
     try {
       const response = await createDocument();
-      if (response) {
-        navigate(`/document/${response.id}`);
-      }
+      navigate(`/document/${response.id}`);
     } catch (error) {
-      toast.error('Failed to create document');
-    }
-  };
-
-  const handleSaveDocument = async (displayToast) => {
-    try {
-      const response = await saveDocument(doc, editorRef);
-      if (response && displayToast) {
-        toast.success('Document saved successfully.');
-      }
-    } catch (error) {
-      toast.error('Failed to save document.');
+      console.error('Failed to create document');
     }
   };
 
@@ -58,19 +45,19 @@ const MenuBar = ({ doc, editorRef }) => {
     {
       id: 0,
       title: 'New Document',
-      onClick: () => handleCreateDocument,
+      onClick: () => createNewDocument(),
       icon: <Article />
     },
     {
       id: 1,
       title: 'Save',
-      onClick: () => handleSaveDocument(true),
+      onClick: () => saveDocument(doc, editorRef, true),
       icon: <Save />
     },
     {
       id: 2,
       title: 'Download as PDF',
-      onClick: () => downalodAsPDF,
+      onClick: () => downalodAsPDF(),
       icon: <Download />
     }
   ];
@@ -79,7 +66,7 @@ const MenuBar = ({ doc, editorRef }) => {
     let autosaveInterval;
   
     const autosaveHandler = async () => {
-      await handleSaveDocument(false);
+      await saveDocument(doc, editorRef, false);
     };
   
     if (isAutosave) {
@@ -93,10 +80,15 @@ const MenuBar = ({ doc, editorRef }) => {
     return () => clearInterval(autosaveInterval);
   }, [isAutosave]);
 
+  const handleAutosave = (e) => {
+    setIsAutosave(e.target.checked);
+    toast.success(`Autosave is ${e.target.checked ? 'on' : 'off'}`)
+  } 
+
   return (
     <Container maxWidth="xl">
       <Toolbar>
-        <Logo variant={'h4'} sx={{ marginLeft: 0 }}/>
+        <Logo variant={'h3'} sx={{ marginLeft: 0 }}/>
         <div 
           style={{ 
             margin: 'auto', 
@@ -116,7 +108,7 @@ const MenuBar = ({ doc, editorRef }) => {
           ))}
           <Switch
             checked={isAutosave}
-            onChange={(e) => setIsAutosave(e.target.checked)}
+            onChange={(e) => handleAutosave(e)}
             inputProps={{ "aria-label": 'Autosave' }}
           />
         </div>
