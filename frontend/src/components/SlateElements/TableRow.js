@@ -1,4 +1,4 @@
-const TableRow = props => {
+const TableRow = (props) => {
   const styles = {
     border: '1px solid black',
   };

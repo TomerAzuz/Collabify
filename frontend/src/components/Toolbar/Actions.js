@@ -8,23 +8,24 @@ import CustomIconButton from './CustomIconButton';
 const Actions = ({ historyEditor }) => {
   const editor = useSlate();
 
-  const actions = useMemo(() => [{
-    id: 0,
-    title: 'Undo (Ctrl+Z)',
-    onClick: () => historyEditor.undo(editor),
-    icon: <Undo />,
-  }, {
-    id: 1,
-    title: 'Redo (Ctrl+Y)',
-    onClick: () => historyEditor.redo(editor),
-    icon: <Redo />,
-  }], [editor, historyEditor]);
+  const actions = useMemo(() => [
+    {
+      title: 'Undo (Ctrl+Z)',
+      onClick: () => historyEditor.undo(editor),
+      icon: <Undo />
+    }, 
+    {
+      title: 'Redo (Ctrl+Y)',
+      onClick: () => historyEditor.redo(editor),
+      icon: <Redo />
+    }
+  ], [editor, historyEditor]);
 
   return (
     <>
-      {actions.map((action) => (
+      {actions.map((action, index) => (
         <CustomIconButton
-          key={action.id}
+          key={index}
           button={action}
           isBlock={false}
         />

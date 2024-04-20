@@ -10,7 +10,7 @@
 .pallete {
   content: '';
   position: absolute;
-  bottom: 5.5px;
+  bottom: 4px;
   z-index: 1;
   left: 1.5px;
   width: 21px;

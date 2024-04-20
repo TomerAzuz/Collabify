@@ -2,7 +2,6 @@
   background-color: white;
   padding: 50px;
   border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   width: 210mm; /* A4 width */
   min-height: 297mm; /* A4 height */
   height: 100%;

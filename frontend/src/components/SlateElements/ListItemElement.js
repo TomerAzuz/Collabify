@@ -1,4 +1,4 @@
-const ListItemElement = props => {    
+const ListItemElement = (props) => {    
   return (
     <li 
       {...props.attributes}

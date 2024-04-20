@@ -1,7 +1,7 @@
 import { TextField, InputAdornment, Box } from "@mui/material";
 import { Search } from '@mui/icons-material';
 
-import './Dashboard.css';
+import './Navbar.css';
 
 const SearchBar = ({ searchTerm, setSearchTerm }) => {
   return (

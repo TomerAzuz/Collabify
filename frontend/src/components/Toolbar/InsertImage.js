@@ -9,13 +9,14 @@ import { toast } from 'react-hot-toast';
 
 import '../../App.css';
 import './Toolbar.css';
-import CustomEditor from '../Editor/CustomEditor';
+import useCustomEditor from '../CustomHooks/useCustomEditor';
 import { postFile } from '../Services/s3Service';
 import { isValidImageUrl } from '../Common/Utils/validation';
 
 const InsertImage = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const editor = useSlate();
+  const { insertImage } = useCustomEditor();
 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -35,16 +36,19 @@ const InsertImage = () => {
 
   const handleURL = (e) => {
     e.preventDefault();
+    handleMenuClose();
     const url = window.prompt('Enter the URL of the image:');
     const sanitizedUrl = DOMPurify.sanitize(url, { ALLOWED_TAGS: [], ALLOWED_ATTR: [] });
     if (sanitizedUrl && !isImageUrl(sanitizedUrl))  {
       toast.error('URL is not an image');
       return;
     }
-    sanitizedUrl && CustomEditor.insertImage(editor, sanitizedUrl);
+    sanitizedUrl && insertImage(editor, sanitizedUrl);
   };
 
   const handleImageUpload = async (e) => {
+    e.preventDefault();
+    handleMenuClose();
     const file = e.target.files[0];
     if (!file) return;
 
@@ -55,7 +59,7 @@ const InsertImage = () => {
     }
     try {
       const imageUrl = await postFile(file);
-      CustomEditor.insertImage(editor, imageUrl); 
+      insertImage(editor, imageUrl); 
     } catch (error) {
       toast.error('Failed to upload image');
     }

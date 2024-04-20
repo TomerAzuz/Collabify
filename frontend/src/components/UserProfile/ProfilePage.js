@@ -76,7 +76,7 @@ const ProfilePage = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleConfirmUpdate = async (e) => {
+  const handleConfirmAction = async (e) => {
     e.preventDefault();
     try {
       const userCredential = await handleReauthentication(password);
@@ -100,13 +100,13 @@ const ProfilePage = () => {
         default:
           break;
       }
+      resetForm();
+      setField(null);
+      setErrors({});
     } catch (error) {
       console.log('Failed to update:', error.message);
     } finally {
       setIsPasswordDialogOpen(false);
-      resetForm();
-      setField(null);
-      setErrors({});
     }
   };
 
@@ -357,7 +357,7 @@ const ProfilePage = () => {
             open={isPasswordDialogOpen} 
             onClose={handleClosePasswordDialog}
           >
-            <form onSubmit={(e) => handleConfirmUpdate(e)}>
+            <form onSubmit={(e) => handleConfirmAction(e)}>
               <DialogTitle>Verify password</DialogTitle>
               <DialogContent>
                 <TextField

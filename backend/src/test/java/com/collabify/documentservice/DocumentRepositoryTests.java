@@ -1,5 +1,6 @@
 package com.collabify.documentservice;
 
+import com.collabify.documentservice.dto.Collaborator;
 import com.collabify.documentservice.model.RichTextDocument;
 import com.collabify.documentservice.repository.DocumentRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -52,7 +53,9 @@ public class DocumentRepositoryTests {
                 "title",
                 content,
                 "preview",
-                "Tomer",
+                new Collaborator("123",
+                        "https://example.com/avatar.jpg",
+                        "username"),
                 new HashSet<>(),
                 "Viewer",
                 now,

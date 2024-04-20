@@ -1,10 +1,12 @@
 package com.collabify.documentservice;
 
+import com.collabify.documentservice.dto.Collaborator;
 import com.collabify.documentservice.dto.DocumentMetadata;
 import com.collabify.documentservice.exception.DocumentNotFoundException;
 import com.collabify.documentservice.controller.DocumentController;
 import com.collabify.documentservice.model.RichTextDocument;
 import com.collabify.documentservice.service.DocumentService;
+import com.collabify.documentservice.service.S3Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 
@@ -38,6 +40,9 @@ public class DocumentControllerMvcTests {
     @MockBean
     DocumentService documentService;
 
+    @MockBean
+    S3Service s3Service;
+
     @Autowired
     ObjectMapper objectMapper;
 
@@ -54,7 +59,9 @@ public class DocumentControllerMvcTests {
                 "title",
                 content,
                 "preview",
-                "Tomer",
+                new Collaborator("123",
+                        "https://example.com/avatar.jpg",
+                        "username"),
                 new HashSet<>(),
                 "Viewer",
                 now,
@@ -86,14 +93,16 @@ public class DocumentControllerMvcTests {
 
     @Test
     void whenGetAllDocumentsThenShouldReturn200() throws Exception {
-        var userId = "1";
+        var collab = new Collaborator("123",
+                "https://example.com/avatar.jpg",
+                "username");
         var id1 = "123";
         var doc1 = createDocument(id1);
-        doc1.setCreatedBy(id1);
+        doc1.setCreatedBy(collab);
 
         var id2 = "456";
         var doc2 = createDocument(id2);
-        doc2.setCreatedBy(id1);
+        doc2.setCreatedBy(collab);
 
         List<DocumentMetadata> documentsMetadata = List.of(
                 DocumentMetadata.mapToDocumentMetadata(doc1),
@@ -104,7 +113,7 @@ public class DocumentControllerMvcTests {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/documents")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
-                        .requestAttr("userId", userId))
+                        .requestAttr("userId", collab.getUid()))
                 .andExpect(status().isOk());
     }
 
@@ -115,7 +124,7 @@ public class DocumentControllerMvcTests {
         var document = createDocument(id);
 
         String requestBody = objectMapper.writeValueAsString(document);
-        given(documentService.saveDocument(any(RichTextDocument.class), eq(userId))).willReturn(document);
+        given(documentService.createDocument(any(RichTextDocument.class), eq(userId))).willReturn(document);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/documents")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -131,7 +140,7 @@ public class DocumentControllerMvcTests {
         var documentToCreate = createDocument(id);
 
         String requestBody = objectMapper.writeValueAsString(documentToCreate);
-        given(documentService.saveDocument(any(RichTextDocument.class), eq(userId))).willReturn(documentToCreate);
+        given(documentService.createDocument(any(RichTextDocument.class), eq(userId))).willReturn(documentToCreate);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/documents/" + id)
                         .contentType(MediaType.APPLICATION_JSON)

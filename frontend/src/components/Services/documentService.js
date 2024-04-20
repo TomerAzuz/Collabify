@@ -1,10 +1,10 @@
 import axios from 'axios';
 
-const BASE_URL = 'http://localhost:3000/api/v1/documents';
+import { API_BASE_URL } from '../Common/Utils/constants';
 
 export async function getDocuments() {
   try {
-    const response = await axios.get(BASE_URL);
+    const response = await axios.get(API_BASE_URL);
     if (response.status === 200) {
       return response.data;
     } else {
@@ -17,7 +17,7 @@ export async function getDocuments() {
 
 export async function getDocumentById(id) {
   try {
-    const response = await axios.get(`${BASE_URL}/${id}`);
+    const response = await axios.get(`${API_BASE_URL}/${id}`);
     if (response.status === 200) {
       return response.data;
     } else {
@@ -30,7 +30,7 @@ export async function getDocumentById(id) {
 
 export async function postDocument(document) {
   try {
-    const response = await axios.post(`${BASE_URL}`, document);
+    const response = await axios.post(`${API_BASE_URL}`, document);
     if (response.status === 201) {
       return response.data;
     } else {
@@ -43,7 +43,7 @@ export async function postDocument(document) {
 
 export async function updateDocument(id, newDoc) {
   try {
-    const response = await axios.put(`${BASE_URL}/${id}`, newDoc);
+    const response = await axios.put(`${API_BASE_URL}/${id}`, newDoc);
     if (response.status === 200) {
       return response.data;
     } else {
@@ -56,7 +56,7 @@ export async function updateDocument(id, newDoc) {
 
 export async function deleteDocument(id) {
   try {
-    const response = await axios.delete(`${BASE_URL}/${id}`);
+    const response = await axios.delete(`${API_BASE_URL}/${id}`);
     if (response.status === 204) {
       return response.data;
     } else {

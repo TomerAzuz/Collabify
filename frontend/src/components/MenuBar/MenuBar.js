@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Toolbar, Typography, Container, Switch } from "@mui/material";
-import { Article, Save, Download } from '@mui/icons-material';
+import { Box, Tooltip, Toolbar, Typography, Container, Switch } from "@mui/material";
+import { Article, Save, Download, Info } from '@mui/icons-material';
 import html2pdf from 'html2pdf.js';
 import { toast } from 'react-hot-toast';
 
@@ -10,14 +10,15 @@ import useDocuments from '../CustomHooks/useDocumentFunctions.js';
 import ShareDoc from './ShareDoc';
 import serialize from '../Common/Utils/serializer';
 import Logo from '../Common/Logo/Logo.js';
+import Loader from '../Common/Loader/Loader.js';
 import MenuBarButton from './MenuBarButton.js';
-//import RevisionHistory from '../Revisions/RevisionHistory';
 
-const MenuBar = ({ doc, editorRef }) => {
+const MenuBar = ({ doc, setDoc, editorRef, setIsDetailsOpen }) => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { createDocument, saveDocument } = useDocuments();
   const [isAutosave, setIsAutosave] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const downalodAsPDF = useMemo(() => () => {
     const filename = doc.title;
@@ -34,10 +35,27 @@ const MenuBar = ({ doc, editorRef }) => {
 
   const createNewDocument = async () => {
     try {
+      setLoading(true);
       const response = await createDocument();
-      navigate(`/document/${response.id}`);
+      navigate(`/document/${response.id}`, {
+        state: { doc: response }
+      });
     } catch (error) {
       console.error('Failed to create document');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSaveDocument = async (showNotification) => {
+    try {
+      setLoading(true);
+      const response = await saveDocument(doc, editorRef, showNotification);
+      setDoc(response);
+    } catch(error) {
+      console.error('Failed to save document');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -47,32 +65,32 @@ const MenuBar = ({ doc, editorRef }) => {
       title: 'New Document',
       onClick: () => createNewDocument(),
       icon: <Article />
-    },
-    {
+    }, {
       id: 1,
-      title: 'Save',
-      onClick: () => saveDocument(doc, editorRef, true),
+      title: 'Save (Ctrl+S)',
+      onClick: () => handleSaveDocument(true),
       icon: <Save />
-    },
-    {
+    }, {
       id: 2,
       title: 'Download as PDF',
       onClick: () => downalodAsPDF(),
       icon: <Download />
+    }, {
+      id: 3,
+      title: 'Document details',
+      onClick: () => setIsDetailsOpen((prevOpen) => !prevOpen),
+      icon: <Info />
     }
   ];
 
+  // Autosave (every 30 seconds)
   useEffect(() => {
     let autosaveInterval;
   
-    const autosaveHandler = async () => {
-      await saveDocument(doc, editorRef, false);
-    };
-  
     if (isAutosave) {
       autosaveInterval = setInterval(() => {
-        autosaveHandler();
-      }, 5000);
+        handleSaveDocument(false);
+      }, 30000);
     } else {
       clearInterval(autosaveInterval);
     }
@@ -80,10 +98,18 @@ const MenuBar = ({ doc, editorRef }) => {
     return () => clearInterval(autosaveInterval);
   }, [isAutosave]);
 
-  const handleAutosave = (e) => {
+  const toggleAutosave = (e) => {
     setIsAutosave(e.target.checked);
     toast.success(`Autosave is ${e.target.checked ? 'on' : 'off'}`)
   } 
+
+  const lastSaved = new Date(doc.updatedAt).toLocaleString(undefined, {
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+  });
 
   return (
     <Container maxWidth="xl">
@@ -97,26 +123,46 @@ const MenuBar = ({ doc, editorRef }) => {
             justifyContent: 'space-between', 
             gap: '16px' 
           }}>
-          <Typography 
-            variant="body1" 
-            sx={{ flexGrow: 0 }} 
-          >
-            {doc?.title}
-          </Typography>
-          {buttons.map((button) => (
-            <MenuBarButton key={button.id} button={button} />
-          ))}
-          <Switch
-            checked={isAutosave}
-            onChange={(e) => handleAutosave(e)}
-            inputProps={{ "aria-label": 'Autosave' }}
-          />
+          <Box>
+            <Tooltip title={doc.title || 'Document title'}>
+              <Typography variant="h6" component="span" sx={{ fontWeight: 'bold' }}>
+                {doc.title || 'Untitled'}
+              </Typography>
+            </Tooltip>
+            <Typography variant="subtitle2" color="textSecondary">
+              Last saved {lastSaved}
+            </Typography>
+          </Box>
         </div>
-        <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center' }}>
-          {/* <RevisionHistory editor={editor} doc={doc} /> */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px' }}>
+            {buttons.map((button) => (
+              <MenuBarButton key={button.id} button={button} />
+            ))}
+            <Tooltip title='Autosave'>
+              <Switch
+                checked={isAutosave}
+                onChange={(e) => toggleAutosave(e)}
+                inputProps={{ "aria-label": 'Autosave' }}
+              />
+            </Tooltip>
+          </div>
+        <div 
+          style={{ 
+            marginLeft: 'auto', 
+            display: 'flex', 
+            alignItems: 'center' 
+          }}
+        >
           <ShareDoc doc={doc} user={user} />
         </div>
       </Toolbar>
+      {loading && (
+        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <div style={{ marginLeft: 50 }}>
+            <Loader />
+          </div>
+        </div>
+      )}
     </Container>
   );
 };

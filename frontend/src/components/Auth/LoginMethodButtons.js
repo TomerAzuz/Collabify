@@ -7,15 +7,10 @@ import { useAuth } from './AuthContext';
 const LoginMethodButtons = () => {
   const { handleAuthentication } = useAuth();
 
-  const loginMethodsButtons = [{
-    icon: <Google />,
-    method: 'google',
-    color: '#4285F4', 
-  }, {
-    icon: <GitHub />,
-    method: 'github',
-    color: '#000000', 
-  }];
+  const loginMethods = [
+    { icon: <Google />, method: 'Google', color: '#4285F4' },
+    { icon: <GitHub />, method: 'GitHub', color: '#000000' },
+  ];
 
   return (
     <Grid item xs={12}>

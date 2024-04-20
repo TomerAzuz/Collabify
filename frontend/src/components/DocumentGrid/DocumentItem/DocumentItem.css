@@ -15,9 +15,8 @@
 }
 
 .card-media {
-  object-fit: cover;
-  height: auto;
-  width: auto;
+  height: 80%;
+  width: 100%;
   min-height: 220px;
 }
 

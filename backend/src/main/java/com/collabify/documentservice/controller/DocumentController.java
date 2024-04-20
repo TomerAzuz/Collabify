@@ -31,7 +31,7 @@ public class DocumentController {
     public ResponseEntity<RichTextDocument> createDocument(@RequestBody RichTextDocument document,
                                                            @RequestAttribute("userId") String userId)  {
         log.info("Creating document.");
-        RichTextDocument savedDocument = documentService.saveDocument(document, userId);
+        RichTextDocument savedDocument = documentService.createDocument(document, userId);
         URI location = URI.create("/documents/" + savedDocument.getId());
         return ResponseEntity.created(location).body(savedDocument);
     }

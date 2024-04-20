@@ -1,28 +1,20 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { useSlate } from 'slate-react'
 import { Editor } from 'slate';
-import { TextField, IconButton, Tooltip, Select, MenuItem } from '@mui/material';
-import { FormatBold, FormatItalic, FormatUnderlined, Add, Remove, BorderColor } from '@mui/icons-material';
-import { faStrikethrough } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Divider, TextField, IconButton, Tooltip, Select, MenuItem } from '@mui/material';
+import { FormatBold, FormatItalic, FormatUnderlined, Add, Remove, BorderColor, StrikethroughS } from '@mui/icons-material';
 
 import './Toolbar.css';
-import CustomEditor from '../Editor/CustomEditor';
+import useCustomEditor from '../CustomHooks/useCustomEditor';
 import CustomIconButton from './CustomIconButton';
 import ColorPicker from './ColorPicker';
+import { FONTS } from '../Common/Utils/constants';
 
 const FontControls = () => {
   const [fontSize, setFontSize] = useState(14);
   const [fontFamily, setFontFamily] = useState('Arial');
   const editor = useSlate();
-
-  const fontFamilies = useMemo(() => [
-    'AMATIC SC', 'Arial', 'Caveat', 'Comfortaa', 'Comic Sans MS', 
-    'Courier New', 'EB Garamond', 'Georgia', 'Impact', 'Lexend',
-    'Lobster', 'Lora', 'Merriweather', 'Montserrat', 'Nunito', 'Open Sans', 'Oswald',  
-    'Pacifico', 'Playfair Display', 'PT Mono', 'Roboto', 'Roboto Mono', 'Roboto Serif',  
-    'Source Code Pro', 'Spectral', 'Times New Roman', 'Trebuchet MS', 'Verdana' 
-  ], []);
+  const { setTextSize, toggleMark, addMark } = useCustomEditor();
 
   const getFontSize = () => {
     const marks = Editor.marks(editor);
@@ -38,7 +30,7 @@ const FontControls = () => {
     setFontSize(prevSize => {
       const size = prevSize + increment;
       const clampedSize = Math.min(Math.max(size, 1), 400);
-      CustomEditor.setFontSize(editor, clampedSize);
+      setTextSize(editor, clampedSize);
       return clampedSize;
     });
   }, [editor]);
@@ -50,27 +42,27 @@ const FontControls = () => {
     }, {
       format: 'bold',
       title: 'Bold (Ctrl+B)',
-      onClick: () => CustomEditor.toggleMark(editor, 'bold'),
+      onClick: () => toggleMark(editor, 'bold'),
       icon: <FormatBold />
     }, {
       format: 'italic',
       title: 'Italic (Ctrl+I)',
-      onClick: () => CustomEditor.toggleMark(editor, 'italic'),
+      onClick: () => toggleMark(editor, 'italic'),
       icon: <FormatItalic />
     }, {
       format: 'underline',
       title: 'Underline (Ctrl+U)',
-      onClick: () => CustomEditor.toggleMark(editor, 'underline'),
+      onClick: () => toggleMark(editor, 'underline'),
       icon: <FormatUnderlined />
     }, {
       format: 'strikethrough',
       title: 'Strikethrough',
-      onClick: () => CustomEditor.toggleMark(editor, 'strikethrough'),
-      icon: <FontAwesomeIcon icon={faStrikethrough} />
+      onClick: () => toggleMark(editor, 'strikethrough'),
+      icon: <StrikethroughS />
     }, {
       format: 'backgroundColor',
       title: 'Highlight color',
-      onClick: () => CustomEditor.toggleMark(editor, 'backgroundColor'),
+      onClick: () => toggleMark(editor, 'backgroundColor'),
       icon: <BorderColor />
     }
   ], [editor, adjustFontSize]);  
@@ -81,7 +73,7 @@ const FontControls = () => {
 
     if (!isNaN(size)) {
       const clampedSize = Math.min(Math.max(size, 1), 400);
-      CustomEditor.setFontSize(editor, clampedSize);
+      setTextSize(editor, clampedSize);
       setFontSize(clampedSize);
     }
   };
@@ -89,21 +81,34 @@ const FontControls = () => {
   const changeFontFamily = (e) => {
     e.preventDefault();
     setFontFamily(e.target.value);
-    CustomEditor.addMark(editor, 'fontFamily', e.target.value);
+    addMark(editor, 'fontFamily', e.target.value);
   };
 
   return (
     <>
       {/* Font family */}
+      <Divider sx={{ margin: '10px' }} orientation="vertical" variant="middle" flexItem />
       <Tooltip title="Font">
         <Select
           labelId="font-select-label"
           id="font-family"
-          sx={{ width: '100px', textAlign: 'center', margin: '2px' }}
+          sx={{
+            width: '90px',
+            textAlign: 'center',
+            margin: '2px',
+            height: '60px',
+            boxShadow: 'none', 
+            '.MuiOutlinedInput-notchedOutline': { border: 0 },
+            '&.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline':  { border: 0 },
+            '&.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': { border: 0 },
+            '& .MuiSelect-select': {
+              fontWeight: 'thin', 
+            },
+          }}
           value={getFontFamily()}
           onChange={changeFontFamily}
         >
-          {fontFamilies.map((font, index) => (
+          {FONTS.map((font, index) => (
             <MenuItem 
               key={index} 
               value={font}
@@ -114,7 +119,7 @@ const FontControls = () => {
           ))} 
         </Select>
       </Tooltip> 
-
+      <Divider sx={{ margin: '10px' }} orientation="vertical" variant="middle" flexItem />
       {/* Decrease font size */}
       <Tooltip title="Decrease font size">
         <IconButton
@@ -130,18 +135,23 @@ const FontControls = () => {
         <TextField
           id='font-size'
           type="text"
-          variant="outlined"
+          size="small"
+          inputProps={{style: { fontSize: 16, textAlign: 'center', fontWeight: 'bold' }}}
           sx={{ width: '50px', textAlign: 'center' }}
           value={getFontSize()}
           onChange={(e) => changeFontSize(e)}
         />
       </Tooltip>
       {buttons.map((button, index) => (
-        <CustomIconButton
-          key={index}
-          button={button}
-          isBlock={false}
-        />
+        <React.Fragment key={index}>
+          {button.format === 'bold' && index !== buttons.length - 1 && (
+            <Divider sx={{ margin: '10px' }} orientation="vertical" variant="middle" flexItem />
+          )}
+          <CustomIconButton
+            button={button}
+            isBlock={false}
+          />
+        </React.Fragment>
       ))}
       <ColorPicker />
     </>

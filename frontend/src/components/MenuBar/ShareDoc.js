@@ -40,7 +40,7 @@ const ShareDoc = ({ doc, user }) => {
         ...doc,
         permission: e.target.value,
       });
-      toast.success(`Document permission set to: ${e.target.value}`);
+      toast.success(`Document permission set to ${e.target.value.toLowerCase()}`);
     } catch (error) {
       toast.error('Error setting document permission:', error);
     } finally {
@@ -48,21 +48,22 @@ const ShareDoc = ({ doc, user }) => {
     }
   };
 
+  const isDisabled = !doc || doc.createdBy.uid !== user.uid;
+
   return (
     <>
       <Button 
-        variant="text"
+        variant="text" 
         onClick={() => setIsShareDialogOpen(true)}
-        disabled={!doc || doc.createdBy !== user.uid}
+        disabled={isDisabled}
         startIcon={<Public />}
         sx={{
-          backgroundColor: '#64B5F6',
+          backgroundColor: isDisabled ? '#B0BEC5' : '#2196F3',
           color: 'white',
-          broderRadius: '50%',
-          transition: 'background-color 0.3s',
+          broderRadius: '50px',
+          transition: 'none',
           '&:hover': {
-            backgroundColor: '#1976D2', 
-            color: 'white', 
+            backgroundColor: isDisabled ? '#B0BEC5' : '#1565C0',
           },
         }}
       >
@@ -92,13 +93,9 @@ const ShareDoc = ({ doc, user }) => {
                 ))}
               </Select>
             </FormControl>
-            {doc?.collaborators?.length > 0 && 
+            {doc.collaborators.length > 0 && 
             <Typography variant="subtitle"> 
-              You currently share the document with 
-              {doc?.collaborators?.length === 1 ? 
-                `${doc.collaborators.length} person` : 
-                `${doc.collaborators.length} people`
-              }
+              You currently share the document with {doc.collaborators.length === 1 ? `${doc.collaborators.length} person` : `${doc.collaborators.length} people`}
             </Typography>
             }
           </div>

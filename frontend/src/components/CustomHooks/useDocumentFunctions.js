@@ -22,8 +22,6 @@ const useDocumentFunctions = () => {
       allowTaint: true
     });
 
-    const test = canvas.toDataURL('image/jpeg');
-    console.log(test)
     const blob = await new Promise((resolve) => {
       canvas.toBlob((blob) => {
         resolve(blob);
@@ -59,16 +57,25 @@ const useDocumentFunctions = () => {
       }
       return response;
     } catch (error) {
-      toast.error('Error saving document:', error.message);
+      toast.error('Error saving document');
       throw error;
     }
   };
 
   const addCollaborator = async (document) => {
     try {
-      await updateDocument(document.id, {
-        collaborators: [...document.collaborators, user.uid],
+      const response = await updateDocument(document.id, {
+        collaborators: [...document.collaborators, 
+        { 
+          uid: user.uid,
+          photoURL: user.photoURL,
+          displayName: user.displayName || user.email
+        }],
       });
+      
+      if (response) {
+        return response;
+      }
     } catch (error) {
       console.error('Failed to update collaborators: ', error.message);
       throw error;
@@ -78,22 +85,24 @@ const useDocumentFunctions = () => {
   const fetchDocument = useCallback(async (documentId) => {
     try {
       const response = await getDocumentById(documentId);
-      if (response.createdBy !== user.uid && !response.collaborators.includes(user.uid)) {
-        await addCollaborator(response);
-      }
       return response;
     } catch (error) {
-      console.error('Failed to fetch document with id ', documentId, ": ", error.message);
+      toast.error('Failed to fetch document');
       throw error;
     }
   }, [user.uid]);
 
-  const createDocument = async (content) => {
+  const createDocument = async (content, title) => {
     try {
       const document = {
-        title: 'untitled document',
+        title: title || 'untitled document',
         content: content || templates.blank.content,
         previewUrl: '',
+        createdBy: {
+          uid: user.uid,
+          photoURL: user.photoURL,
+          displayName: user.displayName
+        },
         permission: 'Viewer',
       };
       const response = await postDocument(document);
@@ -118,7 +127,8 @@ const useDocumentFunctions = () => {
     createDocument,
     saveDocument,
     fetchDocument,
-    fetchDocuments
+    fetchDocuments,
+    addCollaborator
   };
 };
 

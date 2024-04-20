@@ -1,4 +1,4 @@
-const ParagraphElement = props => {    
+const ParagraphElement = (props) => {    
     const styles = {
         textAlign: props.element.textAlign || '',
         fontSize: `${props.element.fontSize || '14'}pt`,

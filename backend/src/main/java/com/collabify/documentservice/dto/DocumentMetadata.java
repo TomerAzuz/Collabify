@@ -18,17 +18,12 @@ public class DocumentMetadata {
 
     private String previewUrl;
 
-    private String createdBy;
+    private Collaborator createdBy;
 
     private Instant createdAt;
 
-    private Set<String> collaborators;
+    private Set<Collaborator> collaborators;
 
-    private Instant updatedAt;
-
-    private String updatedBy;
-
-    private int version;
 
     public static DocumentMetadata mapToDocumentMetadata(RichTextDocument document) {
         return new DocumentMetadata(
@@ -37,10 +32,6 @@ public class DocumentMetadata {
                 document.getPreviewUrl(),
                 document.getCreatedBy(),
                 document.getCreatedAt(),
-                document.getCollaborators(),
-                document.getUpdatedAt(),
-                document.getUpdatedBy(),
-                document.getVersion()
-        );
+                document.getCollaborators());
     }
 }

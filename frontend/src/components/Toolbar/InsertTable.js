@@ -3,7 +3,7 @@ import { useSlate } from 'slate-react'
 import TableChart from '@mui/icons-material/TableChart';
 import { Grid, Dialog, DialogTitle, DialogActions, DialogContent, Button, TextField } from '@mui/material';
 
-import CustomEditor from '../Editor/CustomEditor';
+import useCustomEditor from '../CustomHooks/useCustomEditor';
 import CustomIconButton from './CustomIconButton';
 
 const InsertTable = () => {
@@ -11,13 +11,14 @@ const InsertTable = () => {
   const [rows, setRows] = useState(1);
   const [cols, setCols] = useState(1);
   const [isDimensionsOpen, setIsDimensionsOpen] = useState(false);
+  const { insertTable } = useCustomEditor();
   
   const handleInsertTable = () => {
     if (rows < 1 || rows > 63 || cols < 1 || cols > 63) {
       alert('Invalid table dimensions');
       return;
     }
-    CustomEditor.insertTable(editor, rows, cols);
+    insertTable(editor, rows, cols);
     setIsDimensionsOpen(false);
   };
 

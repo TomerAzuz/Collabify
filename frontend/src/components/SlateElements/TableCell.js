@@ -1,4 +1,4 @@
-const TableCell = props => {
+const TableCell = (props) => {
   const styles = {
     border: '1px solid black',
     width: '100px',

@@ -1,4 +1,4 @@
-const NumberedListElement = props => {    
+const NumberedListElement = (props) => {    
   return (
     <ol {...props.attributes}>
       {props.children}

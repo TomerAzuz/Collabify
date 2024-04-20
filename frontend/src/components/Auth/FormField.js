@@ -27,7 +27,7 @@ const FormField = ({ field, error }) => {
           endAdornment: field.type === 'password' && (
             <InputAdornment position="end">
               <IconButton
-                aria-label="toggle password visibility"
+                aria-label="showPassword"
                 onClick={handleTogglePasswordVisibility}
                 edge="end"
               >

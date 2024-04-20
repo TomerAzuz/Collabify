@@ -1,6 +1,6 @@
 import { useSelected, useFocused } from 'slate-react';
 
-const ImageElement = props => { 
+const ImageElement = (props) => { 
   const selected = useSelected();
   const focused = useFocused();
 

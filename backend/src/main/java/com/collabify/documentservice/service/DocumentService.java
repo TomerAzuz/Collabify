@@ -24,12 +24,11 @@ public class DocumentService {
     }
 
     @RateLimited(limit = 60)
-    public RichTextDocument saveDocument(RichTextDocument document, String userId) {
+    public RichTextDocument createDocument(RichTextDocument document, String userId) {
         String id = UUID.randomUUID().toString();
         document.setId(id);
         document.setCollaborators(new HashSet<>());
         document.setPermission("Viewer");
-        document.setCreatedBy(userId);
         document.setUpdatedBy(userId);
         return documentRepository.save(document);
     }
@@ -69,6 +68,6 @@ public class DocumentService {
                     existingDoc.setUpdatedBy(userId);
                     return documentRepository.save(existingDoc);
                 })
-                .orElseGet(() -> saveDocument(document, userId));
+                .orElseGet(() -> createDocument(document, userId));
     }
 }

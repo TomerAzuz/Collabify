@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class S3Service {
@@ -28,7 +29,7 @@ public class S3Service {
         this.s3client = s3client;
     }
 
-    @RateLimited(limit = 60)
+    @RateLimited(limit = 60, window = TimeUnit.HOURS)
     public String uploadImage(String keyName, MultipartFile file) throws IOException {
         String contentType = getContentTypeByFilename(Objects.requireNonNull(file.getOriginalFilename()));
         ObjectMetadata metadata = new ObjectMetadata();

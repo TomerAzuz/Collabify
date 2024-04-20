@@ -24,9 +24,15 @@ public class FirebaseAuthFilter extends OncePerRequestFilter {
     private static final Logger logger = LoggerFactory.getLogger(FirebaseAuthFilter.class);
     private static final String BEARER_PREFIX = "Bearer ";
     private static final String AUTHORIZATION_HEADER = "Authorization";
+    private static final String HEALTH_ENDPOINT = "/actuator/health";
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        if (shouldSkipFilter(request)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         String authHeader = request.getHeader(AUTHORIZATION_HEADER);
 
         if (authHeader == null || !authHeader.startsWith(BEARER_PREFIX)) {
@@ -45,5 +51,9 @@ public class FirebaseAuthFilter extends OncePerRequestFilter {
         } catch (FirebaseAuthException e) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
         }
+    }
+
+    private boolean shouldSkipFilter(HttpServletRequest request) {
+        return request.getRequestURI().equals(HEALTH_ENDPOINT);
     }
 }

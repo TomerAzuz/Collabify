@@ -1,35 +1,31 @@
 import React, { useMemo } from 'react';
 import { useSlate } from 'slate-react'
-import { FormatQuote } from '@mui/icons-material';
+import { Divider } from '@mui/material';
 import { FormatListBulleted, FormatListNumbered, Checklist } from '@mui/icons-material';
 
 import '../../App.css';
 import './Toolbar.css';
-import CustomEditor from '../Editor/CustomEditor';
+import useCustomEditor from '../CustomHooks/useCustomEditor';
 import CustomIconButton from './CustomIconButton';
 
 const FormattingControls = () => {
   const editor = useSlate();
+  const { toggleBlock, insertCheckListItem } = useCustomEditor();
 
   const buttons = useMemo(() => [{
-      format: 'quote',
-      title: 'Quote block',
-      onClick: () => CustomEditor.toggleBlock(editor, 'quote'),
-      icon: <FormatQuote />
-    }, {
       format: 'bulleted-list',
       title: 'Bulleted list (Ctrl+Shift+8)',
-      onClick: () => CustomEditor.toggleBlock(editor, 'bulleted-list'),
+      onClick: () => toggleBlock(editor, 'bulleted-list'),
       icon: <FormatListBulleted />
     }, {
       format: 'numbered-list',
       title: 'Numbered list (Ctrl+Shift+7)',
-      onClick: () => CustomEditor.toggleBlock(editor, 'numbered-list'),
+      onClick: () => toggleBlock(editor, 'numbered-list'),
       icon: <FormatListNumbered />
     }, {
       format: 'check-list-item',
       title: 'Checklist',
-      onClick: () => CustomEditor.insertCheckListItem(editor),
+      onClick: () => toggleBlock(editor, 'check-list-item'),
       icon: <Checklist />
     }
   ], [editor]);
@@ -43,6 +39,7 @@ const FormattingControls = () => {
           isBlock={true}
         />
       ))}
+      <Divider sx={{ margin: '10px' }} orientation="vertical" variant="middle" flexItem />
     </>
   )
 };

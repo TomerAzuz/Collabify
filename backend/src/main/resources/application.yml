@@ -32,7 +32,11 @@ spring:
       resourceserver:
         jwt:
           jwk-set-uri: https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com
-
+  management:
+    endpoints:
+      web:
+        exposure:
+          include: health
 firebase:
   config:
     path: "classpath:serviceAccountKey.json"

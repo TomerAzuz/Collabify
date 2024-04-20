@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import * as Y from "yjs";
 import { useRoom } from "../../liveblocks.config";
 
-import SlateEditor from "./SlateEditor";
+import EditorWrapper from "./EditorWrapper.js";
 import Loader from '../Common/Loader/Loader.js';
 
 export function CollaborativeEditor() {
@@ -31,8 +31,8 @@ export function CollaborativeEditor() {
   }, [room]);
 
   if (!connected || !sharedType || !provider) {
-    return <Loader />
+    return <Loader />;
   }
 
-  return <SlateEditor sharedType={sharedType} provider={provider} />
+  return <EditorWrapper sharedType={sharedType} provider={provider} />;
 };

@@ -1,6 +1,5 @@
 import Leaf from './Leaf';
 import ParagraphElement from './ParagraphElement';
-import QuoteElement from './QuoteElement';
 import ImageElement from './ImageElement';
 import BulletedListElement from './BulletedListElement';
 import NumberedListElement from './NumberedListElement';
@@ -9,12 +8,11 @@ import TableRow from './TableRow';
 import TableCell from './TableCell';
 import ListItemElement from './ListItemElement';
 import CheckListItem from './CheckListItem';
+import MentionElement from './MentionElement';
 
 const Renderer = {
   renderElement(props) {
     switch (props.element.type) {
-        case 'quote':
-            return <QuoteElement {...props} />
         case 'image':
             return <ImageElement {...props} />
         case 'bulleted-list':
@@ -31,6 +29,8 @@ const Renderer = {
             return <TableCell {...props} />
         case 'check-list-item':
             return <CheckListItem {...props} />
+        case 'mention':
+            return <MentionElement {...props} />
         default:
             return <ParagraphElement {...props} />
     }

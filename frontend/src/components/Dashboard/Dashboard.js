@@ -5,7 +5,7 @@ import './Dashboard.css';
 import { getDocuments } from '../Services/documentService.js';
 import { useAuth } from '../Auth/AuthContext';
 import DocumentsGrid from '../DocumentGrid/DocumentsGrid';
-import DashboardAppBar from './DashboardAppBar.js';
+import Navbar from './Navbar/Navbar.js';
 import TemplatesGrid from '../Templates/TemplatesGrid.js';
 
 const Dashboard = () => {
@@ -32,9 +32,9 @@ const Dashboard = () => {
 
   const filteredDocuments = documents?.filter(document => {
     if (filter === 'owned') {
-      return document.createdBy === user.uid;
+      return document.createdBy.uid === user.uid;
     } else if (filter === 'collaborator') {
-      return document.collaborators.includes(user.uid);
+      return document.collaborators.some(collab => collab.uid === user.uid);
     } else {
       return true;
     }
@@ -44,17 +44,17 @@ const Dashboard = () => {
 
   return (
     <>
-      <DashboardAppBar 
+      <Navbar 
         searchTerm={searchTerm} 
         setSearchTerm={setSearchTerm} 
       />
       <div className='dashboard-container'>
-        <Typography sx={{ marginBottom: '30px' }}>
+        <Typography variant="h6" align="center" sx={{ marginBottom: '30px' }}>
           Start a new document
         </Typography>
         <TemplatesGrid />
         <div className='my-documents'>
-          <Typography variant="h5" >
+          <Typography variant="h5" sx={{ marginLeft: '100px' }}>
             My Documents
           </Typography>
           <Select

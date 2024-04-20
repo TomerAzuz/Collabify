@@ -8,9 +8,9 @@ const TemplateCard = ({ template }) => {
   const { createDocument } = useDocumentFunctions();
   const navigate = useNavigate();
   
-  const handleCreateDocument = async (content) => {
+  const handleCreateDocument = async () => {
     try {
-      const response = await createDocument(content);
+      const response = await createDocument(template.content, template.title);
       if (response) {
         navigate(`/document/${response.id}`, {
           state: { doc: response }
@@ -25,7 +25,7 @@ const TemplateCard = ({ template }) => {
     <Grid item>
       <Card
         className='template'
-        onClick={() => handleCreateDocument(template.content)}
+        onClick={() => handleCreateDocument()}
       >
         {template.previewUrl && (
           <CardMedia 

@@ -1,5 +1,6 @@
 package com.collabify.documentservice.model;
 
+import com.collabify.documentservice.dto.Collaborator;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,9 +30,9 @@ public class RichTextDocument {
 
     private String previewUrl;
 
-    private String createdBy;
+    private Collaborator createdBy;
 
-    private Set<String> collaborators;
+    private Set<Collaborator> collaborators;
 
     private String permission;
 

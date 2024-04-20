@@ -38,7 +38,7 @@ const DocumentItem = ({ document, onDeleteDocument }) => {
   };
 
   const updateDocumentTitle = async () => {
-    if (document.createdBy === user.uid) {
+    if (document.createdBy.uid === user.uid) {
       const prevTitle = document.title;
       try {
         setLoading(true);

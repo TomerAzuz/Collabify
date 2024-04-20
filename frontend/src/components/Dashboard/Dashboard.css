@@ -11,7 +11,7 @@
   justify-content: space-between;
   margin: 20px; 
   height: 50px;
-  width: 100%;
+  min-width: 70vw;
 }
 
 .MuiSelect-select {

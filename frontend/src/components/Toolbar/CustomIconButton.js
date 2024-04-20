@@ -1,22 +1,29 @@
 import { useSlate } from 'slate-react'
 import { IconButton, Tooltip } from '@mui/material';
-import CustomEditor from '../Editor/CustomEditor';
+import useCustomEditor from '../CustomHooks/useCustomEditor';
 
 const CustomIconButton = ({ button, isBlock }) => {
   const editor = useSlate();
-  const isActive = button?.format
-  ? (isBlock
-      ? CustomEditor.isBlockActive(editor, button.format)
-      : CustomEditor.isMarkActive(editor, button.format))
-  : false;
+  const { isBlockActive, isMarkActive } = useCustomEditor();
+  const isActive = button?.format ?
+        (isBlock ? isBlockActive(editor, button.format) : 
+                   isMarkActive(editor, button.format))
+        : false;
 
   return (
     <Tooltip title={button.title}>
       <IconButton
         onClick={button.onClick}
+        edge='end'
+        size='small'
         sx={{
           backgroundColor: isActive ? '#CCD1D9' : 'transparent',
-          borderRadius: '50%'
+          borderRadius: '50%',
+          margin: 'auto',
+          padding: '6px',
+          '&:hover': {
+            borderRadius: '50px', 
+          },
         }}
       >
         {button.icon}

@@ -11,12 +11,12 @@ const DocumentsGrid = ({ documents, setDocuments, loading }) => {
 
   const handleDeleteDocument = useCallback(async (document) => {
     try {
-      if (document.createdBy === user.uid) {
+      if (document.createdBy.uid === user.uid) {
         await deleteDocument(document.id);
       } else {
         await updateDocument(document.id, {
           collaborators: document.collaborators
-            .filter(userId => userId !== user.uid)
+            .filter(collab => collab.uid !== user.uid)
         });
       } 
       setDocuments(documents => documents
@@ -39,7 +39,7 @@ const DocumentsGrid = ({ documents, setDocuments, loading }) => {
             alignItems: 'center' 
       }}
     >
-    {documents?.length > 0 ? (
+    {documents.length > 0 ? (
       documents.map((doc) => (
         <DocumentItem 
           key={doc.id}

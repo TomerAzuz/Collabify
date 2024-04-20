@@ -2,22 +2,32 @@ import React from 'react'
 import { Transforms } from 'slate';
 import { useSlateStatic, useReadOnly, ReactEditor } from 'slate-react';
 
-const CheckListItem = props => {
+const CheckListItem = (props) => {
   const editor = useSlateStatic();
   const readOnly = useReadOnly();
   const { checked } = props.element;
+  const isChecked = checked || false;
   
+  const styles = {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    '& + &': {
+      marginTop: 0,
+    },
+    textAlign: props.element.textAlign || '',
+    fontSize: `${props.element.fontSize || '14'}pt`,
+    fontFamily: props.element.fontFamily || '',
+    lineHeight: props.element.lineHeight || 1.0,
+    margin: `${props.element.margin || 1}em`,
+    padding: 0
+  };
+
+
   return (
     <div
       {...props.attributes}
-      style={{
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        '& + &': {
-          marginTop: 0,
-        }
-      }}
+      style={styles}
     >
       <span
         contentEditable={false}
@@ -27,7 +37,7 @@ const CheckListItem = props => {
       >
         <input
           type="checkbox"
-          checked={checked}
+          checked={isChecked}
           onChange={e => {
             const path = ReactEditor.findPath(editor, props.element);
             const newProps = {

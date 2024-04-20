@@ -1,5 +1,6 @@
 package com.collabify.documentservice;
 
+import com.collabify.documentservice.dto.Collaborator;
 import com.collabify.documentservice.exception.DocumentNotFoundException;
 import com.collabify.documentservice.model.RichTextDocument;
 import com.collabify.documentservice.repository.DocumentRepository;
@@ -40,7 +41,9 @@ public class DocumentServiceTest {
                 "title",
                 content,
                 "preview",
-                "Tomer",
+                new Collaborator("123",
+                        "https://example.com/avatar.jpg",
+                        "username"),
                 new HashSet<>(),
                 "Viewer",
                 now,
@@ -79,7 +82,7 @@ public class DocumentServiceTest {
 
         when(documentRepository.save(document)).thenReturn(document);
 
-        var savedDocument = documentService.saveDocument(document, userId);
+        var savedDocument = documentService.createDocument(document, userId);
 
         assertThat(savedDocument).isNotNull();
         assertThat(savedDocument.getId()).isEqualTo(document.getId());
