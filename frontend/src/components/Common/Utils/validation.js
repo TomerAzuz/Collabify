@@ -3,15 +3,17 @@ export const isValidEmail = (email) => {
   return regex.test(email);
 };
 
-export const isValidImageUrl = (url) => {
-
+export const isValidUrl = (url) => {
   const urlRegex = /^(ftp|http|https):\/\/[^ "]+$/;
-  const supportedExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp'];
+  return urlRegex.test(url);
+};
 
-  if (!urlRegex.test(url)) {
+export const isValidImageUrl = (url) => {
+  if (!isValidUrl(url)) {
     return false; 
   }
-
+  
+  const supportedExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp'];
   const urlParts = url.split('.');
   const fileExtension = urlParts[urlParts.length - 1].toLowerCase();
 
@@ -53,7 +55,7 @@ export const validateProfileForm = (formData) => {
     errors.email = 'Please enter a valid email address';
   }
 
-  if (formData.photoURL && !isValidImageUrl(formData.photoURL)) {
+  if (formData.photoURL && !isValidUrl(formData.photoURL)) {
     errors.photoURL = 'Please enter a valid image url';
   }
 

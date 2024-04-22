@@ -13,6 +13,7 @@ const Navbar = ({ searchTerm, setSearchTerm }) => {
   const { user, handleSignOut } = useAuth();
 
   return (
+    <>
     <AppBar>
       <Toolbar sx={{ backgroundColor: '#f5f5f5' }}>
         <Logo variant={'h3'}/>
@@ -55,6 +56,7 @@ const Navbar = ({ searchTerm, setSearchTerm }) => {
         </IconButton>
       </Toolbar>
     </AppBar>
+    </>
   );
 };
 

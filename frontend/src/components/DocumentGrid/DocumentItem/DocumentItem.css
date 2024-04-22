@@ -4,10 +4,11 @@
   flex-direction: column;
   justify-content: space-between;
   box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
-  padding: 10px;
-  height: 300px;
-  width: 200px;
+  margin: 5px;
+  height: 320px;
+  width: 240px;
   box-sizing: border-box;
+  cursor: pointer;
 }
 
 .document-card:hover {
@@ -15,29 +16,29 @@
 }
 
 .card-media {
-  height: 80%;
-  width: 100%;
-  min-height: 220px;
+  max-height: 280px;
+  width: 80%;
 }
 
-.menu-container {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  z-index: 1;
-}
-
-.menu-item-icon {
-  margin-right: 20px;
+.document-card-footer {
+  display: flex;
+  align-items: center;
+  padding: 5px;
 }
 
 .card-title {
+  background-color: red;
+  flex-basis: 50%;
   text-align: center;
+  align-items: center;
   cursor: pointer;
-  padding: 5px;
+  margin: 2px;
+  padding: 2px;
+  max-width: 100px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  font-weight: bold;
 }
 
 .card-title:hover {

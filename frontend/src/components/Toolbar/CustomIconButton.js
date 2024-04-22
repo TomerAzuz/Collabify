@@ -1,6 +1,6 @@
 import { useSlate } from 'slate-react'
 import { IconButton, Tooltip } from '@mui/material';
-import useCustomEditor from '../CustomHooks/useCustomEditor';
+import useCustomEditor from '../Hooks/useCustomEditor';
 
 const CustomIconButton = ({ button, isBlock }) => {
   const editor = useSlate();

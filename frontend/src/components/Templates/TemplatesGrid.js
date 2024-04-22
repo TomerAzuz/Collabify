@@ -4,6 +4,8 @@ import { Grid } from '@mui/material';
 import templates from './templates.json';
 import TemplateCard from './TemplateCard.js';
 
+const cloudFrontDomain = process.env.REACT_APP_AWS_CLOUDFRONT_DOMAIN;
+
 const TemplatesGrid = () => {
 
   const templateCards = useMemo(() => [
@@ -15,12 +17,12 @@ const TemplatesGrid = () => {
       id: 1,
       title: 'Resume',
       content: templates.resume.content,
-      previewUrl: "https://collabify-images.s3.il-central-1.amazonaws.com/4f660e2f-bcc6-4fa2-903d-518021518062.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20240414T154115Z&X-Amz-SignedHeaders=host&X-Amz-Expires=604800&X-Amz-Credential=AKIAXBQHZG3RC3YIN3KO%2F20240414%2Fil-central-1%2Fs3%2Faws4_request&X-Amz-Signature=7d8cba9c63c9a18038b05102e2973558a9ac6a84073d21e2c4bd70e8731da93c"
+      previewUrl: `https://${cloudFrontDomain}.cloudfront.net/4f660e2f-bcc6-4fa2-903d-518021518062.jpg`
     }, {
       id: 2,
       title: 'Letter',
       content: templates.letter.content,
-      previewUrl: "https://collabify-images.s3.il-central-1.amazonaws.com/2a63bfc4-5b26-4117-85fb-8cb4d2eff1db.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20240414T153903Z&X-Amz-SignedHeaders=host&X-Amz-Expires=604800&X-Amz-Credential=AKIAXBQHZG3RC3YIN3KO%2F20240414%2Fil-central-1%2Fs3%2Faws4_request&X-Amz-Signature=ca30520cfc4302d123517690fa66fed79a4bd345920eaf52676612d758c64fb3"
+      previewUrl: `https://${cloudFrontDomain}.cloudfront.net/2a63bfc4-5b26-4117-85fb-8cb4d2eff1db.jpg`
     }
   ], []);
 

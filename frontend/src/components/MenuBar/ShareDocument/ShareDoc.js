@@ -8,11 +8,12 @@ import { FormControl,
          DialogTitle, 
          DialogActions, 
          Typography } from '@mui/material';
-import { Public } from '@mui/icons-material';
 import { toast } from 'react-hot-toast';
 
-import { updateDocument } from '../Services/documentService';
-import Loader from '../Common/Loader/Loader.js';
+import '.././MenuBar.css';
+import { updateDocument } from '../../Services/documentService.js';
+import ShareButton from './ShareButton.js';
+import Loader from '../../Common/Loader/Loader.js';
 
 const ShareDoc = ({ doc, user }) => {
   const permissions = ['Viewer', 'Editor'];
@@ -51,31 +52,18 @@ const ShareDoc = ({ doc, user }) => {
   const isDisabled = !doc || doc.createdBy.uid !== user.uid;
 
   return (
-    <>
-      <Button 
-        variant="text" 
-        onClick={() => setIsShareDialogOpen(true)}
-        disabled={isDisabled}
-        startIcon={<Public />}
-        sx={{
-          backgroundColor: isDisabled ? '#B0BEC5' : '#2196F3',
-          color: 'white',
-          broderRadius: '50px',
-          transition: 'none',
-          '&:hover': {
-            backgroundColor: isDisabled ? '#B0BEC5' : '#1565C0',
-          },
-        }}
-      >
-        Share
-      </Button>
+    <div className='share-doc'>
+      <ShareButton 
+        isDisabled={isDisabled} 
+        setIsShareDialogOpen={setIsShareDialogOpen} 
+      />
       <Dialog
         open={isShareDialogOpen}
         onClose={() => setIsShareDialogOpen(false)}
       >
         <DialogTitle>Share '{doc && doc.title}'</DialogTitle>
         <DialogContent>
-          <Typography>
+          <Typography gutterBottom>
             Anyone on the internet with the link can {permission === 'Viewer' ? 'view' : 'edit'}
           </Typography>
           <div>          
@@ -106,7 +94,7 @@ const ShareDoc = ({ doc, user }) => {
         </DialogActions>
         {loading && <Loader />}
       </Dialog>
-    </>
+    </div>
   );
 };
 

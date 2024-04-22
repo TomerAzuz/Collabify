@@ -13,24 +13,24 @@ import PasswordResetPage from './components/Auth/PasswordResetPage';
 import NotFound from './components/ErrorPages/NotFound';
 import Page from './components/Editor/Page';
 import LandingPage from './components/LandingPage/LandingPage';
-import ProfilePage from './components/UserProfile/ProfilePage';
+import ProfilePage from './components/Profile/ProfilePage';
 
 const App = () => (
     <Router>
       <AuthProvider>
-          <div className="App">
-          <Toaster />
-            <Routes>
-              <Route path="/" element={<CustomRoute component={LandingPage} />} />
-              <Route path="/auth/login" element={<LoginPage />} />
-              <Route path="/auth/signup" element={<SignupPage />} />
-              <Route path="/auth/forgot" element={<PasswordResetPage />} />
-              <Route path="/dashboard" element={<PrivateRoute component={Dashboard} />} />
-              <Route path="/profile/:uid" element={<PrivateRoute component={ProfilePage}/>}/>
-              <Route path="/document/:id" element={<PrivateRoute component={Page} />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </div>
+        <div className="App">
+        <Toaster />
+          <Routes>
+            <Route path="/" element={<CustomRoute component={LandingPage} />} />
+            <Route path="/auth/login" element={<LoginPage />} />
+            <Route path="/auth/signup" element={<SignupPage />} />
+            <Route path="/auth/forgot" element={<PasswordResetPage />} />
+            <Route path="/dashboard" element={<PrivateRoute component={Dashboard} />} />
+            <Route path="/profile/:uid" element={<PrivateRoute component={ProfilePage}/>}/>
+            <Route path="/document/:id" element={<PrivateRoute component={Page} />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </div>
       </AuthProvider>
     </Router>
 );

@@ -1,4 +1,4 @@
-.template {
+.template-card {
   width: 180px; 
   height: 260px; 
   display: flex; 
@@ -6,10 +6,10 @@
   border: 1px solid transparent; 
   transition: border 0.3s ease, transform 0.3s ease; 
   box-sizing: border-box;
-  overflow: auto; 
+  overflow: hidden;
 }
 
-.template:hover {
+.template-card:hover {
   border-color: #2196f3;
   cursor: pointer;
 }

@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { Grid, Typography, Card, CardMedia } from '@mui/material';
 
 import './Templates.css';
-import useDocumentFunctions from '../CustomHooks/useDocumentFunctions.js';
+import useDocumentFunctions from '../Hooks/useDocumentFunctions.js';
 
 const TemplateCard = ({ template }) => {
   const { createDocument } = useDocumentFunctions();
@@ -12,9 +12,7 @@ const TemplateCard = ({ template }) => {
     try {
       const response = await createDocument(template.content, template.title);
       if (response) {
-        navigate(`/document/${response.id}`, {
-          state: { doc: response }
-        });
+        navigate(`/document/${response.id}`);
       }
     } catch (error) {
       console.error('Error creating document:', error);
@@ -22,9 +20,9 @@ const TemplateCard = ({ template }) => {
   };
 
   return (
-    <Grid item>
+    <Grid item p={4}>
       <Card
-        className='template'
+        className='template-card'
         onClick={() => handleCreateDocument()}
       >
         {template.previewUrl && (
@@ -35,7 +33,11 @@ const TemplateCard = ({ template }) => {
         />
         )}
       </Card>
-      <Typography variant="body1" align='center' sx={{ marginTop: '10px' }}>
+      <Typography 
+        variant="body1" 
+        align='center' 
+        sx={{ marginTop: '10px', marginBottom: '10px' }}
+      >
         {template.title}
       </Typography>
     </Grid>

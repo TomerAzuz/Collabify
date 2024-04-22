@@ -3,7 +3,7 @@ import { useSlate } from 'slate-react'
 import TableChart from '@mui/icons-material/TableChart';
 import { Grid, Dialog, DialogTitle, DialogActions, DialogContent, Button, TextField } from '@mui/material';
 
-import useCustomEditor from '../CustomHooks/useCustomEditor';
+import useCustomEditor from '../Hooks/useCustomEditor';
 import CustomIconButton from './CustomIconButton';
 
 const InsertTable = () => {

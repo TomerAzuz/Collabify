@@ -5,7 +5,7 @@ import { Divider, TextField, IconButton, Tooltip, Select, MenuItem } from '@mui/
 import { FormatBold, FormatItalic, FormatUnderlined, Add, Remove, BorderColor, StrikethroughS } from '@mui/icons-material';
 
 import './Toolbar.css';
-import useCustomEditor from '../CustomHooks/useCustomEditor';
+import useCustomEditor from '../Hooks/useCustomEditor';
 import CustomIconButton from './CustomIconButton';
 import ColorPicker from './ColorPicker';
 import { FONTS } from '../Common/Utils/constants';
@@ -119,7 +119,12 @@ const FontControls = () => {
           ))} 
         </Select>
       </Tooltip> 
-      <Divider sx={{ margin: '10px' }} orientation="vertical" variant="middle" flexItem />
+      <Divider 
+        sx={{ margin: '10px' }} 
+        orientation="vertical" 
+        variant="middle" 
+        flexItem 
+      />
       {/* Decrease font size */}
       <Tooltip title="Decrease font size">
         <IconButton
@@ -136,7 +141,12 @@ const FontControls = () => {
           id='font-size'
           type="text"
           size="small"
-          inputProps={{style: { fontSize: 16, textAlign: 'center', fontWeight: 'bold' }}}
+          inputProps={{
+            style: { 
+              fontSize: 16, 
+              textAlign: 'center', 
+              fontWeight: 'bold', 
+          }}}
           sx={{ width: '50px', textAlign: 'center' }}
           value={getFontSize()}
           onChange={(e) => changeFontSize(e)}
@@ -145,7 +155,12 @@ const FontControls = () => {
       {buttons.map((button, index) => (
         <React.Fragment key={index}>
           {button.format === 'bold' && index !== buttons.length - 1 && (
-            <Divider sx={{ margin: '10px' }} orientation="vertical" variant="middle" flexItem />
+            <Divider 
+              sx={{ margin: '10px' }} 
+              orientation="vertical" 
+              variant="middle" 
+              flexItem 
+            />
           )}
           <CustomIconButton
             button={button}

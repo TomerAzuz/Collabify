@@ -5,7 +5,7 @@ import { FormatListBulleted, FormatListNumbered, Checklist } from '@mui/icons-ma
 
 import '../../App.css';
 import './Toolbar.css';
-import useCustomEditor from '../CustomHooks/useCustomEditor';
+import useCustomEditor from '../Hooks/useCustomEditor';
 import CustomIconButton from './CustomIconButton';
 
 const FormattingControls = () => {

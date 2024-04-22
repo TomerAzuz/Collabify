@@ -4,7 +4,7 @@ import { Divider } from '@mui/material';
 import { FormatAlignLeft, FormatAlignCenter, FormatAlignRight } from '@mui/icons-material';
 
 import './Toolbar.css';
-import useCustomEditor from '../CustomHooks/useCustomEditor';
+import useCustomEditor from '../Hooks/useCustomEditor';
 import CustomIconButton from './CustomIconButton';
 
 const AlignmentControls = () => {

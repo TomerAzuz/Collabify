@@ -12,9 +12,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Date;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 @Service
 public class S3Service {
@@ -25,27 +25,40 @@ public class S3Service {
     @Value("${AWS_S3_BUCKET}")
     private String bucketName;
 
+    @Value("${AWS_CLOUDFRONT_DOMAIN}")
+    private String cloudFrontDomain;
+
+
     public S3Service(AmazonS3 s3client) {
         this.s3client = s3client;
     }
 
-    @RateLimited(limit = 60, window = TimeUnit.HOURS)
+
+    @RateLimited(limit = 60)
     public String uploadImage(String keyName, MultipartFile file) throws IOException {
         String contentType = getContentTypeByFilename(Objects.requireNonNull(file.getOriginalFilename()));
         ObjectMetadata metadata = new ObjectMetadata();
+
         metadata.setContentType(contentType);
         metadata.setContentLength(file.getSize());
 
         InputStream inputStream = file.getInputStream();
-        var putObjectResult = s3client.putObject(bucketName, keyName, inputStream, metadata);
-        log.info(putObjectResult.getMetadata().toString());
+        s3client.putObject(bucketName, keyName, inputStream, metadata);
 
-        int expirationInDays = 7;
-        Date expirationDate = new Date(System.currentTimeMillis() + (expirationInDays * 24 * 60 * 60 * 1000));
-        String url = s3client.generatePresignedUrl(
-                bucketName, keyName, expirationDate).toString();
-
+        String url = buildUrl(cloudFrontDomain, keyName);
         return url;
+    }
+
+    public static String buildUrl(String cloudFrontDomain, String keyName) {
+        try {
+            URI uri = new URI("https", cloudFrontDomain + ".cloudfront.net", "/" + keyName, null);
+
+            String url = uri.toString();
+
+            return url;
+        } catch (URISyntaxException e) {
+            throw new RuntimeException("Error constructing URL: " + e.getMessage(), e);
+        }
     }
 
     public void deleteObject(String keyName) {

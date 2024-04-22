@@ -150,7 +150,6 @@ export const AuthProvider = ({ children }) => {
         await reauthenticateWithPopup(auth.currentUser, provider)
     } catch (error) {
       console.error('Reauthentication failed:', error);
-      throw error; 
     } finally {
       setLoading(false);
     }

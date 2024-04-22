@@ -32,11 +32,10 @@ const DocumentsGrid = ({ documents, setDocuments, loading }) => {
 
   return (
     <Grid 
-      maxWidth='md' 
+      maxWidth='lg' 
       container spacing={3} 
       sx={{ margin: 'auto', 
-            paddingBottom: '30px', 
-            alignItems: 'center' 
+            paddingBottom: '30px'
       }}
     >
     {documents.length > 0 ? (

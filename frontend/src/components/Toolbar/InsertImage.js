@@ -9,12 +9,14 @@ import { toast } from 'react-hot-toast';
 
 import '../../App.css';
 import './Toolbar.css';
-import useCustomEditor from '../CustomHooks/useCustomEditor';
+import useCustomEditor from '../Hooks/useCustomEditor';
 import { postFile } from '../Services/s3Service';
 import { isValidImageUrl } from '../Common/Utils/validation';
+import Loader from '../Common/Loader/Loader';
 
 const InsertImage = () => {
   const [anchorEl, setAnchorEl] = useState(null);
+  const [loading, setLoading] = useState(false);
   const editor = useSlate();
   const { insertImage } = useCustomEditor();
 
@@ -58,10 +60,13 @@ const InsertImage = () => {
       return;
     }
     try {
+      setLoading(true);
       const imageUrl = await postFile(file);
       insertImage(editor, imageUrl); 
     } catch (error) {
       toast.error('Failed to upload image');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -94,6 +99,7 @@ const InsertImage = () => {
           By URL
         </MenuItem>
       </Menu>
+      {loading && <Loader />}
     </>
   );
 };

@@ -9,6 +9,8 @@ const FormField = ({ field, error }) => {
     setShowPassword(!showPassword);
   };
 
+  const inputType = field.type === 'password' ? (showPassword ? 'text' : 'password') : field.type;
+
   return (
     <Grid item xs={12}>
       <TextField
@@ -16,7 +18,7 @@ const FormField = ({ field, error }) => {
         variant='outlined'
         label={field.label}
         name={field.name}
-        type={field.type === 'password' ? (showPassword ? 'text' : 'password') : field.type}
+        type={inputType}
         value={field.value}
         autoComplete={field.name}
         onChange={field.onChange}

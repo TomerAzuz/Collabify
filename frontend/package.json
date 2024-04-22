@@ -50,8 +50,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "jest",
-    "eject": "react-scripts eject",
-    "lint": "eslint . --fix"
+    "eject": "react-scripts eject"
   },
   "browserslist": {
     "production": [

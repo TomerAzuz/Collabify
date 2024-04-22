@@ -5,7 +5,7 @@ import { Paper, Popover, IconButton } from '@mui/material';
 import { FormatColorText } from '@mui/icons-material';
 
 import { COLORS } from '../Common/Utils/constants';
-import useCustomEditor from '../CustomHooks/useCustomEditor';
+import useCustomEditor from '../Hooks/useCustomEditor';
 import CustomIconButton from './CustomIconButton';
 
 const ColorPicker = () => {

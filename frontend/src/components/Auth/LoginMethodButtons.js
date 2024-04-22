@@ -8,13 +8,13 @@ const LoginMethodButtons = () => {
   const { handleAuthentication } = useAuth();
 
   const loginMethods = [
-    { icon: <Google />, method: 'Google', color: '#4285F4' },
-    { icon: <GitHub />, method: 'GitHub', color: '#000000' },
+    { icon: <Google />, method: 'google', color: '#4285F4' },
+    { icon: <GitHub />, method: 'github', color: '#000000' },
   ];
 
   return (
     <Grid item xs={12}>
-      {loginMethodsButtons.map((button, index) => (
+      {loginMethods.map((button, index) => (
         <div key={index} className="buttonWrapper">
           <Button
             className={button.method}

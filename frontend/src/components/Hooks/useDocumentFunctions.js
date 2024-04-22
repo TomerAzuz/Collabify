@@ -44,7 +44,7 @@ const useDocumentFunctions = () => {
     }
   };
 
-  const saveDocument = async (doc, editorRef, displayNotification) => {
+  const saveDocument = async (doc, editorRef, isAutosave) => {
     try {
       const previewUrl = await captureDocumentPreview(editorRef, doc.id);         
       const document = {
@@ -52,12 +52,14 @@ const useDocumentFunctions = () => {
         previewUrl: previewUrl,
       };
       const response = await updateDocument(doc.id, document);
-      if (response && displayNotification) {
+      if (response && !isAutosave) {
         toast.success('Document saved');
       }
       return response;
     } catch (error) {
-      toast.error('Error saving document');
+      if (!isAutosave) {
+        toast.error('Error saving document');
+      }
       throw error;
     }
   };

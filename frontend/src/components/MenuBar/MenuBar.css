@@ -1,0 +1,20 @@
+.buttons-list {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.document-title {
+  margin: auto; 
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between; 
+  gap: 16px; 
+}
+
+.share-doc {
+  margin-left: auto; 
+  display: flex;
+  align-items: center;
+}

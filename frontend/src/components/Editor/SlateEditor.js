@@ -3,35 +3,38 @@ import { Slate, Editable, withReact, ReactEditor } from 'slate-react';
 import { Editor, createEditor, Transforms, Range } from 'slate';
 import { HistoryEditor, withHistory } from 'slate-history';
 import { withYjs, withCursors, YjsEditor } from '@slate-yjs/core';
-import { IconButton, Paper, Typography, List, ListItem, ListItemText, Divider } from "@mui/material";
-import { Close } from '@mui/icons-material';
 import isHotkey from 'is-hotkey';
 
 import '../../App.css';
 import './SlateEditor.css';
 import { useAuth } from '../Auth/AuthContext.js';
-import useDocumentFunctions from '../CustomHooks/useDocumentFunctions.js';
-import Loader from '../Common/Loader/Loader.js';
-import useCustomEditor from '../CustomHooks/useCustomEditor.js';
+import useDocumentFunctions from '../Hooks/useDocumentFunctions.js';
+import useCustomEditor from '../Hooks/useCustomEditor.js';
 import MyToolbar from '../Toolbar/Toolbar.js';
 import MenuBar from '../MenuBar/MenuBar.js';
+import DocumentDetails from '../MenuBar/DocumentDetails/DocumentDetails.js';
 import Renderer from '../SlateElements/Renderer.js';
 import { Cursors } from './Cursors/Cursors.js';
 import { HOTKEYS, CURSOR_COLORS } from '../Common/Utils/constants.js';
+import Loader from '../Common/Loader/Loader.js';
+import MentionList from './Mentions/MentionList.js';
+import MentionLogic from './Mentions/MentionLogic.js';
 
 const SlateEditor = ({ sharedType, provider, doc, setDoc }) => {
   const { user } = useAuth();
   const editorRef = useRef(null);
-  const mentionRef = useRef(null);
   const [mode, setMode] = useState('Editor');
-  const [target, setTarget] = useState(null);
-  const [index, setIndex] = useState(0);
-  const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(false);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const { saveDocument } = useDocumentFunctions();
   const { withMentions, withTables, withChecklist, 
-          insertMention, alignText, toggleMark } = useCustomEditor();
+          alignText, toggleMark } = useCustomEditor();
+
+  /* Mentions */
+  const mentionRef = useRef(null);
+  const [target, setTarget] = useState(null);
+  const [index, setIndex] = useState(0);
+  const [search, setSearch] = useState('');
 
   const hasEditorPermission = doc.permission === 'Editor';
   const canEdit = doc.createdBy.uid === user?.uid || hasEditorPermission;
@@ -39,10 +42,10 @@ const SlateEditor = ({ sharedType, provider, doc, setDoc }) => {
   const allCollabs = [... doc.collaborators, doc.createdBy];
   const collabs = allCollabs.filter(collab => {
                                       return collab.displayName.toLowerCase()
-                                              .includes(search.toLowerCase()) && 
+                                              .startsWith(search.toLowerCase()) && 
                                               collab.uid !== user.uid;
-});
-  
+                                    });
+
   const getRandomColor = () => {
     const index = Math.floor(Math.random() * CURSOR_COLORS.length);
     return CURSOR_COLORS[index];
@@ -104,7 +107,7 @@ const SlateEditor = ({ sharedType, provider, doc, setDoc }) => {
       e.preventDefault();
       try {
         setLoading(true);
-        const response = await saveDocument(doc, editorRef, true);
+        const response = await saveDocument(doc, editorRef, false);
         setDoc(response);
       } catch (error) {
         console.error('Failed to save document');
@@ -119,29 +122,7 @@ const SlateEditor = ({ sharedType, provider, doc, setDoc }) => {
         handleHotkeyAction(e, hotkey);
       }
     } else if (target && collabs.length > 0) {
-        switch (e.key) {
-          case 'ArrowDown':
-            e.preventDefault();
-            const prevIndex = index >= collabs?.length - 1 ? 0 : index + 1;
-            setIndex(prevIndex);
-            break;
-          case 'ArrowUp':
-            e.preventDefault();
-            const nextIndex = index <= 0 ? collabs?.length - 1 : index - 1;
-            setIndex(nextIndex);
-            break;
-          case 'Tab':
-          case 'Enter':
-            e.preventDefault();
-            Transforms.select(editor, target);
-            insertMention(editor, collabs[index].displayName);
-            setTarget(null);
-            break;
-          case 'Escape':
-            e.preventDefault();
-            setTarget(null);
-            break;
-        }
+        handleMentionAction(e);
       } 
     }, [collabs, editor, index, target]);
 
@@ -155,35 +136,24 @@ const SlateEditor = ({ sharedType, provider, doc, setDoc }) => {
     }
   }, [collabs.length, editor, index, search, target]);
 
+  const renderElement = useCallback(props => <Renderer.renderElement {...props} />, []);
+  const renderLeaf = useCallback(props => <Renderer.renderLeaf {...props} />, []);
+
+  const { handleMentionChange, handleMentionAction } = MentionLogic(
+    { editor,
+      collabs,
+      index,
+      target,
+      setIndex,
+      setTarget,
+      setSearch
+    });
+
   return (
     <Slate 
       editor={editor}
       initialValue={doc.content}
-      onChange={() => {
-        const { selection } = editor;
-        
-        if (selection && Range.isCollapsed(selection)) {
-          const [start] = Range.edges(selection);
-          const wordBefore = Editor.before(editor, start, { unit: 'word' });
-          const before = wordBefore && Editor.before(editor, wordBefore);
-          const beforeRange = before && Editor.range(editor, before, start);
-          const beforeText = beforeRange && Editor.string(editor, beforeRange);
-          const beforeMatch = beforeText && beforeText.match(/^@(\w+)$/);
-          const after = Editor.after(editor, start);
-          const afterRange = Editor.range(editor, start, after);
-          const afterText = Editor.string(editor, afterRange);
-          const afterMatch = afterText.match(/^(\s|$)/);
-
-          if (beforeMatch && afterMatch) {
-            setTarget(beforeRange);
-            setSearch(beforeMatch[1]);
-            setIndex(0);
-            return;
-          }
-        }
-
-        setTarget(null);
-      }}
+      onChange={handleMentionChange}
     >
       <>
         {(canEdit || doc.permission === 'Editor') && (
@@ -208,8 +178,8 @@ const SlateEditor = ({ sharedType, provider, doc, setDoc }) => {
           <div ref={editorRef}>
             <Editable
               readOnly={!canEdit || mode !== 'Editor'}
-              renderElement={Renderer.renderElement}
-              renderLeaf={Renderer.renderLeaf}
+              renderElement={renderElement}
+              renderLeaf={renderLeaf}
               spellCheck
               autoFocus
               onKeyDown={e => handleKeyDown(e)}
@@ -218,89 +188,20 @@ const SlateEditor = ({ sharedType, provider, doc, setDoc }) => {
           </div>
         </Cursors>
         {target && collabs.length > 0 && (
-          <div
-            ref={mentionRef}
-            style={{
-              top: '-9999px',
-              left: '-9999px',
-              position: 'absolute',
-              zIndex: 1,
-              padding: '3px',
-              background: 'white',
-              borderRadius: '4px',
-              boxShadow: '0 1px 5px rgba(0,0,0,.2)',
-            }}
-          >
-            {collabs.map((collab, i) => (
-              <div
-                key={collab.uid}
-                onClick={() => {
-                  Transforms.select(editor, target);
-                  insertMention(editor, collab.displayName);
-                  setTarget(null);
-                }}
-                style={{
-                  padding: '1px 3px',
-                  borderRadius: '3px',
-                  background: i === index ? '#B4D5FF' : 'transparent',
-                }}
-              >
-                {collab.displayName}
-              </div>
-            ))}
-          </div>
+          <MentionList 
+            mentionRef={mentionRef}
+            collabs={collabs}
+            index={index}
+            target={target}
+            setTarget={setTarget}
+          />
         )}
-        {isDetailsOpen && (
-          <Paper 
-            elevation={3} 
-            sx={{
-              position: 'fixed',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              zIndex: 9999,
-              width: '40%',
-              maxWidth: 600, 
-              padding: '24px',
-              textAlign: 'center',
-            }}
-          >
-            {/* Document Details Heading */}
-            <Typography variant="h5" gutterBottom>
-              Document Details
-            </Typography>
-            <List>
-            {/* Owner */}
-            <ListItem>
-              <ListItemText primary={`Owner: ${doc.createdBy.displayName}`} />
-            </ListItem>
-            <Divider component="li" />
-
-            {/* Modified Date */}
-            <ListItem>
-              <ListItemText
-                primary={`Modified: ${new Date(doc.updatedAt).toLocaleString()}`}
-            />
-            </ListItem>
-            <Divider component="li" />
-
-            {/* Created Date */}
-            <ListItem>
-              <ListItemText
-                primary={`Created: ${new Date(doc.createdAt).toLocaleString()}`}
-              />
-            </ListItem>
-          </List>
-
-          {/* Optional Close Button */}
-          <IconButton
-            sx={{ position: 'absolute', top: 8, right: 8 }}
-            onClick={() => setIsDetailsOpen(false)}
-          >
-            <Close />
-          </IconButton>
-        </Paper>
-        )}
+        {isDetailsOpen && 
+          <DocumentDetails 
+            doc={doc} 
+            setIsDetailsOpen={setIsDetailsOpen} 
+          />
+        }
         {loading && <Loader />}
       </>
     </Slate>

@@ -41,13 +41,13 @@ public class DocumentService {
                 .collect(Collectors.toList());
     }
 
-    @RateLimited(limit = 30)
+    @RateLimited(limit = 60)
     public RichTextDocument getDocumentById(String id) throws JsonProcessingException {
         return documentRepository.findById(id)
                 .orElseThrow(() -> new DocumentNotFoundException(id));
     }
 
-    @RateLimited(limit = 30)
+    @RateLimited(limit = 60)
     public void deleteDocumentById(String id) {
         if (documentRepository.existsById(id)) {
             documentRepository.deleteById(id);
