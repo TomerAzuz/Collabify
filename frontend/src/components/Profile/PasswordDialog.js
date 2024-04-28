@@ -14,7 +14,7 @@ const PasswordDialog = ({ password, setPassword, isPasswordDialogOpen, handleClo
           label="Password"
           type="password"
           fullWidth
-          value={password}
+          value={password || ''}
           onChange={(e) => setPassword(e.target.value)}
         />
       </DialogContent>

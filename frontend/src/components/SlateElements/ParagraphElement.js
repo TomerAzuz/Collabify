@@ -1,15 +1,13 @@
 const ParagraphElement = (props) => {    
-    const styles = {
-        textAlign: props.element.textAlign || '',
-        fontSize: `${props.element.fontSize || '14'}pt`,
-        fontFamily: props.element.fontFamily || '',
-        lineHeight: props.element.lineHeight || 1.0,
-        margin: `${props.element.margin || 1}em`,
-        padding: 0
+    const { element } = props;
+
+    const styles = { 
+        'textAlign': element.textAlign || '',
+        'margin': `${element.margin || 0}pt`,
     };
 
     return (
-        <p 
+        <p
             {...props.attributes}
             style={styles}
         >

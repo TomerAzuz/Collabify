@@ -33,7 +33,7 @@ public class DocumentService {
         return documentRepository.save(document);
     }
 
-    @RateLimited(limit = 60)
+    @RateLimited
     public List<DocumentMetadata> getAllDocuments(String userId) {
         List<RichTextDocument> documents = documentRepository.findByCreatedByOrCollaboratorsOrderByUpdatedAtDesc(userId, Sort.by(Sort.Direction.DESC, "updatedAt"));
         return documents.stream()
@@ -41,13 +41,13 @@ public class DocumentService {
                 .collect(Collectors.toList());
     }
 
-    @RateLimited(limit = 60)
+    @RateLimited
     public RichTextDocument getDocumentById(String id) throws JsonProcessingException {
         return documentRepository.findById(id)
                 .orElseThrow(() -> new DocumentNotFoundException(id));
     }
 
-    @RateLimited(limit = 60)
+    @RateLimited
     public void deleteDocumentById(String id) {
         if (documentRepository.existsById(id)) {
             documentRepository.deleteById(id);
@@ -56,7 +56,7 @@ public class DocumentService {
         }
     }
 
-    @RateLimited(limit = 60)
+    @RateLimited(limit = 200)
     public RichTextDocument updateDocumentById(String id, RichTextDocument document, String userId) {
         return documentRepository.findById(id)
                 .map(existingDoc -> {

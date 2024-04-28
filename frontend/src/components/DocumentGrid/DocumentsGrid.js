@@ -38,7 +38,7 @@ const DocumentsGrid = ({ documents, setDocuments, loading }) => {
             paddingBottom: '30px'
       }}
     >
-    {documents.length > 0 ? (
+    {documents?.length > 0 ? (
       documents.map((doc) => (
         <DocumentItem 
           key={doc.id}

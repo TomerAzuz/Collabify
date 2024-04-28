@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useSlate } from 'slate-react'
 import { Editor } from 'slate';
-import { Paper, Popover, IconButton } from '@mui/material';
+import { Paper, TextField, Popover, IconButton } from '@mui/material';
 import { FormatColorText } from '@mui/icons-material';
 
 import { COLORS } from '../Common/Utils/constants';
@@ -90,9 +90,9 @@ const ColorPicker = () => {
                     backgroundColor: color,
                     borderRadius: '50%',
                     border: '1px solid grey',
-                    width: '30px',
-                    height: '30px',
-                    margin: 0.3,
+                    width: '20px',
+                    height: '20px',
+                    margin: 0.1,
                     transition: 'box-shadow 0.3s ease-in-out',
                     '&:hover': {
                       backgroundColor: color,

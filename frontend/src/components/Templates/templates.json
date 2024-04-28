@@ -3,473 +3,401 @@
     "content": [
         {
             "type": "paragraph",
-            "fontSize": 16,
             "children": [{ "text": "" }]
         }
     ]
   },
   "resume": {
-    "content": [
-      {
-          "type": "paragraph",
-          "fontSize": 16,
-          "children": [
-              {
-                  "color": "#999999",
-                  "fontSize": 9,
-                  "fontFamily": "Roboto",
-                  "lineHeight": "1.0em",
-                  "margin": 0,
-                  "text": "123 YOUR STREET"
-              }
-          ]
-      },
-      {
-          "type": "paragraph",
-          "fontSize": 16,
-          "children": [
-              {
-                  "color": "#999999",
-                  "fontSize": 9,
-                  "fontFamily": "Roboto",
-                  "lineHeight": "1.0em",
-                  "margin": 0,
-                  "text": "YOUR CITY, ST 12345"
-              }
-          ]
-      },
-      {
-          "type": "paragraph",
-          "fontSize": 16,
-          "children": [
-              {
-                  "color": "#E91D63",
-                  "fontSize": 9,
-                  "fontFamily": "Roboto",
-                  "lineHeight": "1.0em",
-                  "margin": 0,
-                  "text": "(123) 456-7890"
-              }
-          ]
-      },
-      {
-          "type": "paragraph",
-          "fontSize": 16,
-          "children": [
-              {
-                  "color": "#E91D63",
-                  "fontSize": 9,
-                  "fontFamily": "Roboto",
-                  "lineHeight": "1.0em",
-                  "margin": 0,
-                  "text": "NO_REPLY@EXAMPLE.COM"
-              }
-          ]
-      },
-      {
-          "type": "paragraph",
-          "fontSize": 16,
-          "children": [
-              {
-                  "fontSize": 24,
-                  "fontFamily": "Oswald",
-                  "text": "YOUR NAME"
-              }
-          ]
-      },
-      {
-          "type": "image",
-          "data": {
-              "src": "data:image/jpeg;base64,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"
-          },
-          "children": [
-              {
-                  "text": ""
-              }
-          ]
-      },
-      {
-          "type": "paragraph",
-          "children": [
-              {
-                  "text": ""
-              }
-          ]
-      },
-      {
-          "type": "paragraph",
-          "fontSize": 16,
-          "children": [
-              {
-                  "fontFamily": "Oswald",
-                  "fontSize": 12,
-                  "text": "SKILLS"
-              }
-          ]
-      },
-      {
-          "type": "paragraph",
-          "fontSize": 16,
-          "children": [
-              {
-                  "fontSize": 9,
-                  "color": "#666666",
-                  "fontFamily": "Source Code Pro",
-                  "text": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. "
-              }
-          ]
-      },
-      {
-          "type": "paragraph",
-          "fontSize": 16,
-          "children": [
-              {
-                  "fontFamily": "Oswald",
-                  "fontSize": 12,
-                  "text": "EXPERIENCE"
-              }
-          ]
-      },
-      {
-          "type": "paragraph",
-          "fontSize": 16,
-          "children": [
-              {
-                  "color": "#E91D63",
-                  "bold": true,
-                  "fontFamily": "Source Code Pro",
-                  "fontSize": 11,
-                  "text": "Company Name, Location"
-              },
-              {
-                  "bold": true,
-                  "fontFamily": "Source Code Pro",
-                  "fontSize": 11,
-                  "text": " — "
-              },
-              {
-                  "fontFamily": "Source Code Pro",
-                  "fontSize": 11,
-                  "italic": true,
-                  "text": "Job Title"
-              }
-          ]
-      },
-      {
-          "type": "paragraph",
-          "fontSize": 16,
-          "children": [
-              {
-                  "color": "#666666",
-                  "fontFamily": "Source Code Pro",
-                  "fontSize": 9,
-                  "text": "MONTH 20XX - PRESENT"
-              }
-          ]
-      },
-      {
-          "type": "bulleted-list",
-          "children": [
-              {
-                  "type": "list-item",
-                  "fontSize": 16,
-                  "children": [
-                      {
-                          "fontSize": 9,
-                          "color": "#666666",
-                          "fontFamily": "Source Code Pro",
-                          "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
-                      }
-                  ]
-              }
-          ]
-      },
-      {
-          "type": "bulleted-list",
-          "children": [
-              {
-                  "type": "list-item",
-                  "fontSize": 16,
-                  "children": [
-                      {
-                          "fontSize": 9,
-                          "color": "#666666",
-                          "fontFamily": "Source Code Pro",
-                          "text": "Aenean ac interdum nisi. Sed in consequat mi."
-                      }
-                  ]
-              }
-          ]
-      },
-      {
-          "type": "bulleted-list",
-          "children": [
-              {
-                  "type": "list-item",
-                  "fontSize": 16,
-                  "children": [
-                      {
-                          "fontSize": 9,
-                          "color": "#666666",
-                          "fontFamily": "Source Code Pro",
-                          "text": "Sed in consequat mi, sed pulvinar lacinia felis eu finibus. "
-                      }
-                  ]
-              }
-          ]
-      },
-      {
-          "type": "paragraph",
-          "fontSize": 16,
-          "children": [
-              {
-                  "fontSize": 11,
-                  "fontFamily": "Source Code Pro",
-                  "bold": true,
-                  "color": "#E91D63",
-                  "text": "Company Name, Location"
-              },
-              {
-                  "fontSize": 11,
-                  "fontFamily": "Source Code Pro",
-                  "bold": true,
-                  "text": " — "
-              },
-              {
-                  "fontSize": 11,
-                  "fontFamily": "Source Code Pro",
-                  "italic": true,
-                  "text": "Job Title"
-              }
-          ]
-      },
-      {
-          "type": "paragraph",
-          "fontSize": 16,
-          "children": [
-              {
-                  "fontSize": 9,
-                  "fontFamily": "Source Code Pro",
-                  "color": "#E91D63",
-                  "text": "MONTH 20XX - PRESENT"
-              }
-          ]
-      },
-      {
-          "type": "bulleted-list",
-          "children": [
-              {
-                  "type": "list-item",
-                  "fontSize": 16,
-                  "children": [
-                      {
-                          "fontFamily": "Source Code Pro",
-                          "color": "#666666",
-                          "fontSize": 9,
-                          "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
-                      }
-                  ]
-              }
-          ]
-      },
-      {
-          "type": "bulleted-list",
-          "children": [
-              {
-                  "type": "list-item",
-                  "fontSize": 16,
-                  "children": [
-                      {
-                          "fontFamily": "Source Code Pro",
-                          "color": "#666666",
-                          "fontSize": 9,
-                          "text": "Aenean ac interdum nisi. Sed in consequat mi."
-                      }
-                  ]
-              }
-          ]
-      },
-      {
-          "type": "paragraph",
-          "fontSize": 16,
-          "children": [
-              {
-                  "fontSize": 11,
-                  "fontFamily": "Source Code Pro",
-                  "bold": true,
-                  "color": "#E91D63",
-                  "text": "Company Name, Location"
-              },
-              {
-                  "fontSize": 11,
-                  "fontFamily": "Source Code Pro",
-                  "bold": true,
-                  "text": " — "
-              },
-              {
-                  "fontSize": 11,
-                  "fontFamily": "Source Code Pro",
-                  "italic": true,
-                  "text": "Job Title"
-              }
-          ]
-      },
-      {
-          "type": "paragraph",
-          "fontSize": 16,
-          "children": [
-              {
-                  "fontSize": 9,
-                  "fontFamily": "Source Code Pro",
-                  "color": "#666666",
-                  "text": "MONTH 20XX - PRESENT"
-              }
-          ]
-      },
-      {
-          "type": "bulleted-list",
-          "children": [
-              {
-                  "type": "list-item",
-                  "fontSize": 16,
-                  "children": [
-                      {
-                          "fontFamily": "Source Code Pro",
-                          "color": "#666666",
-                          "fontSize": 9,
-                          "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
-                      }
-                  ]
-              }
-          ]
-      },
-      {
-          "type": "bulleted-list",
-          "children": [
-              {
-                  "type": "list-item",
-                  "fontSize": 16,
-                  "children": [
-                      {
-                          "fontFamily": "Source Code Pro",
-                          "color": "#666666",
-                          "fontSize": 9,
-                          "text": "Aenean ac interdum nisi. Sed in consequat mi."
-                      }
-                  ]
-              }
-          ]
-      },
-      {
-          "type": "bulleted-list",
-          "children": [
-              {
-                  "type": "list-item",
-                  "fontSize": 16,
-                  "children": [
-                      {
-                          "fontFamily": "Source Code Pro",
-                          "color": "#666666",
-                          "fontSize": 9,
-                          "text": "Sed pulvinar lacinia felis eu finibus."
-                      }
-                  ]
-              }
-          ]
-      },
-      {
-          "type": "paragraph",
-          "fontSize": 16,
-          "children": [
-              {
-                  "fontSize": 12,
-                  "fontFamily": "Oswald",
-                  "text": "EDUCATION"
-              }
-          ]
-      },
-      {
-          "type": "paragraph",
-          "fontSize": 16,
-          "children": [
-              {
-                  "fontFamily": "Source Code Pro",
-                  "color": "#E91D63",
-                  "fontSize": 11,
-                  "bold": true,
-                  "text": "School Name, Location"
-              },
-              {
-                  "fontFamily": "Source Code Pro",
-                  "fontSize": 11,
-                  "text": " — "
-              },
-              {
-                  "fontFamily": "Source Code Pro",
-                  "fontSize": 11,
-                  "italic": true,
-                  "text": "Degree"
-              }
-          ]
-      },
-      {
-          "type": "paragraph",
-          "fontSize": 16,
-          "children": [
-              {
-                  "color": "#666666",
-                  "fontFamily": "Source Code Pro",
-                  "fontSize": 9,
-                  "text": "MONTH 20XX - MONTH 20XX, LOCATION"
-              }
-          ]
-      },
-      {
-          "type": "paragraph",
-          "fontSize": 16,
-          "children": [
-              {
-                  "fontSize": 9,
-                  "fontFamily": "Source Code Pro",
-                  "text": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore."
-              }
-          ]
-      },
-      {
-          "type": "paragraph",
-          "fontSize": 16,
-          "children": [
-              {
-                  "fontSize": 12,
-                  "fontFamily": "Oswald",
-                  "text": "AWARDS"
-              }
-          ]
-      },
-      {
-          "type": "paragraph",
-          "fontSize": 16,
-          "children": [
-              {
-                  "fontSize": 9,
-                  "fontFamily": "PT Mono",
-                  "color": "#666666",
-                  "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
-              }
-          ]
-      },
-      {
-          "type": "paragraph",
-          "fontSize": 16,
-          "children": [
-              {
-                  "fontSize": 9,
-                  "fontFamily": "PT Mono",
-                  "color": "#666666",
-                  "text": "Aenean ac interdum nisi. "
-              }
-          ]
-      }
+    "content": 
+    [
+        {
+            "type": "paragraph",
+            "children": [
+                {
+                    "fontFamily": "Roboto",
+                    "fontSize": 9,
+                    "color": "#999999",
+                    "text": "123 YOUR STREET"
+                }
+            ]
+        },
+        {
+            "type": "paragraph",
+            "children": [
+                {
+                    "fontFamily": "Roboto",
+                    "fontSize": 9,
+                    "color": "#999999",
+                    "text": "YOUR CITY, ST 12345"
+                }
+            ]
+        },
+        {
+            "type": "paragraph",
+            "children": [
+                {
+                    "fontFamily": "Roboto",
+                    "fontSize": 9,
+                    "color": "#E91D63",
+                    "text": "(123) 456-7890"
+                }
+            ]
+        },
+        {
+            "type": "paragraph",
+            "children": [
+                {
+                    "fontFamily": "Roboto",
+                    "fontSize": 9,
+                    "color": "#E91D63",
+                    "text": "NO_REPLY@EXAMPLE.COM"
+                }
+            ]
+        },
+        {
+            "type": "h1",
+            "children": [
+                {
+                    "fontFamily": "Oswald",
+                    "fontSize": 24,
+                    "text": "YOUR NAME"
+                }
+            ]
+        },
+        {
+            "type": "image",
+            "data": {
+                "src": "data:image/jpeg;base64,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"
+            },
+            "children": [
+                {
+                    "text": ""
+                }
+            ]
+        },
+        {
+            "type": "h1",
+            "children": [
+                {
+                    "fontSize": 12,
+                    "fontFamily": "Oswald",
+                    "text": "SKILLS"
+                }
+            ]
+        },
+        {
+            "type": "paragraph",
+            "children": [
+                {
+                    "fontFamily": "Source Code Pro",
+                    "fontSize": 9,
+                    "text": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. "
+                }
+            ]
+        },
+        {
+            "type": "h1",
+            "children": [
+                {
+                    "fontFamily": "Oswald",
+                    "fontSize": 12,
+                    "text": "EXPERIENCE"
+                }
+            ]
+        },
+        {
+            "type": "h2",
+            "children": [
+                {
+                    "fontFamily": "Source Code Pro",
+                    "fontSize": 11,
+                    "color": "#E91D63",
+                    "bold": true,
+                    "text": "Company Name, Location"
+                },
+                {
+                    "fontFamily": "Source Code Pro",
+                    "fontSize": 11,
+                    "text": " "
+                },
+                {
+                    "fontFamily": "Source Code Pro",
+                    "fontSize": 11,
+                    "italic": true,
+                    "text": "— Job Title"
+                }
+            ]
+        },
+        {
+            "type": "paragraph",
+            "children": [
+                {
+                    "fontFamily": "Source Code Pro",
+                    "fontSize": 9,
+                    "color": "#666666",
+                    "text": "MONTH 20XX - PRESENT"
+                }
+            ]
+        },
+        {
+            "type": "bulleted-list",
+            "children": [
+                {
+                    "type": "list-item",
+                    "fontSize": 16,
+                    "children": [
+                        {
+                            "fontFamily": "Source Code Pro",
+                            "fontSize": 9,
+                            "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
+                        }
+                    ]
+                },
+                {
+                    "type": "list-item",
+                    "fontSize": 16,
+                    "children": [
+                        {
+                            "fontFamily": "Source Code Pro",
+                            "fontSize": 9,
+                            "text": "Aenean ac interdum nisi. Sed in consequat mi."
+                        }
+                    ]
+                },
+                {
+                    "type": "list-item",
+                    "fontSize": 16,
+                    "children": [
+                        {
+                            "fontFamily": "Source Code Pro",
+                            "fontSize": 9,
+                            "text": "Sed in consequat mi, sed pulvinar lacinia felis eu finibus. "
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "h2",
+            "children": [
+                {
+                    "fontFamily": "Source Code Pro",
+                    "fontSize": 11,
+                    "color": "#E91D63",
+                    "bold": true,
+                    "text": "Company Name, Location"
+                },
+                {
+                    "fontFamily": "Source Code Pro",
+                    "fontSize": 11,
+                    "text": " "
+                },
+                {
+                    "fontFamily": "Source Code Pro",
+                    "fontSize": 11,
+                    "italic": true,
+                    "text": "— Job Title"
+                }
+            ]
+        },
+        {
+            "type": "paragraph",
+            "children": [
+                {
+                    "fontFamily": "Source Code Pro",
+                    "fontSize": 9,
+                    "text": "MONTH 20XX - PRESENT"
+                }
+            ]
+        },
+        {
+            "type": "bulleted-list",
+            "children": [
+                {
+                    "type": "list-item",
+                    "fontSize": 16,
+                    "children": [
+                        {
+                            "fontFamily": "Source Code Pro",
+                            "fontSize": 9,
+                            "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
+                        }
+                    ]
+                },
+                {
+                    "type": "list-item",
+                    "fontSize": 16,
+                    "children": [
+                        {
+                            "fontFamily": "Source Code Pro",
+                            "fontSize": 9,
+                            "text": "Aenean ac interdum nisi. Sed in consequat mi."
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "h2",
+            "children": [
+                {
+                    "fontFamily": "Source Code Pro",
+                    "fontSize": 11,
+                    "color": "#E91D63",
+                    "bold": true,
+                    "text": "Company Name, Location"
+                },
+                {
+                    "fontFamily": "Source Code Pro",
+                    "fontSize": 11,
+                    "text": " "
+                },
+                {
+                    "fontFamily": "Source Code Pro",
+                    "fontSize": 11,
+                    "italic": true,
+                    "text": "— Job Title"
+                }
+            ]
+        },
+        {
+            "type": "paragraph",
+            "children": [
+                {
+                    "fontFamily": "Source Code Pro",
+                    "fontSize": 9,
+                    "text": "MONTH 20XX - PRESENT"
+                }
+            ]
+        },
+        {
+            "type": "bulleted-list",
+            "children": [
+                {
+                    "type": "list-item",
+                    "fontSize": 16,
+                    "children": [
+                        {
+                            "fontFamily": "Source Code Pro",
+                            "fontSize": 9,
+                            "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
+                        }
+                    ]
+                },
+                {
+                    "type": "list-item",
+                    "fontSize": 16,
+                    "children": [
+                        {
+                            "fontFamily": "Source Code Pro",
+                            "fontSize": 9,
+                            "text": "Aenean ac interdum nisi. Sed in consequat mi."
+                        }
+                    ]
+                },
+                {
+                    "type": "list-item",
+                    "fontSize": 16,
+                    "children": [
+                        {
+                            "fontFamily": "Source Code Pro",
+                            "fontSize": 9,
+                            "text": "Sed in consequat mi, sed pulvinar lacinia felis eu finibus. "
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "h1",
+            "children": [
+                {
+                    "fontSize": 12,
+                    "fontFamily": "Oswald",
+                    "text": "EDUCATION"
+                }
+            ]
+        },
+        {
+            "type": "h2",
+            "children": [
+                {
+                    "fontFamily": "Source Code Pro",
+                    "bold": true,
+                    "color": "#E91D63",
+                    "fontSize": 11,
+                    "text": "School Name, Location"
+                },
+                {
+                    "fontFamily": "Source Code Pro",
+                    "text": " "
+                },
+                {
+                    "fontFamily": "Source Code Pro",
+                    "italic": true,
+                    "fontSize": 11,
+                    "text": "— Degree"
+                }
+            ]
+        },
+        {
+            "type": "paragraph",
+            "children": [
+                {
+                    "fontFamily": "Source Code Pro",
+                    "fontSize": 9,
+                    "text": "MONTH 20XX - MONTH 20XX, LOCATION"
+                }
+            ]
+        },
+        {
+            "type": "paragraph",
+            "children": [
+                {
+                    "fontFamily": "Source Code Pro",
+                    "fontSize": 9,
+                    "text": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore."
+                }
+            ]
+        },
+        {
+            "type": "h1",
+            "children": [
+                {
+                    "fontFamily": "Oswald",
+                    "fontSize": 12,
+                    "text": "AWARDS"
+                }
+            ]
+        },
+        {
+            "type": "paragraph",
+            "children": [
+                {
+                    "fontFamily": "PT Mono",
+                    "fontSize": 9,
+                    "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+                }
+            ]
+        },
+        {
+            "type": "paragraph",
+            "children": [
+                {
+                    "fontFamily": "PT Mono",
+                    "fontSize": 9,
+                    "text": "Aenean ac interdum nisi. "
+                }
+            ]
+        },
+        {
+            "type": "paragraph",
+            "children": [
+                {
+                    "text": ""
+                }
+            ]
+        }
     ]
   },
   "letter": {
@@ -489,10 +417,17 @@
             "type": "paragraph",
             "children": [
                 {
+                    "text": ""
+                }
+            ]
+        },
+        {
+            "type": "paragraph",
+            "children": [
+                {
                     "bold": true,
                     "fontSize": 11,
                     "fontFamily": "Montserrat",
-                    "margin": 0,
                     "text": "Your Name"
                 }
             ]
@@ -503,7 +438,6 @@
                 {
                     "fontSize": 10,
                     "fontFamily": "Montserrat",
-                    "margin": 0,
                     "text": "123 Your Street"
                 }
             ]
@@ -514,7 +448,6 @@
                 {
                     "fontSize": 10,
                     "fontFamily": "Montserrat",
-                    "margin": 0,
                     "text": "Your City, ST 12345"
                 }
             ]
@@ -525,7 +458,6 @@
                 {
                     "fontSize": 10,
                     "fontFamily": "Montserrat",
-                    "margin": 0,
                     "text": "(123) 456-7890"
                 }
             ]
@@ -536,8 +468,15 @@
                 {
                     "fontSize": 10,
                     "fontFamily": "Montserrat",
-                    "margin": 0,
                     "text": "no_reply@example.com"
+                }
+            ]
+        },
+        {
+            "type": "paragraph",
+            "children": [
+                {
+                    "text": ""
                 }
             ]
         },
@@ -556,6 +495,14 @@
                     "fontSize": 11,
                     "fontFamily": "Montserrat",
                     "text": "4th September 20XX"
+                }
+            ]
+        },
+        {
+            "type": "paragraph",
+            "children": [
+                {
+                    "text": ""
                 }
             ]
         },
@@ -620,9 +567,25 @@
             "type": "paragraph",
             "children": [
                 {
+                    "text": ""
+                }
+            ]
+        },
+        {
+            "type": "paragraph",
+            "children": [
+                {
                     "fontSize": 11,
                     "fontFamily": "Montserrat",
                     "text": "Dear Ms. Reader,"
+                }
+            ]
+        },
+        {
+            "type": "paragraph",
+            "children": [
+                {
+                    "text": ""
                 }
             ]
         },
@@ -640,9 +603,25 @@
             "type": "paragraph",
             "children": [
                 {
+                    "text": ""
+                }
+            ]
+        },
+        {
+            "type": "paragraph",
+            "children": [
+                {
                     "fontSize": 11,
                     "fontFamily": "Montserrat",
                     "text": "Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan."
+                }
+            ]
+        },
+        {
+            "type": "paragraph",
+            "children": [
+                {
+                    "text": ""
                 }
             ]
         },
@@ -660,9 +639,25 @@
             "type": "paragraph",
             "children": [
                 {
+                    "text": ""
+                }
+            ]
+        },
+        {
+            "type": "paragraph",
+            "children": [
+                {
                     "fontSize": 11,
                     "fontFamily": "Montserrat",
                     "text": "Sincerely,"
+                }
+            ]
+        },
+        {
+            "type": "paragraph",
+            "children": [
+                {
+                    "text": ""
                 }
             ]
         },

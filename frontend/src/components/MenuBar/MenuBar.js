@@ -1,38 +1,53 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Toolbar, Container } from "@mui/material";
+import * as Sentry from '@sentry/react';
+import { Toolbar, Container, Typography } from "@mui/material";
 import { Article, Save, Download, Info } from '@mui/icons-material';
 import html2pdf from 'html2pdf.js';
 import { toast } from 'react-hot-toast';
+import { useOthers } from "../../liveblocks.config.js";
 
 import { useAuth } from '../Auth/AuthContext.js';
 import useDocuments from '../Hooks/useDocumentFunctions.js';
 import ShareDoc from './ShareDocument/ShareDoc.js';
-import serialize from '../Common/Utils/serializer.js';
+import serializeToHtml from '../Common/Utils/serializer.js';
 import Logo from '../Common/Logo/Logo.js';
 import Loader from '../Common/Loader/Loader.js';
 import DocumentTitle from './DocumentTitle/DocumentTitle.js';
 import ButtonsList from './Buttons/ButtonsList.js';
 
-const MenuBar = ({ doc, setDoc, editorRef, setIsDetailsOpen }) => {
+const MenuBar = ({ doc, setDoc, handleSaveDocument, setIsDetailsOpen }) => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const { createDocument, saveDocument } = useDocuments();
+  const { createDocument } = useDocuments();
   const [isAutosave, setIsAutosave] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const downalodAsPDF = useMemo(() => () => {
-    const filename = doc.title;
-    const opt = {
-      margin: 0.8,
-      filename: `${filename}.pdf`,
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-    };
-    const content = doc.content.map(node => serialize(node)).join('');
-    html2pdf().from(content).set(opt).save();
-  }, [doc]);
+  const others = useOthers();
+
+  const downalodAsPDF = async () => {
+    try {
+      const response = await handleSaveDocument(true);
+      if (response) {
+        const documentTitle = response.title;
+        const opt = {
+          margin: 1,
+          filename: `${documentTitle}.pdf`,
+          image: { type: 'jpeg', quality: 0.98 },
+          pagebreak: { mode: ['avoid-all', 'css', 'legacy'] },
+          html2canvas: { scale: 2, useCORS: true, allowTaint: false },
+          jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' },
+        };
+  
+        const content = `${response.content.map(node => serializeToHtml(node)).join('')}`;
+        html2pdf().from(content).set(opt).save();
+      }
+      
+    } catch (error) {
+      Sentry.captureException(error);
+      toast.error('Failed to download file');
+    }
+  };
 
   const createNewDocument = async () => {
     try {
@@ -41,19 +56,7 @@ const MenuBar = ({ doc, setDoc, editorRef, setIsDetailsOpen }) => {
       setDoc(response);
       navigate(`/document/${response.id}`);
     } catch (error) {
-      console.error('Failed to create document');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleSaveDocument = async () => {
-    try {
-      setLoading(true);
-      const response = await saveDocument(doc, editorRef, isAutosave);
-      setDoc(response);
-    } catch(error) {
-      console.error('Failed to save document');
+      toast.error('Failed to create document');
     } finally {
       setLoading(false);
     }
@@ -65,7 +68,7 @@ const MenuBar = ({ doc, setDoc, editorRef, setIsDetailsOpen }) => {
   
     if (isAutosave) {
       autosaveInterval = setInterval(() => {
-        handleSaveDocument();
+        handleSaveDocument(true);
       }, 30000);
     } else {
       clearInterval(autosaveInterval);
@@ -86,7 +89,7 @@ const MenuBar = ({ doc, setDoc, editorRef, setIsDetailsOpen }) => {
       icon: <Article />
     }, {
       title: 'Save (Ctrl+S)',
-      onClick: () => handleSaveDocument(),
+      onClick: () => handleSaveDocument(false),
       icon: <Save />
     }, {
       title: 'Download as PDF',
@@ -101,7 +104,7 @@ const MenuBar = ({ doc, setDoc, editorRef, setIsDetailsOpen }) => {
 
   return (
     <Container maxWidth="xl">
-      <Toolbar>
+      <Toolbar sx={{ alignItems: 'center', py: 1 }}>
         <Logo variant={'h3'} sx={{ marginLeft: 0 }}/>
         <DocumentTitle 
           title={doc.title} 
@@ -112,6 +115,9 @@ const MenuBar = ({ doc, setDoc, editorRef, setIsDetailsOpen }) => {
           isAutosave={isAutosave} 
           toggleAutosave={toggleAutosave}
         />
+        <Typography variant="caption1" sx={{ ml: 'auto', fontWeight: 'bold', color: '#666', fontFamily: 'Roboto' }}>
+            Active users: {others.length + 1}
+        </Typography>
         <ShareDoc doc={doc} user={user} />
       </Toolbar>
       {loading && <Loader />}

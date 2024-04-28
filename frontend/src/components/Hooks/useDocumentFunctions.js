@@ -7,6 +7,8 @@ import { useAuth } from '../Auth/AuthContext.js';
 import { postFile } from '../Services/s3Service.js';
 import templates from '../Templates/templates.json';
 
+const cloudFrontDomain = process.env.REACT_APP_AWS_CLOUDFRONT_DOMAIN;
+
 const useDocumentFunctions = () => {
   const { user } = useAuth();
 
@@ -19,7 +21,7 @@ const useDocumentFunctions = () => {
 
     const canvas = await html2canvas(editorElement, {
       useCORS: true,
-      allowTaint: true
+      allowTaint: false
     });
 
     const blob = await new Promise((resolve) => {
@@ -37,7 +39,9 @@ const useDocumentFunctions = () => {
 
     try {
       const response = await postFile(file);
-      return response;
+      if (response.status === 200) {
+        return `https://${cloudFrontDomain}.cloudfront.net/${docId}.jpg`
+      }
     } catch (error) {
       console.error('Error uploading preview image: ', error);
       throw error;
@@ -46,15 +50,22 @@ const useDocumentFunctions = () => {
 
   const saveDocument = async (doc, editorRef, isAutosave) => {
     try {
-      const previewUrl = await captureDocumentPreview(editorRef, doc.id);         
+      let previewUrl = '';
+      if (!isAutosave) {
+        previewUrl = await captureDocumentPreview(editorRef, doc.id);
+      }
+  
       const document = {
         content: doc.content,
-        previewUrl: previewUrl,
+        previewUrl: previewUrl || '',
       };
+  
       const response = await updateDocument(doc.id, document);
+  
       if (response && !isAutosave) {
         toast.success('Document saved');
       }
+  
       return response;
     } catch (error) {
       if (!isAutosave) {
@@ -63,7 +74,7 @@ const useDocumentFunctions = () => {
       throw error;
     }
   };
-
+  
   const addCollaborator = async (document) => {
     try {
       const response = await updateDocument(document.id, {

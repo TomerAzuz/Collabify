@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { useSlate } from 'slate-react'
 import { Editor } from 'slate';
 import { Divider, TextField, IconButton, Tooltip, Select, MenuItem } from '@mui/material';
@@ -11,29 +11,38 @@ import ColorPicker from './ColorPicker';
 import { FONTS } from '../Common/Utils/constants';
 
 const FontControls = () => {
-  const [fontSize, setFontSize] = useState(14);
-  const [fontFamily, setFontFamily] = useState('Arial');
   const editor = useSlate();
   const { setTextSize, toggleMark, addMark } = useCustomEditor();
 
   const getFontSize = () => {
     const marks = Editor.marks(editor);
-    return marks && marks.fontSize !== undefined ? marks.fontSize : fontSize;
+    return marks && marks.fontSize ? marks.fontSize : 14;
   };
 
   const getFontFamily = () => {
     const marks = Editor.marks(editor);
-    return marks && marks.fontFamily !== undefined ? marks.fontFamily : fontFamily;;
+    return marks && marks.fontFamily ? marks.fontFamily : 'Arial';
   };
 
-  const adjustFontSize = useCallback((increment) => {
-    setFontSize(prevSize => {
-      const size = prevSize + increment;
+  const adjustFontSize = (increment) => {
+    const size = getFontSize() + increment;
+    const clampedSize = Math.min(Math.max(size, 1), 400);
+    setTextSize(editor, clampedSize);
+    return clampedSize;
+  };
+
+  const changeFontSize = (e) => {
+    const size = Number(e.target.value);
+    if (!isNaN(size)) {
       const clampedSize = Math.min(Math.max(size, 1), 400);
       setTextSize(editor, clampedSize);
-      return clampedSize;
-    });
-  }, [editor]);
+    }
+  };
+
+  const changeFontFamily = (e) => {
+    e.preventDefault();
+    addMark(editor, 'fontFamily', e.target.value);
+  };
 
   const buttons = useMemo(() => [{
       title: 'Increase font size',
@@ -66,23 +75,6 @@ const FontControls = () => {
       icon: <BorderColor />
     }
   ], [editor, adjustFontSize]);  
-
-  const changeFontSize = (e) => {
-    const size = Number(e.target.value);
-    setFontSize(size);
-
-    if (!isNaN(size)) {
-      const clampedSize = Math.min(Math.max(size, 1), 400);
-      setTextSize(editor, clampedSize);
-      setFontSize(clampedSize);
-    }
-  };
-
-  const changeFontFamily = (e) => {
-    e.preventDefault();
-    setFontFamily(e.target.value);
-    addMark(editor, 'fontFamily', e.target.value);
-  };
 
   return (
     <>

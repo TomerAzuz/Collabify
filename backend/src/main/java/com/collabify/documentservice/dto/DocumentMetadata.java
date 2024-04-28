@@ -13,17 +13,11 @@ import java.util.Set;
 @NoArgsConstructor
 public class DocumentMetadata {
     private String id;
-
     private String title;
-
     private String previewUrl;
-
     private Collaborator createdBy;
-
     private Instant createdAt;
-
     private Set<Collaborator> collaborators;
-
 
     public static DocumentMetadata mapToDocumentMetadata(RichTextDocument document) {
         return new DocumentMetadata(

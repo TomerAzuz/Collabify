@@ -58,7 +58,7 @@ public class DocumentControllerMvcTests {
                 id,
                 "title",
                 content,
-                "preview",
+                "http://example.com/preview.jpg",
                 new Collaborator("123",
                         "https://example.com/avatar.jpg",
                         "username"),

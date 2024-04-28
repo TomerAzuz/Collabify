@@ -17,7 +17,7 @@ const TemplatesGrid = () => {
       id: 1,
       title: 'Resume',
       content: templates.resume.content,
-      previewUrl: `https://${cloudFrontDomain}.cloudfront.net/4f660e2f-bcc6-4fa2-903d-518021518062.jpg`
+      previewUrl: `https://${cloudFrontDomain}.cloudfront.net/e321e26b-2d19-4757-a588-2647fc823bfd.jpg`
     }, {
       id: 2,
       title: 'Letter',

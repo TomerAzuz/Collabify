@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState, useRef } from 'react';
 import { Slate, Editable, withReact, ReactEditor } from 'slate-react';
-import { Editor, createEditor, Transforms, Range } from 'slate';
+import { Editor, createEditor, Transforms } from 'slate';
 import { HistoryEditor, withHistory } from 'slate-history';
 import { withYjs, withCursors, YjsEditor } from '@slate-yjs/core';
 import isHotkey from 'is-hotkey';
@@ -28,7 +28,7 @@ const SlateEditor = ({ sharedType, provider, doc, setDoc }) => {
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const { saveDocument } = useDocumentFunctions();
   const { withMentions, withTables, withChecklist, 
-          alignText, toggleMark } = useCustomEditor();
+          withImages, withEmbeds, alignText, toggleMark } = useCustomEditor();
 
   /* Mentions */
   const mentionRef = useRef(null);
@@ -42,8 +42,7 @@ const SlateEditor = ({ sharedType, provider, doc, setDoc }) => {
   const allCollabs = [... doc.collaborators, doc.createdBy];
   const collabs = allCollabs.filter(collab => {
                                       return collab.displayName.toLowerCase()
-                                              .startsWith(search.toLowerCase()) && 
-                                              collab.uid !== user.uid;
+                                              .startsWith(search.toLowerCase())
                                     });
 
   const getRandomColor = () => {
@@ -55,18 +54,20 @@ const SlateEditor = ({ sharedType, provider, doc, setDoc }) => {
     const e = withMentions(
                 withChecklist(
                   withTables(
-                    withReact(
-                      withHistory(
-                        withCursors(
-                          withYjs(createEditor(), sharedType),
-                            provider.awareness,
-                            {
-                              data: {
-                                name: user?.displayName || user?.email,
-                                color: getRandomColor(),
-                              }
-                            }
-                          ))))));
+                    withEmbeds(
+                      withImages(
+                        withReact(
+                          withHistory(
+                            withCursors(
+                              withYjs(createEditor(), sharedType),
+                                provider.awareness,
+                                {
+                                  data: {
+                                    name: user?.displayName || user?.email,
+                                    color: getRandomColor(),
+                                  }
+                                }
+                              ))))))));
     
     const { normalizeNode } = e;
 
@@ -97,6 +98,21 @@ const SlateEditor = ({ sharedType, provider, doc, setDoc }) => {
       alignText(editor, e.shiftKey ? mark : toggleMark(editor, mark));
     }
   }, [editor]);
+
+  const handleSaveDocument = async (isAutosave) => {
+    try {
+      if (!isAutosave) {
+        setLoading(true);
+      }
+      const response = await saveDocument({ id: doc.id, content: editor.children }, editorRef, isAutosave);
+      setDoc(response);
+      return response;
+    } catch (error) {
+      console.error('Failed to save document');
+    } finally {
+      setLoading(false);
+    }
+  };
     
   const handleKeyDown = useCallback(async (e) => {
     if (!canEdit) {
@@ -105,15 +121,7 @@ const SlateEditor = ({ sharedType, provider, doc, setDoc }) => {
     if (e.ctrlKey && e.key === 's') {
       // Save document
       e.preventDefault();
-      try {
-        setLoading(true);
-        const response = await saveDocument(doc, editorRef, false);
-        setDoc(response);
-      } catch (error) {
-        console.error('Failed to save document');
-      } finally {
-        setLoading(false);
-      }
+      handleSaveDocument(false);
     } else if (e.ctrlKey) {
       // Check if hotkey is pressed
       const hotkey = Object.keys(HOTKEYS).find(key => isHotkey(key, e));
@@ -140,14 +148,7 @@ const SlateEditor = ({ sharedType, provider, doc, setDoc }) => {
   const renderLeaf = useCallback(props => <Renderer.renderLeaf {...props} />, []);
 
   const { handleMentionChange, handleMentionAction } = MentionLogic(
-    { editor,
-      collabs,
-      index,
-      target,
-      setIndex,
-      setTarget,
-      setSearch
-    });
+    { editor, collabs, index, target, setIndex, setTarget, setSearch });
 
   return (
     <Slate 
@@ -163,6 +164,7 @@ const SlateEditor = ({ sharedType, provider, doc, setDoc }) => {
               setDoc={setDoc}
               editorRef={editorRef}
               setIsDetailsOpen={setIsDetailsOpen}
+              handleSaveDocument={handleSaveDocument}
               sx={{ width: '100vw' }}
             />
             <MyToolbar 
@@ -180,7 +182,6 @@ const SlateEditor = ({ sharedType, provider, doc, setDoc }) => {
               readOnly={!canEdit || mode !== 'Editor'}
               renderElement={renderElement}
               renderLeaf={renderLeaf}
-              spellCheck
               autoFocus
               onKeyDown={e => handleKeyDown(e)}
               className='editor-container'

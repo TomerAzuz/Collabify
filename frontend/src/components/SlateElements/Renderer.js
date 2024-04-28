@@ -9,10 +9,17 @@ import TableCell from './TableCell';
 import ListItemElement from './ListItemElement';
 import CheckListItem from './CheckListItem';
 import MentionElement from './MentionElement';
+import H1Element from './H1Element';
+import H2Element from './H2Element';
+import VideoElement from './VideoElement';
 
 const Renderer = {
   renderElement(props) {
     switch (props.element.type) {
+        case 'h1':
+            return <H1Element {...props} />
+        case 'h2':
+            return <H2Element {...props} />
         case 'image':
             return <ImageElement {...props} />
         case 'bulleted-list':
@@ -31,6 +38,8 @@ const Renderer = {
             return <CheckListItem {...props} />
         case 'mention':
             return <MentionElement {...props} />
+        case 'video':
+            return <VideoElement {...props} />
         default:
             return <ParagraphElement {...props} />
     }

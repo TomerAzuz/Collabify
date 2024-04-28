@@ -25,22 +25,3 @@
   align-items: center;
   padding: 5px;
 }
-
-.card-title {
-  background-color: red;
-  flex-basis: 50%;
-  text-align: center;
-  align-items: center;
-  cursor: pointer;
-  margin: 2px;
-  padding: 2px;
-  max-width: 100px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-weight: bold;
-}
-
-.card-title:hover {
-  text-decoration: underline;
-}

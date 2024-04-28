@@ -5,8 +5,7 @@ const TableCell = (props) => {
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     boxSizing: 'border-box',
-    textAlign: props.element.textAlign,
-    fontSize: props.element.fontSize,
+    textAlign: props.element.textAlign || '',
   };
 
   return (

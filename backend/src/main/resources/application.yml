@@ -40,3 +40,8 @@ spring:
 firebase:
   config:
     path: "classpath:serviceAccountKey.json"
+
+sentry:
+  dsn: ${SENTRY_DSN}
+  traces-sample-rate: 1.0
+  exception-resolver-order: -2147483647

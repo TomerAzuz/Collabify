@@ -104,7 +104,7 @@ const DocumentItem = ({ document, onDeleteDocument }) => {
           />
           <div className='document-card-footer'>
             <Typography
-              variant='subtitle1'
+              variant='body1'
               onClick={handleDocumentClick}
               align="center"
               sx={{ 
@@ -112,7 +112,6 @@ const DocumentItem = ({ document, onDeleteDocument }) => {
                 textAlign: 'center',
                 marginLeft: '20px',
                 textWrap: 'wrap',
-                fontWeight: 'bold',
                 '&:hover': {
                   textDecoration: 'underline',
                 }, 

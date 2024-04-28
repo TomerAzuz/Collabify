@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import { useSlate } from 'slate-react'
 import imageExtensions from 'image-extensions';
 import isUrl from 'is-url';
-import { IconButton, Tooltip, Menu, MenuItem } from '@mui/material';
+import { IconButton, Tooltip, Menu, MenuItem, Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from '@mui/material';
 import { InsertPhoto, Link, FileUpload } from '@mui/icons-material';
-import DOMPurify from 'dompurify';
 import { toast } from 'react-hot-toast';
 
 import '../../App.css';
@@ -14,9 +13,13 @@ import { postFile } from '../Services/s3Service';
 import { isValidImageUrl } from '../Common/Utils/validation';
 import Loader from '../Common/Loader/Loader';
 
+const cloudFrontDomain = process.env.REACT_APP_AWS_CLOUDFRONT_DOMAIN;
+
 const InsertImage = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [imageUrl, setImageUrl] = useState('');
+  const [open, setOpen] = useState(false);
   const editor = useSlate();
   const { insertImage } = useCustomEditor();
 
@@ -27,6 +30,14 @@ const InsertImage = () => {
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
+
+  const handleOpenDialog = () => {
+    setOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpen(false);
+  };
   
   const isImageUrl = url => {
     if (!url || !isUrl(url) || !isValidImageUrl(url)) {
@@ -36,16 +47,13 @@ const InsertImage = () => {
     return imageExtensions.includes(ext);
   };
 
-  const handleURL = (e) => {
-    e.preventDefault();
-    handleMenuClose();
-    const url = window.prompt('Enter the URL of the image:');
-    const sanitizedUrl = DOMPurify.sanitize(url, { ALLOWED_TAGS: [], ALLOWED_ATTR: [] });
-    if (sanitizedUrl && !isImageUrl(sanitizedUrl))  {
+  const handleInsertImageUrl = () => {
+    handleCloseDialog();
+    if (!imageUrl || !isImageUrl(imageUrl))  {
       toast.error('URL is not an image');
       return;
     }
-    sanitizedUrl && insertImage(editor, sanitizedUrl);
+    insertImage(editor, imageUrl);
   };
 
   const handleImageUpload = async (e) => {
@@ -54,15 +62,29 @@ const InsertImage = () => {
     const file = e.target.files[0];
     if (!file) return;
 
+    const filename = file.name;
+    
     const maxSize = 1024 * 1024 * 5;
     if (file.size > maxSize) {
       toast.error('Image file size is too large. Please choose a file under 5MB.');
       return;
     }
+
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+    if (!allowedTypes.includes(file.type)) {
+      toast.error('Please choose a valid image file (JPEG, PNG, GIF).');
+      return;
+    }
+
     try {
       setLoading(true);
-      const imageUrl = await postFile(file);
-      insertImage(editor, imageUrl); 
+      const response = await postFile(file);
+      if (response.status === 200) {
+        const imageUrl = `https://${cloudFrontDomain}.cloudfront.net/${filename}`
+        insertImage(editor, imageUrl); 
+      } else {
+        throw new Error('Failed to upload image');
+      }
     } catch (error) {
       toast.error('Failed to upload image');
     } finally {
@@ -94,11 +116,29 @@ const InsertImage = () => {
             style={{ display: 'none' }}
           />
         </MenuItem>
-        <MenuItem onClick={handleURL}>
+        <MenuItem onClick={handleOpenDialog}>
           <Link style={{ marginRight: '8px' }} />
           By URL
         </MenuItem>
       </Menu>
+      <Dialog open={open} onClose={handleCloseDialog}>
+        <DialogTitle>Insert Image by URL</DialogTitle>
+        <DialogContent>
+          <TextField 
+            autoFocus
+            margin="dense"
+            id="image-url"
+            label="Image URL"
+            fullWidth
+            value={imageUrl}
+            onChange={(e) => setImageUrl(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog}>Cancel</Button>
+          <Button onClick={handleInsertImageUrl}>Insert</Button>
+        </DialogActions>
+      </Dialog>
       {loading && <Loader />}
     </>
   );

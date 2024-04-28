@@ -4,6 +4,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.collabify.documentservice.annotation.RateLimited;
 import com.collabify.documentservice.controller.DocumentController;
+import io.sentry.Sentry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,8 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Objects;
 
 @Service
@@ -35,35 +34,24 @@ public class S3Service {
 
 
     @RateLimited(limit = 60)
-    public String uploadImage(String keyName, MultipartFile file) throws IOException {
+    public void uploadImage(String keyName, MultipartFile file) throws IOException {
         String contentType = getContentTypeByFilename(Objects.requireNonNull(file.getOriginalFilename()));
         ObjectMetadata metadata = new ObjectMetadata();
 
         metadata.setContentType(contentType);
         metadata.setContentLength(file.getSize());
 
-        InputStream inputStream = file.getInputStream();
-        s3client.putObject(bucketName, keyName, inputStream, metadata);
-
-        String url = buildUrl(cloudFrontDomain, keyName);
-        return url;
-    }
-
-    public static String buildUrl(String cloudFrontDomain, String keyName) {
-        try {
-            URI uri = new URI("https", cloudFrontDomain + ".cloudfront.net", "/" + keyName, null);
-
-            String url = uri.toString();
-
-            return url;
-        } catch (URISyntaxException e) {
-            throw new RuntimeException("Error constructing URL: " + e.getMessage(), e);
+        try (InputStream inputStream = file.getInputStream()) {
+            s3client.putObject(bucketName, keyName, inputStream, metadata);
+            Sentry.captureMessage("Uploaded image: " + keyName);
+        } catch (IOException e) {
+            Sentry.captureException(e);
         }
     }
 
     public void deleteObject(String keyName) {
         s3client.deleteObject(bucketName, keyName);
-        log.info("Deleted object '{}' from S3 bucket", keyName);
+        Sentry.captureMessage("Deleted image: " + keyName);
     }
 
     private String getContentTypeByFilename(String filename) {
