@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import * as Sentry from '@sentry/react';
 import { Toolbar, Container, Typography } from "@mui/material";
 import { Article, Save, Download, Info } from '@mui/icons-material';
 import html2pdf from 'html2pdf.js';
@@ -44,7 +43,6 @@ const MenuBar = ({ doc, setDoc, handleSaveDocument, setIsDetailsOpen }) => {
       }
       
     } catch (error) {
-      Sentry.captureException(error);
       toast.error('Failed to download file');
     }
   };
@@ -54,7 +52,6 @@ const MenuBar = ({ doc, setDoc, handleSaveDocument, setIsDetailsOpen }) => {
       setLoading(true);
       const response = await createDocument();
       setDoc(response);
-      navigate(`/document/${response.id}`);
     } catch (error) {
       toast.error('Failed to create document');
     } finally {

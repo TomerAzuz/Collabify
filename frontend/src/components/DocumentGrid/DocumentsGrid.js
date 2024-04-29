@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
 import { Grid, Paper, Typography } from '@mui/material';
+import { toast } from 'react-hot-toast';
 
 import { useAuth } from '../Auth/AuthContext';
 import Loader from '../Common/Loader/Loader';
@@ -22,7 +23,7 @@ const DocumentsGrid = ({ documents, setDocuments, loading }) => {
       setDocuments(documents => documents
           .filter(doc => doc.id !== document.id));
     } catch (error) {
-      console.error('Error deleting document: ', error);
+      toast.error('Error deleting document');
     }
   }, [user, setDocuments]);
 

@@ -39,7 +39,7 @@ const useDocumentFunctions = () => {
 
     try {
       const response = await postFile(file);
-      if (response.status === 200) {
+      if (response.status === 201) {
         return `https://${cloudFrontDomain}.cloudfront.net/${docId}.jpg`
       }
     } catch (error) {
@@ -118,8 +118,7 @@ const useDocumentFunctions = () => {
         },
         permission: 'Viewer',
       };
-      const response = await postDocument(document);
-      return response;
+      return await postDocument(document);
     } catch (error) {
       console.error('Error creating document:', error);
       throw error;

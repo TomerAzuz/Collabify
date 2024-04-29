@@ -85,7 +85,7 @@ const SlateEditor = ({ sharedType, provider, doc, setDoc }) => {
   
   useEffect(() => {
     YjsEditor.connect(editor);
-    return () => YjsEditor.disconnect(editor)
+    return () => YjsEditor.disconnect(editor);
   }, [editor]);   
 
   const handleHotkeyAction = useCallback((e, hotkey) => {

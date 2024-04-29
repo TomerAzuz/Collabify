@@ -19,7 +19,6 @@ dependencies {
 	implementation 'com.google.firebase:firebase-admin:9.2.0'
 	implementation platform('com.amazonaws:aws-java-sdk-bom:1.12.529')
 	implementation 'com.amazonaws:aws-java-sdk-s3'
-	implementation 'io.sentry:sentry-spring-boot-starter-jakarta:7.8.0'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
@@ -39,24 +38,6 @@ dependencies {
 	testImplementation "org.testcontainers:testcontainers:1.19.6"
 	testImplementation "org.testcontainers:mongodb:1.19.6"
 	testImplementation 'org.springframework.security:spring-security-test'
-}
-
-bootRun {
-	systemProperty 'spring.profiles.active', 'testdata'
-}
-
-bootBuildImage {
-	builder = "docker.io/paketobuildpacks/builder-jammy-base"
-	imageName = "${project.name}"
-	environment = ["BP_JVM_VERSION": "17"]
-
-	docker {
-		publishRegistry {
-			username = project.findProperty("registryUsername")
-			password = project.findProperty("registryToken")
-			url = project.findProperty("registryUrl")
-		}
-	}
 }
 
 tasks.named('test') {

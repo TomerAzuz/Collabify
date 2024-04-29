@@ -18,6 +18,7 @@ const EditorWrapper = ({ sharedType, provider }) => {
   
   useEffect(() => {
     const getDoc = async () => {
+      if (!id) return;
       try {
         setLoading(true);
         const response = await fetchDocument(id);
@@ -41,9 +42,7 @@ const EditorWrapper = ({ sharedType, provider }) => {
       }
     };
 
-    if (id) {
-      getDoc();
-    }
+    getDoc();
 
     return () => {
       setDoc(null);

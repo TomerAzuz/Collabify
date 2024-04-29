@@ -1,5 +1,4 @@
 import axios from 'axios';
-import * as Sentry from '@sentry/react';
 
 const BASE_URL = 'http://localhost:3000/api/v1/s3';
 
@@ -15,7 +14,6 @@ export async function postFile(file) {
     });
     return response;
   } catch (error) {
-    Sentry.captureException(error);
     console.error('Error uploading file: ', error);
   }
 };

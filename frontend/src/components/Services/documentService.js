@@ -1,5 +1,4 @@
 import axios from 'axios';
-import * as Sentry from '@sentry/react';
 
 import { API_BASE_URL } from '../Common/Utils/constants';
 
@@ -12,7 +11,6 @@ export async function getDocuments() {
       console.error('Unexpected status code: ', response.status);
     }
   } catch (error) {
-    Sentry.captureException(error);
     console.error('Error fetching documents: ', error);
   }
 };
@@ -26,7 +24,6 @@ export async function getDocumentById(id) {
       console.error('Unexpected status code: ', response.status);
     }
   } catch (error) {
-    Sentry.captureException(error);
     console.error('Error fetching document with id: ', id);
   }
 };
@@ -40,7 +37,6 @@ export async function postDocument(document) {
       console.error('Unexpected status code: ', response.status);
     }
   } catch (error) {
-    Sentry.captureException(error);
     console.error('Error posting document: ', error);
   }
 };
@@ -54,7 +50,6 @@ export async function updateDocument(id, newDoc) {
       console.error('Unexpected status code: ', response.status);
     }
   } catch (error) {
-    Sentry.captureException(error);
     console.error('Error updating document with id: ', id, + ": ", error);
   } 
 };
@@ -68,7 +63,6 @@ export async function deleteDocument(id) {
       console.error('Unexpected status code: ', response.status);
     }
   } catch (error) {
-    Sentry.captureException(error);
     console.error('Error deleting document: ', error);
   }
 };

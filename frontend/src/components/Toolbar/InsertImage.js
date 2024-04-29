@@ -79,7 +79,8 @@ const InsertImage = () => {
     try {
       setLoading(true);
       const response = await postFile(file);
-      if (response.status === 200) {
+      console.log(response)
+      if (response.status === 201) {
         const imageUrl = `https://${cloudFrontDomain}.cloudfront.net/${filename}`
         insertImage(editor, imageUrl); 
       } else {

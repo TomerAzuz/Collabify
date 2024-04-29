@@ -1,7 +1,6 @@
 package com.collabify.documentservice.model;
 
 import com.collabify.documentservice.dto.Collaborator;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,7 +25,6 @@ public class RichTextDocument {
     @Id
     private String id;
 
-    @NotBlank(message = "Title is required")
     private String title;
 
     @NotNull(message = "Content cannot be null")
@@ -34,7 +32,6 @@ public class RichTextDocument {
 
     private String previewUrl;
 
-    @NotNull(message = "Created by field cannot be null")
     private Collaborator createdBy;
 
     private Set<Collaborator> collaborators;
