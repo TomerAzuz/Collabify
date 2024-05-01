@@ -49,6 +49,7 @@ const InsertImage = () => {
 
   const handleInsertImageUrl = () => {
     handleCloseDialog();
+    handleMenuClose();
     if (!imageUrl || !isImageUrl(imageUrl))  {
       toast.error('URL is not an image');
       return;
@@ -79,7 +80,6 @@ const InsertImage = () => {
     try {
       setLoading(true);
       const response = await postFile(file);
-      console.log(response)
       if (response.status === 201) {
         const imageUrl = `https://${cloudFrontDomain}.cloudfront.net/${filename}`
         insertImage(editor, imageUrl); 

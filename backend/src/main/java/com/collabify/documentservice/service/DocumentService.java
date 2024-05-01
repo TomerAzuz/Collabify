@@ -35,7 +35,8 @@ public class DocumentService {
 
     @RateLimited
     public List<DocumentMetadata> getAllDocuments(String userId) {
-        List<RichTextDocument> documents = documentRepository.findByCreatedByOrCollaboratorsOrderByUpdatedAtDesc(userId, Sort.by(Sort.Direction.DESC, "updatedAt"));
+        List<RichTextDocument> documents = documentRepository
+                .findByCreatedByOrCollaboratorsOrderByUpdatedAtDesc(userId, Sort.by(Sort.Direction.DESC, "updatedAt"));
         return documents.stream()
                 .map(DocumentMetadata::mapToDocumentMetadata)
                 .collect(Collectors.toList());

@@ -10,10 +10,10 @@ import Dashboard from './components/Dashboard/Dashboard';
 import LoginPage from './components/Auth/LoginPage';
 import SignupPage from './components/Auth/SignupPage';
 import PasswordResetPage from './components/Auth/PasswordResetPage';
-import NotFound from './components/ErrorPages/NotFound';
 import Page from './components/Editor/Page';
 import LandingPage from './components/LandingPage/LandingPage';
 import ProfilePage from './components/Profile/ProfilePage';
+import ErrorPage from './components/ErrorPage/ErrorPage';
 
 const App = () => (
     <Router>
@@ -28,7 +28,7 @@ const App = () => (
             <Route path="/dashboard" element={<PrivateRoute component={Dashboard} />} />
             <Route path="/profile/:uid" element={<PrivateRoute component={ProfilePage}/>}/>
             <Route path="/document/:id" element={<PrivateRoute component={Page} />} />
-            <Route path="*" element={<NotFound />} />
+            <Route path="*" element={<ErrorPage code={404} />} />
           </Routes>
         </div>
       </AuthProvider>

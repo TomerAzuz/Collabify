@@ -7,22 +7,23 @@ import { toast } from 'react-hot-toast';
 import { useOthers } from "../../liveblocks.config.js";
 
 import { useAuth } from '../Auth/AuthContext.js';
-import useDocuments from '../Hooks/useDocumentFunctions.js';
+import useDocumentFunctions from '../Hooks/useDocumentFunctions.js';
 import ShareDoc from './ShareDocument/ShareDoc.js';
 import serializeToHtml from '../Common/Utils/serializer.js';
 import Logo from '../Common/Logo/Logo.js';
 import Loader from '../Common/Loader/Loader.js';
 import DocumentTitle from './DocumentTitle/DocumentTitle.js';
 import ButtonsList from './Buttons/ButtonsList.js';
+import NewDocumentDialog from './NewDocumentDialog.js';
 
-const MenuBar = ({ doc, setDoc, handleSaveDocument, setIsDetailsOpen }) => {
+const MenuBar = ({ doc, handleSaveDocument, setIsDetailsOpen }) => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const { createDocument } = useDocuments();
+  const others = useOthers();
+  const { createDocument } = useDocumentFunctions();
   const [isAutosave, setIsAutosave] = useState(false);
   const [loading, setLoading] = useState(false);
-
-  const others = useOthers();
+  const [isNewDocDialogOpen, setIsNewDocDialogOpen] = useState(false);
 
   const downalodAsPDF = async () => {
     try {
@@ -51,7 +52,9 @@ const MenuBar = ({ doc, setDoc, handleSaveDocument, setIsDetailsOpen }) => {
     try {
       setLoading(true);
       const response = await createDocument();
-      setDoc(response);
+      if (response) {
+        navigate(`/document/${response.id}`);
+      }
     } catch (error) {
       toast.error('Failed to create document');
     } finally {
@@ -82,7 +85,7 @@ const MenuBar = ({ doc, setDoc, handleSaveDocument, setIsDetailsOpen }) => {
   const buttons = [
     {
       title: 'New Document',
-      onClick: () => createNewDocument(),
+      onClick: () => setIsNewDocDialogOpen(true),
       icon: <Article />
     }, {
       title: 'Save (Ctrl+S)',
@@ -100,25 +103,39 @@ const MenuBar = ({ doc, setDoc, handleSaveDocument, setIsDetailsOpen }) => {
   ];
 
   return (
-    <Container maxWidth="xl">
-      <Toolbar sx={{ alignItems: 'center', py: 1 }}>
-        <Logo variant={'h3'} sx={{ marginLeft: 0 }}/>
-        <DocumentTitle 
-          title={doc.title} 
-          updatedAt={doc.updatedAt} 
-        />
-        <ButtonsList 
-          buttons={buttons}
-          isAutosave={isAutosave} 
-          toggleAutosave={toggleAutosave}
-        />
-        <Typography variant="caption1" sx={{ ml: 'auto', fontWeight: 'bold', color: '#666', fontFamily: 'Roboto' }}>
-            Active users: {others.length + 1}
-        </Typography>
-        <ShareDoc doc={doc} user={user} />
-      </Toolbar>
-      {loading && <Loader />}
-    </Container>
+    <>
+      <Container maxWidth="xl">
+        <Toolbar sx={{ alignItems: 'center', py: 1 }}>
+          <Logo variant={'h3'} sx={{ marginLeft: 0 }}/>
+          <DocumentTitle 
+            title={doc.title} 
+            updatedAt={doc.updatedAt} 
+          />
+          <ButtonsList 
+            buttons={buttons}
+            isAutosave={isAutosave} 
+            toggleAutosave={toggleAutosave}
+          />
+          <Typography variant="caption1" 
+            sx={{ 
+              ml: 'auto', 
+              fontWeight: 'bold', 
+              color: '#666', 
+              fontFamily: 'Roboto' 
+            }}
+          >
+              Active users: {others.length + 1}
+          </Typography>
+          <ShareDoc doc={doc} user={user} />
+        </Toolbar>
+        {loading && <Loader />}
+      </Container>
+      <NewDocumentDialog
+        isDialogOpen={isNewDocDialogOpen} 
+        setIsDialogOpen={setIsNewDocDialogOpen}
+        createNewDocument={createNewDocument}
+      />
+    </>
   );
 };
 

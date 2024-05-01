@@ -1,7 +1,6 @@
 package com.collabify.documentservice.model;
 
 import com.collabify.documentservice.dto.Collaborator;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,7 +26,6 @@ public class RichTextDocument {
 
     private String title;
 
-    @NotNull(message = "Content cannot be null")
     private List<Map<String, Object>> content;
 
     private String previewUrl;

@@ -12,6 +12,15 @@
   padding: 0;
 }
 
+.top-section {
+  background-color: #F3F4F6;
+  color: #333;
+  width: 100%;
+  padding-top: 120px;
+  padding-bottom: 20px;
+  border-radius: 8px; 
+}
+
 .my-documents {
   display: flex;
   align-items: center;

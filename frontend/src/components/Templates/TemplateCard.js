@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { Grid, Typography, Card, CardMedia } from '@mui/material';
+import { toast } from 'react-hot-toast';
 
 import './Templates.css';
 import useDocumentFunctions from '../Hooks/useDocumentFunctions.js';
@@ -10,12 +11,12 @@ const TemplateCard = ({ template }) => {
   
   const handleCreateDocument = async () => {
     try {
-      const response = await createDocument(template.content, template.title);
+      const response = await createDocument(template.content, template.title, template.previewUrl);
       if (response) {
         navigate(`/document/${response.id}`);
       }
     } catch (error) {
-      console.error('Error creating document:', error);
+      toast.error('Error creating document');
     }
   };
 

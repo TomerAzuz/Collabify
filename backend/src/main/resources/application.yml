@@ -18,7 +18,6 @@ spring:
     import: optional:file:src/main/resources/.env[.properties]
   data:
     mongodb:
-      uri: mongodb://localhost:27017/document_db
       auditing:
         enabled: true
       connection-pool:
@@ -41,7 +40,20 @@ firebase:
   config:
     path: "classpath:serviceAccountKey.json"
 
-sentry:
-  dsn: ${SENTRY_DSN}
-  traces-sample-rate: 1.0
-  exception-resolver-order: -2147483647
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+  data:
+    mongodb:
+      uri: "mongodb://localhost:27017/${MONGO_DB_NAME}"
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+  data:
+    mongodb:
+      uri: "mongodb+srv://${MONGO_USERNAME}:${MONGO_PASSWORD}@cluster0.g35gc7t.mongodb.net/${MONGO_DB_NAME}?retryWrites=true&w=majority&appName=Cluster0"

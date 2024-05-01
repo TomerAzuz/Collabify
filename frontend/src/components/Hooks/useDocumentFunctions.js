@@ -44,7 +44,6 @@ const useDocumentFunctions = () => {
       }
     } catch (error) {
       console.error('Error uploading preview image: ', error);
-      throw error;
     }
   };
 
@@ -71,7 +70,6 @@ const useDocumentFunctions = () => {
       if (!isAutosave) {
         toast.error('Error saving document');
       }
-      throw error;
     }
   };
   
@@ -91,7 +89,6 @@ const useDocumentFunctions = () => {
       }
     } catch (error) {
       console.error('Failed to update collaborators: ', error.message);
-      throw error;
     }
   };
 
@@ -101,16 +98,15 @@ const useDocumentFunctions = () => {
       return response;
     } catch (error) {
       toast.error('Failed to fetch document');
-      throw error;
     }
   }, [user.uid]);
 
-  const createDocument = async (content, title) => {
+  const createDocument = async (content, title, previewUrl) => {
     try {
       const document = {
         title: title || 'untitled document',
         content: content || templates.blank.content,
-        previewUrl: '',
+        previewUrl: previewUrl || '',
         createdBy: {
           uid: user.uid,
           photoURL: user.photoURL,
@@ -121,7 +117,6 @@ const useDocumentFunctions = () => {
       return await postDocument(document);
     } catch (error) {
       console.error('Error creating document:', error);
-      throw error;
     }
   };
 

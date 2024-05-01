@@ -1,12 +1,13 @@
 package com.collabify.documentservice.controller;
 
-import com.collabify.documentservice.exception.DocumentNotFoundException;
 import com.collabify.documentservice.dto.DocumentMetadata;
+import com.collabify.documentservice.exception.DocumentNotFoundException;
 import com.collabify.documentservice.model.RichTextDocument;
 import com.collabify.documentservice.service.DocumentService;
-
 import com.collabify.documentservice.service.S3Service;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,19 +30,34 @@ public class DocumentController {
     private S3Service s3Service;
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public RichTextDocument createDocument(@Valid @RequestBody RichTextDocument document,
-                                                           @RequestAttribute("userId") String userId)  {
-        log.info("Creating document");
-        return documentService.createDocument(document, userId);
+    @Operation(summary = "Create a document",
+            description = "Create a new document. The response is the new Document object.")
+    public ResponseEntity<RichTextDocument> createDocument(@Valid @RequestBody RichTextDocument document,
+                                                           @RequestAttribute("userId") String userId) {
+        log.info("Creating a new document");
+        try {
+            RichTextDocument createdDocument = documentService.createDocument(document, userId);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdDocument);
+        } catch (Exception e) {
+            log.error("Error creating document", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
+    @Tag(name = "get", description = "GET methods of Document API")
     @GetMapping
-    public List<DocumentMetadata> getAllDocuments(@RequestAttribute("userId") String userId) {
+    public ResponseEntity<List<DocumentMetadata>> getAllDocuments(@RequestAttribute("userId") String userId) {
         log.info("Getting all documents for user id {}", userId);
-        return documentService.getAllDocuments(userId);
+        try {
+            List<DocumentMetadata> documents = documentService.getAllDocuments(userId);
+            return ResponseEntity.ok(documents);
+        } catch (Exception e) {
+            log.error("Error getting all documents", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
+    @Tag(name = "get", description = "GET methods of Document API")
     @GetMapping("{id}")
     public ResponseEntity<RichTextDocument> getDocumentById(@PathVariable("id") String id) {
         log.info("Getting document with id: {}", id);
@@ -51,24 +67,47 @@ public class DocumentController {
         } catch (DocumentNotFoundException e) {
             return ResponseEntity.notFound().build();
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            log.error("Error processing JSON for document with id: {}", id, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        } catch (Exception e) {
+            log.error("Error getting document", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
     @DeleteMapping("{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteDocumentById(@PathVariable("id") String id) {
+    @Operation(summary = "Delete a document",
+            description = "Delete an existing document.")
+    public ResponseEntity<Void> deleteDocumentById(@PathVariable("id") String id) {
         log.info("Deleting document with id: {}", id);
-        documentService.deleteDocumentById(id);
-        String previewImageId = id + ".jpg";
-        s3Service.deleteObject(previewImageId);
+        try {
+            documentService.deleteDocumentById(id);
+            String previewImageId = id + ".jpg";
+            s3Service.deleteObject(previewImageId);
+            return ResponseEntity.noContent().build();
+        } catch (DocumentNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            log.error("Error deleting document", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @PutMapping("{id}")
-    public RichTextDocument updateById(@PathVariable("id") String id,
+    @Operation(summary = "Update a document",
+            description = "Update an existing document. The response is the updated Document object.")
+    public ResponseEntity<RichTextDocument> updateById(@PathVariable("id") String id,
                                                        @Valid @RequestBody RichTextDocument document,
                                                        @RequestAttribute("userId") String userId) {
         log.info("Updating document with id: {}", id);
-        return documentService.updateDocumentById(id, document, userId);
+        try {
+            RichTextDocument updatedDocument = documentService.updateDocumentById(id, document, userId);
+            return ResponseEntity.ok(updatedDocument);
+        } catch (DocumentNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            log.error("Error updating document", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }

@@ -15,6 +15,7 @@ const AuthForm = ({ title,
                   }) => {
                     
   const { error } = useAuth();
+  
   return (
     <Container className="login-page">
       <Card className='login-paper' elevation={2}>

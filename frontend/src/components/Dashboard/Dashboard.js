@@ -46,7 +46,7 @@ const Dashboard = () => {
     <div className="dashboard-container">
       <Navbar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
       <div className='container'>
-        <div style={{ backgroundColor: '#F3F4F6', color: '#333', width: '100%', paddingTop: '120px', paddingBottom: '20px', borderRadius: '8px' }}>
+        <div className='top-section'>
           <Typography variant="h6" align="center" mb={3} sx={{ color: '#555' }}>
             Start a new document
           </Typography>
@@ -69,7 +69,11 @@ const Dashboard = () => {
             </Select>
           </div>
         </Box>
-        <DocumentsGrid documents={filteredDocuments} setDocuments={setDocuments} loading={loading} />
+        <DocumentsGrid 
+          documents={filteredDocuments} 
+          setDocuments={setDocuments} 
+          loading={loading} 
+        />
       </div>
     </div>
   );

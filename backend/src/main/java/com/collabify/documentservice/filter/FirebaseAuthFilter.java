@@ -7,8 +7,6 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -16,18 +14,27 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class FirebaseAuthFilter extends OncePerRequestFilter {
-
-    private static final Logger logger = LoggerFactory.getLogger(FirebaseAuthFilter.class);
     private static final String BEARER_PREFIX = "Bearer ";
     private static final String AUTHORIZATION_HEADER = "Authorization";
-    private static final String HEALTH_ENDPOINT = "/actuator/health";
+    private final Set<String> skipUrls;
+
+    public FirebaseAuthFilter() {
+        this.skipUrls = new HashSet<>();
+        skipUrls.add("/actuator/health");
+        skipUrls.add("/swagger-ui");
+        skipUrls.add("/v3/api-docs");
+    }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain) throws ServletException, IOException {
         if (shouldSkipFilter(request)) {
             filterChain.doFilter(request, response);
             return;
@@ -36,7 +43,6 @@ public class FirebaseAuthFilter extends OncePerRequestFilter {
         String authHeader = request.getHeader(AUTHORIZATION_HEADER);
 
         if (authHeader == null || !authHeader.startsWith(BEARER_PREFIX)) {
-            logger.warn("Invalid token");
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             return;
         }
@@ -54,6 +60,12 @@ public class FirebaseAuthFilter extends OncePerRequestFilter {
     }
 
     private boolean shouldSkipFilter(HttpServletRequest request) {
-        return request.getRequestURI().equals(HEALTH_ENDPOINT);
+        String requestURI = request.getRequestURI();
+        for (String skipUrl : skipUrls) {
+            if (requestURI.startsWith(skipUrl)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

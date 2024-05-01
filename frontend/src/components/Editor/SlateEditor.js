@@ -121,7 +121,7 @@ const SlateEditor = ({ sharedType, provider, doc, setDoc }) => {
     if (e.ctrlKey && e.key === 's') {
       // Save document
       e.preventDefault();
-      handleSaveDocument(false);
+      await handleSaveDocument(false);
     } else if (e.ctrlKey) {
       // Check if hotkey is pressed
       const hotkey = Object.keys(HOTKEYS).find(key => isHotkey(key, e));
@@ -148,7 +148,7 @@ const SlateEditor = ({ sharedType, provider, doc, setDoc }) => {
   const renderLeaf = useCallback(props => <Renderer.renderLeaf {...props} />, []);
 
   const { handleMentionChange, handleMentionAction } = MentionLogic(
-    { editor, collabs, index, target, setIndex, setTarget, setSearch });
+          { editor, collabs, index, target, setIndex, setTarget, setSearch });
 
   return (
     <Slate 
@@ -161,7 +161,6 @@ const SlateEditor = ({ sharedType, provider, doc, setDoc }) => {
           <>
             <MenuBar 
               doc={doc} 
-              setDoc={setDoc}
               editorRef={editorRef}
               setIsDetailsOpen={setIsDetailsOpen}
               handleSaveDocument={handleSaveDocument}
@@ -183,6 +182,7 @@ const SlateEditor = ({ sharedType, provider, doc, setDoc }) => {
               renderElement={renderElement}
               renderLeaf={renderLeaf}
               autoFocus
+              spellCheck={false}
               onKeyDown={e => handleKeyDown(e)}
               className='editor-container'
             />

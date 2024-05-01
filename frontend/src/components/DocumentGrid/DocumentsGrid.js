@@ -35,9 +35,7 @@ const DocumentsGrid = ({ documents, setDocuments, loading }) => {
     <Grid 
       maxWidth='lg' 
       container spacing={3} 
-      sx={{ margin: 'auto', 
-            paddingBottom: '30px'
-      }}
+      sx={{ margin: 'auto', paddingBottom: '30px'}}
     >
     {documents?.length > 0 ? (
       documents.map((doc) => (
