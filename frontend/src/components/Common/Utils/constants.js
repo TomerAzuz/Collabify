@@ -1,4 +1,5 @@
 export const DEV_API_BASE_URL = 'http://localhost:9000/api';
+export const PROD_API_BASE_URL = 'https://collabify-app-72770cdb7df0.herokuapp.com/api';
 
 export const HOTKEYS = {
   'mod+b': 'bold',

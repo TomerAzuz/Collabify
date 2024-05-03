@@ -18,6 +18,10 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
+                .requiresChannel((requiresChannel) ->
+                        requiresChannel
+                                .requestMatchers(r -> r.getHeader("X-Forwarded-Proto") != null)
+                                .requiresSecure())
                 .csrf(csrf -> csrf
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
                 .authorizeHttpRequests((requests) -> requests

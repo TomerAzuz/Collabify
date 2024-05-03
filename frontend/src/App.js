@@ -22,9 +22,9 @@ const App = () => (
           <Toaster />
           <Routes>
             <Route path="/" element={<CustomRoute component={LandingPage} />} />
-            <Route path="/auth/login" element={<CustomRoute component={<LoginPage />} />} />
-            <Route path="/auth/signup" element={<CustomRoute component={<SignupPage />} />} />
-            <Route path="/auth/forgot" element={<CustomRoute component={<PasswordResetPage/>} />} />
+            <Route path="/auth/login" element={<CustomRoute component={LoginPage} />} />
+            <Route path="/auth/signup" element={<CustomRoute component={SignupPage} />} />
+            <Route path="/auth/forgot" element={<CustomRoute component={PasswordResetPage} />} />
             <Route path="/dashboard" element={<PrivateRoute component={Dashboard} />} />
             <Route path="/profile/:uid" element={<PrivateRoute component={ProfilePage}/>}/>
             <Route path="/document/:id" element={<PrivateRoute component={Page} />} />
