@@ -45,8 +45,7 @@ const ProfileSection = ({ formData, field, errors, handleFormChange, validateFie
           <div className="profile-field">
             <ProfileField 
               formData={formData}
-              title={field.title}
-              value={field.value}
+              field={field}
               handleFormChange={handleFormChange}
             />
             <SaveButton validateField={(e) => validateField(e, field.value)} />

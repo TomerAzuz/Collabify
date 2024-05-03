@@ -21,7 +21,7 @@ public class S3Controller {
 
     @PostMapping("/upload")
     @ResponseStatus(HttpStatus.CREATED)
-    @Operation(summary = "Create a new image.",
+    @Operation(summary = "Upload a new image.",
                description = "Create a new image in an AWS S3 bucket.")
     public void uploadFile(@RequestParam("file") MultipartFile file) {
         log.info("Uploading image");

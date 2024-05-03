@@ -43,7 +43,7 @@ const useDocumentFunctions = () => {
         return `https://${cloudFrontDomain}.cloudfront.net/${docId}.jpg`
       }
     } catch (error) {
-      console.error('Error uploading preview image: ', error);
+      console.error('Error uploading preview image');
     }
   };
 
@@ -70,25 +70,7 @@ const useDocumentFunctions = () => {
       if (!isAutosave) {
         toast.error('Error saving document');
       }
-    }
-  };
-  
-  const addCollaborator = async (document) => {
-    try {
-      const response = await updateDocument(document.id, {
-        collaborators: [...document.collaborators, 
-        { 
-          uid: user.uid,
-          photoURL: user.photoURL,
-          displayName: user.displayName || user.email
-        }],
-      });
-      
-      if (response) {
-        return response;
-      }
-    } catch (error) {
-      console.error('Failed to update collaborators: ', error.message);
+      throw error;
     }
   };
 
@@ -98,6 +80,7 @@ const useDocumentFunctions = () => {
       return response;
     } catch (error) {
       toast.error('Failed to fetch document');
+      throw error;
     }
   }, [user.uid]);
 
@@ -117,6 +100,7 @@ const useDocumentFunctions = () => {
       return await postDocument(document);
     } catch (error) {
       console.error('Error creating document:', error);
+      throw error;
     }
   };
 
@@ -125,7 +109,6 @@ const useDocumentFunctions = () => {
       const fetchedDocuments = await getDocuments();
       return fetchedDocuments;
     } catch (error) {
-      console.error('Error fetching documents:', error);
       throw error;
     }
   };
@@ -135,7 +118,6 @@ const useDocumentFunctions = () => {
     saveDocument,
     fetchDocument,
     fetchDocuments,
-    addCollaborator
   };
 };
 

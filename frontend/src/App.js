@@ -13,22 +13,22 @@ import PasswordResetPage from './components/Auth/PasswordResetPage';
 import Page from './components/Editor/Page';
 import LandingPage from './components/LandingPage/LandingPage';
 import ProfilePage from './components/Profile/ProfilePage';
-import ErrorPage from './components/ErrorPage/ErrorPage';
+import ErrorPage from './components/ErrorPage/ErrorPage.js';
 
 const App = () => (
     <Router>
       <AuthProvider>
         <div className="App">
-        <Toaster />
+          <Toaster />
           <Routes>
             <Route path="/" element={<CustomRoute component={LandingPage} />} />
-            <Route path="/auth/login" element={<LoginPage />} />
-            <Route path="/auth/signup" element={<SignupPage />} />
-            <Route path="/auth/forgot" element={<PasswordResetPage />} />
+            <Route path="/auth/login" element={<CustomRoute component={<LoginPage />} />} />
+            <Route path="/auth/signup" element={<CustomRoute component={<SignupPage />} />} />
+            <Route path="/auth/forgot" element={<CustomRoute component={<PasswordResetPage/>} />} />
             <Route path="/dashboard" element={<PrivateRoute component={Dashboard} />} />
             <Route path="/profile/:uid" element={<PrivateRoute component={ProfilePage}/>}/>
             <Route path="/document/:id" element={<PrivateRoute component={Page} />} />
-            <Route path="*" element={<ErrorPage code={404} />} />
+            <Route path="*" element={<ErrorPage errorCode={404} />} />
           </Routes>
         </div>
       </AuthProvider>

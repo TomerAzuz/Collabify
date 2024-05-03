@@ -1,4 +1,4 @@
-export const DEV_API_BASE_URL = 'http://localhost:3000/api/v1/documents';
+export const DEV_API_BASE_URL = 'http://localhost:9000/api';
 
 export const HOTKEYS = {
   'mod+b': 'bold',

@@ -5,23 +5,15 @@ import { toast } from 'react-hot-toast';
 import { useAuth } from '../Auth/AuthContext';
 import Loader from '../Common/Loader/Loader';
 import DocumentItem from './DocumentItem/DocumentItem.js';
-import { deleteDocument, updateDocument } from '../Services/documentService';
+import { deleteDocument } from '../Services/documentService';
 
-const DocumentsGrid = ({ documents, setDocuments, loading }) => {
+const DocumentsGrid = ({ documents, setDocuments, loading, error }) => {
   const { user } = useAuth();
 
   const handleDeleteDocument = useCallback(async (document) => {
     try {
-      if (document.createdBy.uid === user.uid) {
-        await deleteDocument(document.id);
-      } else {
-        await updateDocument(document.id, {
-          collaborators: document.collaborators
-            .filter(collab => collab.uid !== user.uid)
-        });
-      } 
-      setDocuments(documents => documents
-          .filter(doc => doc.id !== document.id));
+      await deleteDocument(document.id);
+      setDocuments(documents => documents.filter(doc => doc.id !== document.id));
     } catch (error) {
       toast.error('Error deleting document');
     }
@@ -47,10 +39,11 @@ const DocumentsGrid = ({ documents, setDocuments, loading }) => {
       ))) : 
       (<Paper elevation={2} sx={{ padding: '30px', margin: 'auto' }}>
         <Typography gutterBottom align="center" variant='h6'>
-          No text documents yet
+          {error ? 'Error' : 'No text documents yet'}
         </Typography>
         <Typography gutterBottom align="center" variant='body2'>
-          Select a blank document or choose another template above to get started
+          {error ? 'Failed to load documents. please try again.' : 
+                   'Select a blank document or choose another template above to get started'}
         </Typography> 
       </Paper>
       )

@@ -4,8 +4,7 @@ import com.collabify.documentservice.dto.DocumentMetadata;
 import com.collabify.documentservice.exception.DocumentNotFoundException;
 import com.collabify.documentservice.model.RichTextDocument;
 import com.collabify.documentservice.service.DocumentService;
-import com.collabify.documentservice.service.S3Service;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.google.firebase.auth.FirebaseAuthException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -25,9 +24,6 @@ public class DocumentController {
 
     @Autowired
     private DocumentService documentService;
-
-    @Autowired
-    private S3Service s3Service;
 
     @PostMapping
     @Operation(summary = "Create a document",
@@ -59,18 +55,20 @@ public class DocumentController {
 
     @Tag(name = "get", description = "GET methods of Document API")
     @GetMapping("{id}")
-    public ResponseEntity<RichTextDocument> getDocumentById(@PathVariable("id") String id) {
+    public ResponseEntity<RichTextDocument> getDocumentById(@PathVariable("id") String id,
+                                                            @RequestAttribute("userId") String userId) {
         log.info("Getting document with id: {}", id);
         try {
-            RichTextDocument document = documentService.getDocumentById(id);
+            RichTextDocument document = documentService.getDocumentById(id, userId);
             return ResponseEntity.ok(document);
         } catch (DocumentNotFoundException e) {
             return ResponseEntity.notFound().build();
-        } catch (JsonProcessingException e) {
-            log.error("Error processing JSON for document with id: {}", id, e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         } catch (Exception e) {
-            log.error("Error getting document", e);
+            if (e instanceof FirebaseAuthException) {
+                log.error("Firebase Authentication Error: {}", e.getMessage());
+            } else {
+                log.error("Error getting document", e);
+            }
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
@@ -78,12 +76,11 @@ public class DocumentController {
     @DeleteMapping("{id}")
     @Operation(summary = "Delete a document",
             description = "Delete an existing document.")
-    public ResponseEntity<Void> deleteDocumentById(@PathVariable("id") String id) {
+    public ResponseEntity<Void> deleteDocumentById(@PathVariable("id") String id,
+                                                   @RequestAttribute("userId") String userId) {
         log.info("Deleting document with id: {}", id);
         try {
-            documentService.deleteDocumentById(id);
-            String previewImageId = id + ".jpg";
-            s3Service.deleteObject(previewImageId);
+            documentService.deleteDocumentById(id, userId);
             return ResponseEntity.noContent().build();
         } catch (DocumentNotFoundException e) {
             return ResponseEntity.notFound().build();

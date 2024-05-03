@@ -64,6 +64,5 @@
     "babel-jest": "^29.7.0",
     "eslint-plugin-react": "^7.34.1",
     "js-image-compressor": "^2.0.0"
-  },
-  "proxy": "http://localhost:9000"
+  }
 }

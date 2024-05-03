@@ -1,13 +1,14 @@
 import axios from 'axios';
 
-const BASE_URL = 'http://localhost:3000/api/v1/s3';
+import { DEV_API_BASE_URL } from '../Common/Utils/constants';
+
 
 export async function postFile(file) {
   try {
     const formData = new FormData();
     formData.append('file', file);
 
-    const response = await axios.post(`${BASE_URL}/upload`, formData, {
+    const response = await axios.post(`${DEV_API_BASE_URL}/v1/s3/upload`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }

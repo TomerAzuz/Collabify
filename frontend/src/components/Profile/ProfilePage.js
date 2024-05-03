@@ -132,6 +132,7 @@ const ProfilePage = () => {
       title: 'Name',
       subtitle: user?.displayName,
       value: 'displayName',
+      autoComplete: 'username',
     },
     { 
       title: 'Email',
@@ -141,6 +142,7 @@ const ProfilePage = () => {
     {
       title: 'Password',
       value: 'password',
+      autoComplete: 'new-password',
     }
   ];
 

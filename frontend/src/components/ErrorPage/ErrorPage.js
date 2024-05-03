@@ -1,16 +1,13 @@
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Typography, Link } from "@mui/material";
 
 import './ErrorPage.css';
 
-const ErrorPage = ({ code }) => {
+const ErrorPage = ({ errorCode }) => {
   const navigate = useNavigate();
-  const { errorCode } = useParams();
-
-  const actualErrorCode = parseInt(errorCode || code, 10);
 
   let errorMessage;
-  switch (actualErrorCode) {
+  switch (errorCode) {
     case 404:
       errorMessage = "The page you are looking for does not exist.";
       break;
@@ -25,7 +22,7 @@ const ErrorPage = ({ code }) => {
   return (
     <div className='error-message'>
       <div style={{ textAlign: 'center' }}>
-        <Typography variant="h1">{actualErrorCode} Error</Typography>
+        <Typography variant="h1">{errorCode} Error</Typography>
         <Typography gutterBottom variant="body1">{errorMessage}</Typography>
         <Link 
           component="button"

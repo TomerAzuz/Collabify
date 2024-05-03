@@ -40,9 +40,6 @@ public class DocumentControllerMvcTests {
     @MockBean
     DocumentService documentService;
 
-    @MockBean
-    S3Service s3Service;
-
     @Autowired
     ObjectMapper objectMapper;
 
@@ -73,11 +70,12 @@ public class DocumentControllerMvcTests {
     @Test
     void whenGetDocumentNotExistingThenShouldReturn404() throws Exception {
         var id = "123";
-        given(documentService.getDocumentById(id))
+        given(documentService.getDocumentById(id, id))
                 .willThrow(DocumentNotFoundException.class);
 
         mockMvc
-                .perform(get("/api/v1/documents/" + id))
+                .perform(get("/api/v1/documents/" + id)
+                        .requestAttr("userId", id))
                 .andExpect(status().isNotFound());
     }
 
@@ -85,9 +83,10 @@ public class DocumentControllerMvcTests {
     void whenGetDocumentExistingThenShouldReturn200() throws Exception {
         var id = "123";
         var document = createDocument(id);
-        given(documentService.getDocumentById(id)).willReturn(document);
+        given(documentService.getDocumentById(id, id)).willReturn(document);
         mockMvc
-                .perform(get("/api/v1/documents/" + id))
+                .perform(get("/api/v1/documents/" + id)
+                        .requestAttr("userId", id))
                 .andExpect(status().isOk());
     }
 
@@ -151,8 +150,10 @@ public class DocumentControllerMvcTests {
 
     @Test
     void whenDeleteDocumentThenShouldReturn204() throws Exception {
+        var userId = UUID.randomUUID().toString();
         mockMvc
-                .perform(delete("/api/v1/documents/123"))
+                .perform(delete("/api/v1/documents/123")
+                        .requestAttr("userId", userId))
                 .andExpect(status().isNoContent());
     }
 }

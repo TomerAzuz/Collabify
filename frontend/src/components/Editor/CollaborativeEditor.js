@@ -13,7 +13,7 @@ export function CollaborativeEditor() {
   const [connected, setConnected] = useState(false);
   const [sharedType, setSharedType] = useState();
   const [provider, setProvider] = useState();
-
+  
   useEffect(() => {
     const yDoc = new Y.Doc();
     const sharedDoc = yDoc.get("slate", Y.XmlText);

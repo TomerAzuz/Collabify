@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Typography, Select, MenuItem, Box } from '@mui/material';
+import { toast } from 'react-hot-toast';
 
 import './Dashboard.css';
-import { getDocuments } from '../Services/documentService.js';
+import useDocumentFunctions from '../Hooks/useDocumentFunctions.js';
 import { useAuth } from '../Auth/AuthContext';
 import DocumentsGrid from '../DocumentGrid/DocumentsGrid';
 import Navbar from './Navbar/Navbar.js';
@@ -10,24 +11,26 @@ import TemplatesGrid from '../Templates/TemplatesGrid.js';
 
 const Dashboard = () => {
   const { user } = useAuth();
+  const { fetchDocuments } = useDocumentFunctions();
   const [documents, setDocuments] = useState(null);
   const [filter, setFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchDocuments = async () => {
+    const getDocs = async () => {
       try {
-        const fetchedDocuments = await getDocuments();
-        setDocuments(fetchedDocuments);
+        const response = await fetchDocuments();
+        setDocuments(response);
       } catch (error) {
-        console.error('Error fetching documents:', error);
+        setError(error);
+        toast.error('Failed to load documents');
       } finally {
         setLoading(false);
       }
     };
-
-    fetchDocuments();
+    getDocs();
   }, []);
 
   const filteredDocuments = documents?.filter((document) => {
@@ -73,6 +76,7 @@ const Dashboard = () => {
           documents={filteredDocuments} 
           setDocuments={setDocuments} 
           loading={loading} 
+          error={error}
         />
       </div>
     </div>

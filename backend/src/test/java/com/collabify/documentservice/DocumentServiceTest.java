@@ -5,7 +5,8 @@ import com.collabify.documentservice.exception.DocumentNotFoundException;
 import com.collabify.documentservice.model.RichTextDocument;
 import com.collabify.documentservice.repository.DocumentRepository;
 import com.collabify.documentservice.service.DocumentService;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.collabify.documentservice.service.S3Service;
+import com.google.firebase.auth.FirebaseAuthException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -27,6 +28,9 @@ public class DocumentServiceTest {
 
     @InjectMocks
     private DocumentService documentService;
+
+    @Mock
+    private S3Service s3Service;
 
     private RichTextDocument createDocument(String id) {
         var now = Instant.now();
@@ -55,22 +59,23 @@ public class DocumentServiceTest {
     @Test
     void whenDocumentDoesNotExistThenThrows() {
         var id = "123";
-
+        var userId = "1";
         when(documentRepository.findById(id)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> documentService.getDocumentById(id))
+        assertThatThrownBy(() -> documentService.getDocumentById(id, userId))
                 .isInstanceOf(DocumentNotFoundException.class)
                 .hasMessage("The document with id " + id + " was not found.");
     }
 
     @Test
-    void whenDocumentExistsThenReturns() throws JsonProcessingException {
+    void whenDocumentExistsThenReturns() throws FirebaseAuthException {
         var id = "123";
+        var userId = "123";
         var document = createDocument(id);
 
         when(documentRepository.findById(id)).thenReturn(Optional.of(document));
 
-        assertThat(documentService.getDocumentById(id))
+        assertThat(documentService.getDocumentById(id, userId))
                 .isEqualTo(document);
     }
 
@@ -93,21 +98,42 @@ public class DocumentServiceTest {
 
     @Test
     void whenExistingDocumentDeletedThenReturns() {
-        String id = "123";
+        var id = "123";
+        var document = createDocument(id);
 
-        when(documentRepository.existsById(id)).thenReturn(true);
-        documentService.deleteDocumentById(id);
+        when(documentRepository.findById(id)).thenReturn(Optional.of(document));
+        doNothing().when(s3Service).deleteObject(id + ".jpg");
 
-        verify(documentRepository, times(1)).existsById(id);
+        documentService.deleteDocumentById(id, id);
+
+        verify(s3Service, times(1)).deleteObject(id + ".jpg");
         verify(documentRepository, times(1)).deleteById(id);
     }
 
     @Test
     void whenNonExistingDocumentDeletedThenThrows() {
         var id = "123";
-        when(documentRepository.existsById(id)).thenReturn(false);
-        assertThatThrownBy(() -> documentService.deleteDocumentById(id))
+
+        when(documentRepository.findById(id)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> documentService.deleteDocumentById(id, id))
                 .isInstanceOf(DocumentNotFoundException.class)
                 .hasMessage("The document with id " + id + " was not found.");
+    }
+
+    @Test
+    void whenDeleteDocumentNotOwnerThenRemoveCollaborator() {
+        var id = "123";
+        var collab = new Collaborator("collab123", "", "username");
+        var document = createDocument(id);
+        document.getCollaborators().add(collab);
+
+        when(documentRepository.findById(id)).thenReturn(Optional.of(document));
+
+        documentService.deleteDocumentById(id, collab.getUid());
+
+        verify(s3Service, times(0)).deleteObject(id + ".jpg");
+        verify(documentRepository, times(0)).deleteById(id);
+        verify(documentRepository, times(1)).save(document);
     }
 }

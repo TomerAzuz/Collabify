@@ -5,7 +5,7 @@ import { useAuth } from '../Auth/AuthContext';
 
 const CustomRoute = ({ component: Component }) => {
   const { user } = useAuth();
-  return user ? <Navigate to='dashboard' /> : <Component /> 
+  return user ? <Navigate to='/dashboard' /> : <Component /> 
 };
 
 export default CustomRoute;

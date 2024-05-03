@@ -8,6 +8,7 @@ import AuthForm from './AuthForm';
 import { validateAuthForm } from '../Common/Utils/validation';
 
 const SignupPage = () => {
+  const { handleAuthentication } = useAuth();
   const [formData, setFormData] = useState({
     displayName: '',
     email: '',
@@ -15,7 +16,6 @@ const SignupPage = () => {
     passwordConfirm: '',
   });
   const [errors, setErrors] = useState({});
-  const { handleAuthentication } = useAuth();
 
   const formFields = [{
       name: 'displayName',
