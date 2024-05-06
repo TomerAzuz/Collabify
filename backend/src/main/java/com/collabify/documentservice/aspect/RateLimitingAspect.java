@@ -63,6 +63,7 @@ public class RateLimitingAspect {
             throw new UserNotFoundException("UID not found.");
         }
     }
+
     @AfterThrowing(pointcut = "@annotation(com.collabify.documentservice.annotation.RateLimited)", throwing = "ex")
     public ResponseEntity<Object> handleRateLimitException(RateLimitExceededException ex) {
         String errorMessage = "Rate limit exceeded. Please try again later.";

@@ -1,13 +1,16 @@
-export const DEV_API_BASE_URL = 'http://localhost:9000/api';
-export const PROD_API_BASE_URL = 'https://collabify-app-72770cdb7df0.herokuapp.com/api';
+const DEV_API_BASE_URL = 'http://localhost:9000/api';
+const PROD_API_BASE_URL = 'https://collabify-app-72770cdb7df0.herokuapp.com/api';
 
+export const API_BASE_URL = process.env.REACT_APP_ENV === 'dev' ? 
+                            DEV_API_BASE_URL : PROD_API_BASE_URL;
 export const HOTKEYS = {
   'mod+b': 'bold',
   'mod+i': 'italic',
   'mod+u': 'underline',
+  'mod+5': 'strikethrough',
   'mod+y': 'redo',
   'mod+z': 'undo',
-  'mod+`': 'code',
+  'mod+h': 'backgroundColor',
   'mod+shift+l': 'left',
   'mod+shift+r': 'right',
   'mod+shift+e': 'center'

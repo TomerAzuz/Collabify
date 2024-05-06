@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class FilterConfig {
-
     @Bean
     public FilterRegistrationBean<FirebaseAuthFilter> firebaseAuthFilterFilter() {
         FilterRegistrationBean<FirebaseAuthFilter> registrationBean = new FilterRegistrationBean<>();

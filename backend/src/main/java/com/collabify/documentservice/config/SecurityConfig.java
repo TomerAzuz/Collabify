@@ -14,20 +14,21 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
+                 // Uncomment in production
                 .requiresChannel((requiresChannel) ->
                         requiresChannel
                                 .requestMatchers(r -> r.getHeader("X-Forwarded-Proto") != null)
                                 .requiresSecure())
+
                 .csrf(csrf -> csrf
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/actuator/health", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                        .requestMatchers("/static/**", "/manifest.json", "/favicon.ico", "index.html").permitAll()
-                        .requestMatchers("/", "/dashboard", "/profile/**", "/auth/**", "/document/**", "/error").permitAll()
+                        .requestMatchers("/static/**", "/manifest.json", "/favicon.ico", "/index.html").permitAll()
+                        .requestMatchers("/", "/dashboard", "/profile/**", "/auth/**", "/document/**").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(exception -> exception

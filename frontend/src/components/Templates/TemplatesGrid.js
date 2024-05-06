@@ -17,12 +17,12 @@ const TemplatesGrid = () => {
       id: 1,
       title: 'Resume',
       content: templates.resume.content,
-      previewUrl: `https://${cloudFrontDomain}.cloudfront.net/e321e26b-2d19-4757-a588-2647fc823bfd.jpg`
+      previewUrl: `https://${cloudFrontDomain}.cloudfront.net/resume.jpg`
     }, {
       id: 2,
       title: 'Letter',
       content: templates.letter.content,
-      previewUrl: `https://${cloudFrontDomain}.cloudfront.net/2a63bfc4-5b26-4117-85fb-8cb4d2eff1db.jpg`
+      previewUrl: `https://${cloudFrontDomain}.cloudfront.net/letter.jpg`
     }
   ], []);
 

@@ -30,7 +30,7 @@ const DocumentItem = ({ document, onDeleteDocument }) => {
     try {
       setLoading(true);
       await onDeleteDocument(document);
-      toast.success('Document deleted');
+      toast.success(`Deleted '${document.title}'`);
     } catch (error) {
       toast.error('Error deleting document: ', error);
     } finally {

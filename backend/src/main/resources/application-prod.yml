@@ -1,6 +1,6 @@
 server:
   port: 9000
-  url: "http://localhost:9000"
+  url: "https://collabify-app-72770cdb7df0.herokuapp.com"
   tomcat:
     connection-timeout: 2s
     keep-alive-timeout: 15s
@@ -25,10 +25,14 @@ spring:
       connection-pool:
         max-size: 50
         min-size: 5
+      ssl:
+        enabled: true
     redis:
       host: ${REDIS_HOST}
       port: ${REDIS_PORT}
       password: ${REDIS_PASSWORD}
+      ssl:
+        enabled: true
   security:
     oauth2:
       resourceserver:
@@ -41,4 +45,4 @@ spring:
           include: health
 
 liveblocks:
-  key: ${LIVEBLOCKS_KEY_DEV}
+  key: ${LIVEBLOCKS_KEY_PROD}

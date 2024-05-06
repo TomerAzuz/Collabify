@@ -1,0 +1,8 @@
+name: Deployment Stage
+
+on:
+  workflow_run:
+    workflows: ['Commit Stage']
+    types: [completed]
+    branches: main
+  concurrency: deployment

@@ -65,12 +65,12 @@ const FontControls = () => {
       icon: <FormatUnderlined />
     }, {
       format: 'strikethrough',
-      title: 'Strikethrough',
+      title: 'Strikethrough (Ctrl+5)',
       onClick: () => toggleMark(editor, 'strikethrough'),
       icon: <StrikethroughS />
     }, {
       format: 'backgroundColor',
-      title: 'Highlight color',
+      title: 'Highlight color (Ctrl+H)',
       onClick: () => toggleMark(editor, 'backgroundColor'),
       icon: <BorderColor />
     }

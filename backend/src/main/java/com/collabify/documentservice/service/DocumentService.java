@@ -23,10 +23,13 @@ public class DocumentService {
 
     private final S3Service s3Service;
 
+    private final LiveblocksService liveblocksService;
+
     @Autowired
-    public DocumentService(DocumentRepository documentRepository, S3Service s3Service) {
+    public DocumentService(DocumentRepository documentRepository, S3Service s3Service, LiveblocksService liveblocksService) {
         this.documentRepository = documentRepository;
         this.s3Service = s3Service;
+        this.liveblocksService = liveblocksService;
     }
 
     @RateLimited(limit = 60)
@@ -79,6 +82,7 @@ public class DocumentService {
         if (isOwner) {
             String previewImageId = id + ".jpg";
             s3Service.deleteObject(previewImageId);
+            liveblocksService.deleteRoom(id);
             documentRepository.deleteById(id);
             return;
         }
