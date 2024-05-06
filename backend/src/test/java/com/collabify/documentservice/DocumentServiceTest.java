@@ -5,6 +5,7 @@ import com.collabify.documentservice.exception.DocumentNotFoundException;
 import com.collabify.documentservice.model.RichTextDocument;
 import com.collabify.documentservice.repository.DocumentRepository;
 import com.collabify.documentservice.service.DocumentService;
+import com.collabify.documentservice.service.LiveblocksService;
 import com.collabify.documentservice.service.S3Service;
 import com.google.firebase.auth.FirebaseAuthException;
 import org.junit.jupiter.api.Test;
@@ -31,6 +32,9 @@ public class DocumentServiceTest {
 
     @Mock
     private S3Service s3Service;
+
+    @Mock
+    private LiveblocksService liveblocksService;
 
     private RichTextDocument createDocument(String id) {
         var now = Instant.now();
@@ -103,6 +107,7 @@ public class DocumentServiceTest {
 
         when(documentRepository.findById(id)).thenReturn(Optional.of(document));
         doNothing().when(s3Service).deleteObject(id + ".jpg");
+        doNothing().when(liveblocksService).deleteRoom(id);
 
         documentService.deleteDocumentById(id, id);
 

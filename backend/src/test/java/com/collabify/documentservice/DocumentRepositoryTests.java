@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -27,6 +28,7 @@ import java.util.stream.Collectors;
 @DataMongoTest
 @Testcontainers
 @Import(DocumentRepositoryTests.TestMongoClientSettings.class)
+@ActiveProfiles("dev")
 public class DocumentRepositoryTests {
 
     @Container
@@ -79,7 +81,6 @@ public class DocumentRepositoryTests {
                         document.getId().equals(document2.getId()))
                 .collect(Collectors.toList())).hasSize(2);
     }
-
 
     @Test
     void findDocumentByIdWhenExisting() {
