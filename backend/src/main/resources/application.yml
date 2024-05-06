@@ -21,7 +21,7 @@ spring:
     import: optional:file:src/main/resources/.env[.properties]
   data:
     mongodb:
-      uri: "mongodb://localhost:27017/${MONGO_DB_NAME}"
+      uri: "mongodb://localhost:27017/collabify-db-dev"
       auditing:
         enabled: true
       connection-pool:
