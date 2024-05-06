@@ -9,6 +9,8 @@ server:
       min-spare: 5
 
 spring:
+  profiles:
+    active: dev
   application:
     name: document-service
   servlet:
