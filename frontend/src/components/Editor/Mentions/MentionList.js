@@ -1,34 +1,25 @@
 import { Transforms } from 'slate';
-import { useSlate } from 'slate-react'
+import { useSlate } from 'slate-react';
 
-import useCustomEditor from '../../Hooks/useCustomEditor.js';
+import './MentionList.css';
+import useCustomEditor from '../../../hooks/useCustomEditor';
 
 const MentionList = ({ mentionRef, collabs, index, target, setTarget }) => {
   const { insertMention } = useCustomEditor();
   const editor = useSlate();
 
+  const handleInsertMention = (collab) => {
+    Transforms.select(editor, target);
+    insertMention(editor, collab.displayName);
+    setTarget(null);
+  };
+
   return (
-    <div
-      ref={mentionRef}
-      style={{
-        top: '-9999px',
-        left: '-9999px',
-        position: 'absolute',
-        zIndex: 1,
-        padding: '3px',
-        background: 'white',
-        borderRadius: '4px',
-        boxShadow: '0 1px 5px rgba(0,0,0,.2)',
-      }}
-    >
+    <div ref={mentionRef} className="mention-list">
       {collabs.map((collab, i) => (
         <div
           key={collab.uid}
-          onClick={() => {
-            Transforms.select(editor, target);
-            insertMention(editor, collab.displayName);
-            setTarget(null);
-          }}
+          onClick={() => handleInsertMention(collab)}
           style={{
             padding: '1px 3px',
             borderRadius: '3px',

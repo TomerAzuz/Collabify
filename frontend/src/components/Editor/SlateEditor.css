@@ -5,11 +5,11 @@
   width: 210mm; /* A4 width */
   min-height: 297mm; /* A4 height */
   height: 100%;
-  margin: 30px auto; 
+  margin: 30px auto;
   min-width: 300px;
-  outline: 1px solid #C7C7C7;
+  outline: 1px solid #c7c7c7;
   outline-width: thin;
   overflow-wrap: break-word;
-  word-wrap: break-word; 
+  word-wrap: break-word;
   box-sizing: border-box;
 }

@@ -1,10 +1,18 @@
 import React, { useState } from 'react';
-import { useSlate } from 'slate-react'
+import { useSlate } from 'slate-react';
 import TableChart from '@mui/icons-material/TableChart';
-import { Grid, Dialog, DialogTitle, DialogActions, DialogContent, Button, TextField } from '@mui/material';
+import {
+  Grid,
+  Dialog,
+  DialogTitle,
+  DialogActions,
+  DialogContent,
+  Button,
+  TextField,
+} from '@mui/material';
 
-import useCustomEditor from '../Hooks/useCustomEditor';
-import CustomIconButton from './CustomIconButton';
+import useCustomEditor from '../../hooks/useCustomEditor';
+import CustomIconButton from '../Buttons/CustomIconButton';
 
 const InsertTable = () => {
   const editor = useSlate();
@@ -12,7 +20,7 @@ const InsertTable = () => {
   const [cols, setCols] = useState(1);
   const [isDimensionsOpen, setIsDimensionsOpen] = useState(false);
   const { insertTable } = useCustomEditor();
-  
+
   const handleInsertTable = () => {
     if (rows < 1 || rows > 63 || cols < 1 || cols > 63) {
       alert('Invalid table dimensions');
@@ -24,24 +32,27 @@ const InsertTable = () => {
 
   return (
     <>
-      <CustomIconButton 
+      <CustomIconButton
         button={{
-          title: "Insert table",
+          title: 'Insert table',
           onClick: () => setIsDimensionsOpen(true),
-          icon: <TableChart />
+          icon: <TableChart />,
         }}
       />
-      <Dialog open={isDimensionsOpen} onClose={() => setIsDimensionsOpen(false)}>
+      <Dialog
+        open={isDimensionsOpen}
+        onClose={() => setIsDimensionsOpen(false)}
+      >
         <DialogTitle>Insert Table</DialogTitle>
         <DialogContent>
-        <Grid container spacing={2}>
+          <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
                 autoFocus
-                margin='dense'
-                id='cols'
+                margin="dense"
+                id="cols"
                 label="Number of columns"
-                type='number'
+                type="number"
                 value={cols}
                 onChange={(e) => setCols(e.target.value)}
                 fullWidth
@@ -50,10 +61,10 @@ const InsertTable = () => {
             <Grid item xs={12}>
               <TextField
                 autoFocus
-                margin='dense'
-                id='rows'
+                margin="dense"
+                id="rows"
                 label="Number of rows"
-                type='number'
+                type="number"
                 value={rows}
                 onChange={(e) => setRows(e.target.value)}
                 fullWidth

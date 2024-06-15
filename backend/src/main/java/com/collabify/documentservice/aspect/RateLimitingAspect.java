@@ -18,6 +18,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 @Aspect
@@ -57,11 +58,8 @@ public class RateLimitingAspect {
                 .requireNonNull(RequestContextHolder.getRequestAttributes()))
                 .getRequest();
         String uid = (String) request.getAttribute("userId");
-        if (uid != null) {
-            return uid;
-        } else {
-            throw new UserNotFoundException("UID not found.");
-        }
+        return Optional.ofNullable(uid)
+                .orElseThrow(() -> new UserNotFoundException("UID not found."));
     }
 
     @AfterThrowing(pointcut = "@annotation(com.collabify.documentservice.annotation.RateLimited)", throwing = "ex")

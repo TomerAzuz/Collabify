@@ -1,6 +1,6 @@
 const TableRow = (props) => {
   const styles = {
-    border: '1px solid black',
+    border: '1px solid',
   };
 
   return (

@@ -1,12 +1,12 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { useSlate } from 'slate-react'
+import { useSlate } from 'slate-react';
 import { Editor } from 'slate';
-import { Paper, TextField, Popover, IconButton } from '@mui/material';
+import { Paper, Popover, IconButton } from '@mui/material';
 import { FormatColorText } from '@mui/icons-material';
 
-import { COLORS } from '../Common/Utils/constants';
-import useCustomEditor from '../Hooks/useCustomEditor';
-import CustomIconButton from './CustomIconButton';
+import { COLORS } from '../../constants/constants';
+import useCustomEditor from '../../hooks/useCustomEditor';
+import CustomIconButton from '../Buttons/CustomIconButton';
 
 const ColorPicker = () => {
   const [fontColor, setFontColor] = useState('black');
@@ -54,14 +54,14 @@ const ColorPicker = () => {
     title: 'Text color',
     onClick: (e) => toggleColorPicker(e),
     icon: (
-          <div className='color-indicator'>
-            <FormatColorText />
-            <span
-              className='pallete'
-              style={{ backgroundColor: getCurrentColor() }}
-            />
-          </div>
-        ),
+      <div className="color-indicator">
+        <FormatColorText />
+        <span
+          className="pallete"
+          style={{ backgroundColor: getCurrentColor() }}
+        />
+      </div>
+    ),
   };
 
   return (
@@ -82,7 +82,10 @@ const ColorPicker = () => {
       >
         <Paper sx={{ padding: '10px' }}>
           {colorButtons.map((rowColors, rowIndex) => (
-            <div key={rowIndex} style={{ display: 'flex', marginBottom: '5px' }}>
+            <div
+              key={rowIndex}
+              style={{ display: 'flex', marginBottom: '5px' }}
+            >
               {rowColors.map((color, colorIndex) => (
                 <IconButton
                   key={colorIndex}

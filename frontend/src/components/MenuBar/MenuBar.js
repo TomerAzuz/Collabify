@@ -1,28 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Toolbar, Container, Typography } from "@mui/material";
+import { Toolbar, Container, Typography } from '@mui/material';
 import { Article, Save, Download, Info } from '@mui/icons-material';
 import html2pdf from 'html2pdf.js';
 import { toast } from 'react-hot-toast';
-import { useOthers } from "../../liveblocks.config.js";
+import { useOthers } from '../../liveblocks.config.js';
 
-import { useAuth } from '../Auth/AuthContext.js';
-import useDocumentFunctions from '../Hooks/useDocumentFunctions.js';
+import { useAuth } from '../../AuthContext.js';
+import useDocumentFunctions from '../../hooks/useDocumentFunctions';
 import ShareDoc from './ShareDocument/ShareDoc.js';
-import serializeToHtml from '../Common/Utils/serializer.js';
-import Logo from '../Common/Logo/Logo.js';
-import Loader from '../Common/Loader/Loader.js';
+import serializeToHtml from '../../utils/serializer.js';
+import Logo from '../Logo/Logo.js';
 import DocumentTitle from './DocumentTitle/DocumentTitle.js';
-import ButtonsList from './Buttons/ButtonsList.js';
-import NewDocumentDialog from './NewDocumentDialog.js';
+import ButtonsList from '../Buttons/ButtonsList.js';
+import NewDocumentDialog from '../Dialogs/NewDocumentDialog.js';
 
-const MenuBar = ({ doc, handleSaveDocument, setIsDetailsOpen }) => {
+const MenuBar = ({
+  doc,
+  handleSaveDocument,
+  setIsDetailsOpen,
+  isSaving,
+  setIsSaving,
+}) => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const others = useOthers();
   const { createDocument } = useDocumentFunctions();
   const [isAutosave, setIsAutosave] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [isNewDocDialogOpen, setIsNewDocDialogOpen] = useState(false);
 
   const downalodAsPDF = async () => {
@@ -38,11 +42,10 @@ const MenuBar = ({ doc, handleSaveDocument, setIsDetailsOpen }) => {
           html2canvas: { scale: 2, useCORS: true, allowTaint: false },
           jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' },
         };
-  
-        const content = `${response.content.map(node => serializeToHtml(node)).join('')}`;
+
+        const content = `<div>${response.content.map((node) => serializeToHtml(node)).join('')}</div>`;
         html2pdf().from(content).set(opt).save();
       }
-      
     } catch (error) {
       toast.error('Failed to download file');
     }
@@ -50,88 +53,90 @@ const MenuBar = ({ doc, handleSaveDocument, setIsDetailsOpen }) => {
 
   const createNewDocument = async () => {
     try {
-      setLoading(true);
       const response = await createDocument();
       if (response) {
         navigate(`/document/${response.id}`);
       }
     } catch (error) {
       toast.error('Failed to create document');
-    } finally {
-      setLoading(false);
     }
   };
 
   // Autosave (default 30 seconds)
   useEffect(() => {
     let autosaveInterval;
-  
+
     if (isAutosave) {
       autosaveInterval = setInterval(() => {
+        setIsSaving(true);
         handleSaveDocument(true);
       }, 30000);
     } else {
       clearInterval(autosaveInterval);
     }
-  
+
     return () => clearInterval(autosaveInterval);
   }, [isAutosave]);
 
   const toggleAutosave = (e) => {
     setIsAutosave(e.target.checked);
-    toast.success(`Autosave is ${e.target.checked ? 'on' : 'off'}`)
+    toast.success(`Autosave is ${e.target.checked ? 'on' : 'off'}`);
   };
 
   const buttons = [
     {
       title: 'New Document',
       onClick: () => setIsNewDocDialogOpen(true),
-      icon: <Article />
-    }, {
+      icon: <Article />,
+    },
+    {
       title: 'Save (Ctrl+S)',
       onClick: () => handleSaveDocument(false),
-      icon: <Save />
-    }, {
+      icon: <Save />,
+    },
+    {
       title: 'Download as PDF',
       onClick: () => downalodAsPDF(),
-      icon: <Download />
-    }, {
+      icon: <Download />,
+    },
+    {
       title: 'Document details',
       onClick: () => setIsDetailsOpen((prevOpen) => !prevOpen),
-      icon: <Info />
-    }
+      icon: <Info />,
+    },
   ];
 
   return (
     <>
       <Container maxWidth="xl">
         <Toolbar sx={{ alignItems: 'center', py: 1 }}>
-          <Logo variant={'h3'} sx={{ marginLeft: 0 }}/>
-          <DocumentTitle 
-            title={doc.title} 
-            updatedAt={doc.updatedAt} 
+          <Logo variant={'h3'} sx={{ marginLeft: 0 }} />
+          <DocumentTitle
+            title={doc.title}
+            updatedAt={doc.updatedAt}
+            isSaving={isSaving}
           />
-          <ButtonsList 
+          <ButtonsList
             buttons={buttons}
-            isAutosave={isAutosave} 
+            isAutosave={isAutosave}
             toggleAutosave={toggleAutosave}
           />
-          <Typography variant="caption1" 
-            sx={{ 
-              ml: 'auto', 
-              fontWeight: 'bold', 
-              color: '#666', 
-              fontFamily: 'Roboto' 
+          <Typography
+            variant="caption1"
+            sx={{
+              ml: 'auto',
+              fontWeight: 'bold',
+              color: '#666',
+              fontFamily: 'Roboto',
             }}
           >
-              Active users: {others.length + 1}
+            Active users: {others.length + 1}
           </Typography>
           <ShareDoc doc={doc} user={user} />
         </Toolbar>
-        {loading && <Loader />}
       </Container>
       <NewDocumentDialog
-        isDialogOpen={isNewDocDialogOpen} 
+        isDialogOpen={isNewDocDialogOpen}
         setIsDialogOpen={setIsNewDocDialogOpen}
         createNewDocument={createNewDocument}
       />

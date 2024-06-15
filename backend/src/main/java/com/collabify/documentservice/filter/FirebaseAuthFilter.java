@@ -23,9 +23,6 @@ public class FirebaseAuthFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
-        String requestURI = httpRequest.getRequestURI();
-        System.out.println(requestURI);
-
         String authHeader = httpRequest.getHeader(AUTH_HEADER);
         if (authHeader == null || !authHeader.startsWith(BEARER_PREFIX)) {
             httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -43,7 +40,6 @@ public class FirebaseAuthFilter implements Filter {
             httpRequest.setAttribute("userId", decodedToken.getUid());
             chain.doFilter(httpRequest, httpResponse);
         } catch (FirebaseAuthException e) {
-            e.printStackTrace();
             httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
     }

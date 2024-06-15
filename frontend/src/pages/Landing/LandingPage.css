@@ -1,0 +1,46 @@
+.landing-page {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+}
+
+.left-section {
+  width: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(to right, #9ad3de, #63abc3);
+}
+
+.right-section {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+}
+
+.button-group {
+  width: 200px;
+  height: 100px;
+  flex-direction: column;
+  margin-top: 20px;
+}
+
+@media screen and (max-width: 768px) {
+  .landing-page {
+    flex-direction: column;
+  }
+
+  .left-section,
+  .right-section {
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .button-group {
+    width: 80%;
+  }
+}

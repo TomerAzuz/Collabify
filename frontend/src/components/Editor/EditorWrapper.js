@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
-import SlateEditor from "./SlateEditor";
-import useDocumentFunctions from '../Hooks/useDocumentFunctions.js';
-import Loader from '../Common/Loader/Loader.js';
-import ErrorPage from "../ErrorPage/ErrorPage.js";
+import SlateEditor from './SlateEditor';
+import useDocumentFunctions from '../../hooks/useDocumentFunctions';
+import Loader from '../Loader/Loader.js';
+import ErrorPage from '../../pages/ErrorPage/ErrorPage.js';
 
 const EditorWrapper = ({ sharedType, provider }) => {
   const { id } = useParams();
@@ -28,9 +28,9 @@ const EditorWrapper = ({ sharedType, provider }) => {
   useEffect(() => {
     getDoc();
   }, [id]);
-  
+
   if (error) {
-    return <ErrorPage code={error.code} />
+    return <ErrorPage code={error.code} />;
   }
 
   if (loading || !doc) {
@@ -38,7 +38,7 @@ const EditorWrapper = ({ sharedType, provider }) => {
   }
 
   return (
-    <SlateEditor 
+    <SlateEditor
       sharedType={sharedType}
       provider={provider}
       doc={doc}

@@ -1,20 +1,15 @@
-.buttons-list {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-}
-
 .document-title {
-  margin: auto; 
-  display: flex; 
-  align-items: center; 
-  justify-content: space-between; 
-  gap: 16px; 
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 300px;
+  overflow: hidden;
 }
 
 .share-doc {
-  margin-left: auto; 
+  margin-left: auto;
   display: flex;
   align-items: center;
 }

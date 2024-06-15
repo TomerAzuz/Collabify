@@ -16,37 +16,37 @@ import VideoElement from './VideoElement';
 const Renderer = {
   renderElement(props) {
     switch (props.element.type) {
-        case 'h1':
-            return <H1Element {...props} />
-        case 'h2':
-            return <H2Element {...props} />
-        case 'image':
-            return <ImageElement {...props} />
-        case 'bulleted-list':
-            return <BulletedListElement {...props} />
-        case 'numbered-list':
-            return <NumberedListElement {...props} />
-        case 'list-item':
-            return <ListItemElement {...props} />
-        case 'table':
-            return <TableElement {...props} />
-        case 'table-row':
-            return <TableRow {...props} />
-        case 'table-cell':
-            return <TableCell {...props} />
-        case 'check-list-item':
-            return <CheckListItem {...props} />
-        case 'mention':
-            return <MentionElement {...props} />
-        case 'video':
-            return <VideoElement {...props} />
-        default:
-            return <ParagraphElement {...props} />
+      case 'h1':
+        return <H1Element {...props} />;
+      case 'h2':
+        return <H2Element {...props} />;
+      case 'image':
+        return <ImageElement {...props} />;
+      case 'bulleted-list':
+        return <BulletedListElement {...props} />;
+      case 'numbered-list':
+        return <NumberedListElement {...props} />;
+      case 'list-item':
+        return <ListItemElement {...props} />;
+      case 'table':
+        return <TableElement {...props} />;
+      case 'table-row':
+        return <TableRow {...props} />;
+      case 'table-cell':
+        return <TableCell {...props} />;
+      case 'check-list-item':
+        return <CheckListItem {...props} />;
+      case 'mention':
+        return <MentionElement {...props} />;
+      case 'video':
+        return <VideoElement {...props} />;
+      default:
+        return <ParagraphElement {...props} />;
     }
   },
   renderLeaf(props) {
-    return <Leaf {...props} />
-  },   
+    return <Leaf {...props} />;
+  },
 };
 
 export default Renderer;

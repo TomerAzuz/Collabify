@@ -1,10 +1,10 @@
-"use client";
-import { useParams } from 'react-router-dom'; 
-import { ClientSideSuspense } from "@liveblocks/react";
-import { RoomProvider } from "../../liveblocks.config";
+'use client';
+import { useParams } from 'react-router-dom';
+import { ClientSideSuspense } from '@liveblocks/react';
+import { RoomProvider } from '../../liveblocks.config';
 
 import { CollaborativeEditor } from './CollaborativeEditor';
-import Loader from '../Common/Loader/Loader';
+import Loader from '../Loader/Loader';
 
 export default function Page() {
   const { id } = useParams();
@@ -16,4 +16,4 @@ export default function Page() {
       </ClientSideSuspense>
     </RoomProvider>
   );
-};
+}

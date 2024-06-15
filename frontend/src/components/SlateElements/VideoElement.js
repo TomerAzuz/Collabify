@@ -9,8 +9,9 @@ const VideoElement = (props) => {
   const { url } = element;
 
   const getYouTubeId = (videoUrl) => {
-    if (!videoUrl) return null; 
-    const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+    if (!videoUrl) return null;
+    const regex =
+      /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
     const match = videoUrl.match(regex);
     return match ? match[1] : null;
   };
@@ -45,16 +46,16 @@ const VideoElement = (props) => {
               }}
             />
           </div>
-          <UrlInput 
+          <UrlInput
             url={url}
-            onChange={val => {
+            onChange={(val) => {
               const path = ReactEditor.findPath(editor, element);
               const newProps = {
                 url: val,
-              }
+              };
               Transforms.setNodes(editor, newProps, {
                 at: path,
-              })
+              });
             }}
           />
         </div>

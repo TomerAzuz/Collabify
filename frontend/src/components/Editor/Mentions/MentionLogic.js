@@ -1,9 +1,17 @@
 import { Editor, Transforms, Range } from 'slate';
 
-import useCustomEditor from '../../Hooks/useCustomEditor.js';
+import useCustomEditor from '../../../hooks/useCustomEditor';
 
-const MentionLogic = ({ editor, collabs, index, target, setIndex, setTarget, setSearch }) => {
-    const { insertMention } = useCustomEditor();
+const MentionLogic = ({
+  editor,
+  collabs,
+  index,
+  target,
+  setIndex,
+  setTarget,
+  setSearch,
+}) => {
+  const { insertMention } = useCustomEditor();
 
   const handleMentionAction = (e) => {
     switch (e.key) {
@@ -31,32 +39,32 @@ const MentionLogic = ({ editor, collabs, index, target, setIndex, setTarget, set
     }
   };
 
-    const handleMentionChange = () => {
-      const { selection } = editor;
-          
-      if (selection && Range.isCollapsed(selection)) {
-        const [start] = Range.edges(selection);
-        const wordBefore = Editor.before(editor, start, { unit: 'word' });
-        const before = wordBefore && Editor.before(editor, wordBefore);
-        const beforeRange = before && Editor.range(editor, before, start);
-        const beforeText = beforeRange && Editor.string(editor, beforeRange);
-        const beforeMatch = beforeText && beforeText.match(/^@(\w+)$/);
-        const after = Editor.after(editor, start);
-        const afterRange = Editor.range(editor, start, after);
-        const afterText = Editor.string(editor, afterRange);
-        const afterMatch = afterText.match(/^(\s|$)/);
-  
-        if (beforeMatch && afterMatch) {
-          setTarget(beforeRange);
-          setSearch(beforeMatch[1]);
-          setIndex(0);
-          return;
-        }
-      }
-      setTarget(null);
-    };
+  const handleMentionChange = () => {
+    const { selection } = editor;
 
-    return { handleMentionChange, handleMentionAction };
+    if (selection && Range.isCollapsed(selection)) {
+      const [start] = Range.edges(selection);
+      const wordBefore = Editor.before(editor, start, { unit: 'word' });
+      const before = wordBefore && Editor.before(editor, wordBefore);
+      const beforeRange = before && Editor.range(editor, before, start);
+      const beforeText = beforeRange && Editor.string(editor, beforeRange);
+      const beforeMatch = beforeText && beforeText.match(/^@(\w+)$/);
+      const after = Editor.after(editor, start);
+      const afterRange = Editor.range(editor, start, after);
+      const afterText = Editor.string(editor, afterRange);
+      const afterMatch = afterText.match(/^(\s|$)/);
+
+      if (beforeMatch && afterMatch) {
+        setTarget(beforeRange);
+        setSearch(beforeMatch[1]);
+        setIndex(0);
+        return;
+      }
+    }
+    setTarget(null);
   };
 
-  export default MentionLogic;
+  return { handleMentionChange, handleMentionAction };
+};
+
+export default MentionLogic;

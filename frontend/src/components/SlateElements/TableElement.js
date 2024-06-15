@@ -8,8 +8,7 @@ const TableElement = (props) => {
     width: '80%',
     border: '1px solid black',
     borderCollapse: 'collapse',
-    marginLeft: 'auto',
-    marginRight: 'auto',
+    margin: '0 auto',
   };
 
   const editor = useSlateStatic();
@@ -39,7 +38,7 @@ const TableElement = (props) => {
               color: '#ffffff',
             }}
           >
-            <Delete fontSize='small' />
+            <Delete fontSize="small" />
           </IconButton>
         </Tooltip>
       )}

@@ -1,21 +1,34 @@
 import React, { useState } from 'react';
-import { useSlate } from 'slate-react'
+import { useSlate } from 'slate-react';
 import imageExtensions from 'image-extensions';
 import isUrl from 'is-url';
-import { IconButton, Tooltip, Menu, MenuItem, Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from '@mui/material';
+import {
+  IconButton,
+  Tooltip,
+  Menu,
+  MenuItem,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  TextField,
+} from '@mui/material';
 import { InsertPhoto, Link, FileUpload } from '@mui/icons-material';
 import { toast } from 'react-hot-toast';
 
 import '../../App.css';
 import './Toolbar.css';
-import useCustomEditor from '../Hooks/useCustomEditor';
-import { postFile } from '../Services/s3Service';
-import { isValidImageUrl } from '../Common/Utils/validation';
-import Loader from '../Common/Loader/Loader';
+import { useAuth } from '../../AuthContext';
+import useCustomEditor from '../../hooks/useCustomEditor';
+import { postFile } from '../../services/s3Service';
+import { isValidImageUrl, escapeFilename } from '../../utils/validation';
+import Loader from '../Loader/Loader';
 
 const cloudFrontDomain = process.env.REACT_APP_AWS_CLOUDFRONT_DOMAIN;
 
 const InsertImage = () => {
+  const { user } = useAuth();
   const [anchorEl, setAnchorEl] = useState(null);
   const [loading, setLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState('');
@@ -38,8 +51,8 @@ const InsertImage = () => {
   const handleCloseDialog = () => {
     setOpen(false);
   };
-  
-  const isImageUrl = url => {
+
+  const isImageUrl = (url) => {
     if (!url || !isUrl(url) || !isValidImageUrl(url)) {
       return false;
     }
@@ -50,7 +63,7 @@ const InsertImage = () => {
   const handleInsertImageUrl = () => {
     handleCloseDialog();
     handleMenuClose();
-    if (!imageUrl || !isImageUrl(imageUrl))  {
+    if (!imageUrl || !isImageUrl(imageUrl)) {
       toast.error('URL is not an image');
       return;
     }
@@ -60,14 +73,18 @@ const InsertImage = () => {
   const handleImageUpload = async (e) => {
     e.preventDefault();
     handleMenuClose();
+
     const file = e.target.files[0];
     if (!file) return;
 
-    const filename = file.name;
-    
+    const escapedName = escapeFilename(file.name);
+    const filename = `${user.uid}:${escapedName}`;
+
     const maxSize = 1024 * 1024 * 5;
     if (file.size > maxSize) {
-      toast.error('Image file size is too large. Please choose a file under 5MB.');
+      toast.error(
+        'Image file size is too large. Please choose a file under 5MB.'
+      );
       return;
     }
 
@@ -79,10 +96,11 @@ const InsertImage = () => {
 
     try {
       setLoading(true);
-      const response = await postFile(file);
+      const userFile = new File([file], filename, { type: file.type });
+      const response = await postFile(userFile);
       if (response.status === 201) {
-        const imageUrl = `https://${cloudFrontDomain}.cloudfront.net/${filename}`
-        insertImage(editor, imageUrl); 
+        const imageUrl = `https://${cloudFrontDomain}.cloudfront.net/${filename}`;
+        insertImage(editor, imageUrl);
       } else {
         throw new Error('Failed to upload image');
       }
@@ -125,7 +143,7 @@ const InsertImage = () => {
       <Dialog open={open} onClose={handleCloseDialog}>
         <DialogTitle>Insert Image by URL</DialogTitle>
         <DialogContent>
-          <TextField 
+          <TextField
             autoFocus
             margin="dense"
             id="image-url"

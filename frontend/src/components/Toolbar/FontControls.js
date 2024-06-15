@@ -1,14 +1,29 @@
 import React, { useMemo } from 'react';
-import { useSlate } from 'slate-react'
+import { useSlate } from 'slate-react';
 import { Editor } from 'slate';
-import { Divider, TextField, IconButton, Tooltip, Select, MenuItem } from '@mui/material';
-import { FormatBold, FormatItalic, FormatUnderlined, Add, Remove, BorderColor, StrikethroughS } from '@mui/icons-material';
+import {
+  Divider,
+  TextField,
+  IconButton,
+  Tooltip,
+  Select,
+  MenuItem,
+} from '@mui/material';
+import {
+  FormatBold,
+  FormatItalic,
+  FormatUnderlined,
+  Add,
+  Remove,
+  BorderColor,
+  StrikethroughS,
+} from '@mui/icons-material';
 
 import './Toolbar.css';
-import useCustomEditor from '../Hooks/useCustomEditor';
-import CustomIconButton from './CustomIconButton';
+import useCustomEditor from '../../hooks/useCustomEditor';
+import CustomIconButton from '../Buttons/CustomIconButton';
 import ColorPicker from './ColorPicker';
-import { FONTS } from '../Common/Utils/constants';
+import { FONTS } from '../../constants/constants';
 
 const FontControls = () => {
   const editor = useSlate();
@@ -44,42 +59,56 @@ const FontControls = () => {
     addMark(editor, 'fontFamily', e.target.value);
   };
 
-  const buttons = useMemo(() => [{
-      title: 'Increase font size',
-      onClick: () => adjustFontSize(1),
-      icon: <Add sx={{ fontSize: '16px' }} />
-    }, {
-      format: 'bold',
-      title: 'Bold (Ctrl+B)',
-      onClick: () => toggleMark(editor, 'bold'),
-      icon: <FormatBold />
-    }, {
-      format: 'italic',
-      title: 'Italic (Ctrl+I)',
-      onClick: () => toggleMark(editor, 'italic'),
-      icon: <FormatItalic />
-    }, {
-      format: 'underline',
-      title: 'Underline (Ctrl+U)',
-      onClick: () => toggleMark(editor, 'underline'),
-      icon: <FormatUnderlined />
-    }, {
-      format: 'strikethrough',
-      title: 'Strikethrough (Ctrl+5)',
-      onClick: () => toggleMark(editor, 'strikethrough'),
-      icon: <StrikethroughS />
-    }, {
-      format: 'backgroundColor',
-      title: 'Highlight color (Ctrl+H)',
-      onClick: () => toggleMark(editor, 'backgroundColor'),
-      icon: <BorderColor />
-    }
-  ], [editor, adjustFontSize]);  
+  const buttons = useMemo(
+    () => [
+      {
+        title: 'Increase font size',
+        onClick: () => adjustFontSize(1),
+        icon: <Add sx={{ fontSize: '16px' }} />,
+      },
+      {
+        format: 'bold',
+        title: 'Bold (Ctrl+B)',
+        onClick: () => toggleMark(editor, 'bold'),
+        icon: <FormatBold />,
+      },
+      {
+        format: 'italic',
+        title: 'Italic (Ctrl+I)',
+        onClick: () => toggleMark(editor, 'italic'),
+        icon: <FormatItalic />,
+      },
+      {
+        format: 'underline',
+        title: 'Underline (Ctrl+U)',
+        onClick: () => toggleMark(editor, 'underline'),
+        icon: <FormatUnderlined />,
+      },
+      {
+        format: 'strikethrough',
+        title: 'Strikethrough (Ctrl+5)',
+        onClick: () => toggleMark(editor, 'strikethrough'),
+        icon: <StrikethroughS />,
+      },
+      {
+        format: 'backgroundColor',
+        title: 'Highlight color (Ctrl+H)',
+        onClick: () => toggleMark(editor, 'backgroundColor'),
+        icon: <BorderColor />,
+      },
+    ],
+    [editor, adjustFontSize]
+  );
 
   return (
     <>
       {/* Font family */}
-      <Divider sx={{ margin: '10px' }} orientation="vertical" variant="middle" flexItem />
+      <Divider
+        sx={{ margin: '10px' }}
+        orientation="vertical"
+        variant="middle"
+        flexItem
+      />
       <Tooltip title="Font">
         <Select
           labelId="font-select-label"
@@ -89,56 +118,57 @@ const FontControls = () => {
             textAlign: 'center',
             margin: '2px',
             height: '60px',
-            boxShadow: 'none', 
+            boxShadow: 'none',
             '.MuiOutlinedInput-notchedOutline': { border: 0 },
-            '&.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline':  { border: 0 },
-            '&.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': { border: 0 },
+            '&.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline': {
+              border: 0,
+            },
+            '&.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline':
+              { border: 0 },
             '& .MuiSelect-select': {
-              fontWeight: 'thin', 
+              fontWeight: 'thin',
             },
           }}
           value={getFontFamily()}
           onChange={changeFontFamily}
         >
           {FONTS.map((font, index) => (
-            <MenuItem 
-              key={index} 
+            <MenuItem
+              key={index}
               value={font}
-              style={{ fontFamily: font, fontSize: '20px', }}
+              style={{ fontFamily: font, fontSize: '20px' }}
             >
-            {font}
-          </MenuItem>
-          ))} 
+              {font}
+            </MenuItem>
+          ))}
         </Select>
-      </Tooltip> 
-      <Divider 
-        sx={{ margin: '10px' }} 
-        orientation="vertical" 
-        variant="middle" 
-        flexItem 
+      </Tooltip>
+      <Divider
+        sx={{ margin: '10px' }}
+        orientation="vertical"
+        variant="middle"
+        flexItem
       />
       {/* Decrease font size */}
       <Tooltip title="Decrease font size">
-        <IconButton
-          className='button'
-          onClick={() => adjustFontSize(-1)}
-        >
+        <IconButton className="button" onClick={() => adjustFontSize(-1)}>
           <Remove sx={{ fontSize: 'small' }} />
         </IconButton>
       </Tooltip>
-      
+
       {/* Font size */}
       <Tooltip title="Font size">
         <TextField
-          id='font-size'
+          id="font-size"
           type="text"
           size="small"
           inputProps={{
-            style: { 
-              fontSize: 16, 
-              textAlign: 'center', 
-              fontWeight: 'bold', 
-          }}}
+            style: {
+              fontSize: 16,
+              textAlign: 'center',
+              fontWeight: 'bold',
+            },
+          }}
           sx={{ width: '50px', textAlign: 'center' }}
           value={getFontSize()}
           onChange={(e) => changeFontSize(e)}
@@ -147,17 +177,14 @@ const FontControls = () => {
       {buttons.map((button, index) => (
         <React.Fragment key={index}>
           {button.format === 'bold' && index !== buttons.length - 1 && (
-            <Divider 
-              sx={{ margin: '10px' }} 
-              orientation="vertical" 
-              variant="middle" 
-              flexItem 
+            <Divider
+              sx={{ margin: '10px' }}
+              orientation="vertical"
+              variant="middle"
+              flexItem
             />
           )}
-          <CustomIconButton
-            button={button}
-            isBlock={false}
-          />
+          <CustomIconButton button={button} isBlock={false} />
         </React.Fragment>
       ))}
       <ColorPicker />

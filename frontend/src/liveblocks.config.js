@@ -1,113 +1,91 @@
-import { createClient } from "@liveblocks/client";
-import { createRoomContext, createLiveblocksContext } from "@liveblocks/react";
-  
-const apiKey = process.env.REACT_APP_ENV === 'dev' ?
-               process.env.REACT_APP_LIVEBLOCKS_API_KEY_DEV : 
-               process.env.REACT_APP_LIVEBLOCKS_API_KEY_PROD;
+import { createClient } from '@liveblocks/client';
+import axios from 'axios';
+import { createRoomContext, createLiveblocksContext } from '@liveblocks/react';
+import { getAuth } from 'firebase/auth';
+
+const auth = getAuth();
 
 const client = createClient({
-   publicApiKey: apiKey,
-  // authEndpoint: "/api/liveblocks-auth",
-  // throttle: 100,
-  async resolveUsers({ userIds }) {
-    // Used only for Comments and Notifications. Return a list of user information
-    // retrieved from `userIds`. This info is used in comments, mentions etc.
-    
-    // const usersData = await __fetchUsersFromDB__(userIds);
-    // 
-    // return usersData.map((userData) => ({
-    //   name: userData.name,
-    //   avatar: userData.avatar.src,
-    // }));
-    
-    return [];
-  },
-  async resolveMentionSuggestions({ text }) {
-    // Used only for Comments. Return a list of userIds that match `text`.
-    // These userIds are used to create a mention list when typing in the
-    // composer. 
-    //
-    // For example when you type "@jo", `text` will be `"jo"`, and 
-    // you should to return an array with John and Joanna's userIds:
-    // ["john@example.com", "joanna@example.com"]
+  throttle: 16,
+  authEndpoint: async (room) => {
+    try {
+      const user = auth.currentUser;
 
-    // const users = await getUsers({ search: text });
-    // return users.map((user) => user.id);
+      if (!user) {
+        throw new Error('No user signed in');
+      }
+      const firebaseToken = await user.getIdToken();
 
-    return [];
-  },
-  async resolveRoomsInfo({ roomIds }) {
-    // Used only for Comments and Notifications. Return a list of room information
-    // retrieved from `roomIds`.
-    
-    // const roomsData = await __fetchRoomsFromDB__(roomIds);
-    // 
-    // return roomsData.map((roomData) => ({
-    //   name: roomData.name,
-    //   url: roomData.url,
-    // }));
-    
-    return [];
+      const response = await axios.post(
+        '/api/liveblocks-auth',
+        {
+          room: room,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${firebaseToken}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      if (!response.data) {
+        throw new Error('Failed to fetch Liveblocks auth token');
+      }
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching Liveblocks access token:', error);
+      throw new Error('Error fetching Liveblocks access token');
+    }
   },
 });
 
 // Room-level hooks, use inside `RoomProvider`
 export const {
-  suspense: {
-    RoomProvider,
-    useRoom,
-    useMyPresence,
-    useUpdateMyPresence,
-    useSelf,
-    useOthers,
-    useOthersMapped,
-    useOthersListener,
-    useOthersConnectionIds,
-    useOther,
-    useBroadcastEvent,
-    useEventListener,
-    useErrorListener,
-    useStorage,
-    useMap,
-    useBatch,
-    useHistory,
-    useUndo,
-    useRedo,
-    useCanUndo,
-    useCanRedo,
-    useMutation,
-    useStatus,
-    useLostConnectionListener,
-    useThreads,
-    useCreateThread,
-    useEditThreadMetadata,
-    useCreateComment,
-    useEditComment,
-    useDeleteComment,
-    useAddReaction,
-    useRemoveReaction,
-    useThreadSubscription,
-    useMarkThreadAsRead,
-    useRoomNotificationSettings,
-    useUpdateRoomNotificationSettings,
-  
-    // These hooks can be exported from either context
-    // useUser,
-    // useRoomInfo
-  }
+  RoomProvider,
+  useRoom,
+  useMyPresence,
+  useUpdateMyPresence,
+  useSelf,
+  useOthers,
+  useOthersMapped,
+  useOthersListener,
+  useOthersConnectionIds,
+  useOther,
+  useBroadcastEvent,
+  useEventListener,
+  useErrorListener,
+  useStorage,
+  useBatch,
+  useHistory,
+  useUndo,
+  useRedo,
+  useCanUndo,
+  useCanRedo,
+  useMutation,
+  useStatus,
+  useLostConnectionListener,
+  useThreads,
+  useCreateThread,
+  useEditThreadMetadata,
+  useCreateComment,
+  useEditComment,
+  useDeleteComment,
+  useAddReaction,
+  useRemoveReaction,
+  useThreadSubscription,
+  useMarkThreadAsRead,
+  useRoomNotificationSettings,
+  useUpdateRoomNotificationSettings,
 } = createRoomContext(client);
 
 // Project-level hooks, use inside `LiveblocksProvider`
 export const {
-  suspense: {
-    LiveblocksProvider,
-    useMarkInboxNotificationAsRead,
-    useMarkAllInboxNotificationsAsRead,
-    useInboxNotifications,
-    useUnreadInboxNotificationsCount,
-  
-    // These hooks can be exported from either context
-    useUser,
-    useRoomInfo,
-  }
+  LiveblocksProvider,
+  useMarkInboxNotificationAsRead,
+  useMarkAllInboxNotificationsAsRead,
+  useInboxNotifications,
+  useUnreadInboxNotificationsCount,
+  useUser,
+  useRoomInfo,
 } = createLiveblocksContext(client);

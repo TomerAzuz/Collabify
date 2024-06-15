@@ -1,0 +1,32 @@
+.profile-container {
+  width: 50vw;
+  min-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  margin: 50px;
+  padding: 30px;
+}
+
+.profile-summary {
+  display: flex;
+  align-items: center;
+}
+
+.profile-details {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.profile-field {
+  width: 100%;
+  padding: 5px;
+  display: flex;
+  justify-content: center;
+}
+
+.profile-info .MuiButton-root {
+  margin-top: 20px;
+}

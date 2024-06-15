@@ -1,47 +1,52 @@
 import React, { useState } from 'react';
-import { FormControl, 
-         Select, 
-         MenuItem, 
-         Button, 
-         Dialog, 
-         DialogContent, 
-         DialogTitle, 
-         DialogActions, 
-         Typography } from '@mui/material';
+import {
+  FormControl,
+  Select,
+  MenuItem,
+  Button,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogActions,
+  Typography,
+} from '@mui/material';
 import { toast } from 'react-hot-toast';
 
 import '.././MenuBar.css';
-import { updateDocument } from '../../Services/documentService.js';
-import ShareButton from './ShareButton.js';
-import Loader from '../../Common/Loader/Loader.js';
+import { updateDocument } from '../../../services/documentService';
+import ShareButton from '../../Buttons/ShareButton.js';
+import Loader from '../../Loader/Loader.js';
 
 const ShareDoc = ({ doc, user }) => {
   const permissions = ['Viewer', 'Editor'];
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
-  const [permission, setPermission] = useState(permissions[0]);
+  const [permission, setPermission] = useState('Viewer');
   const [loading, setLoading] = useState(false);
 
   const handleCopyLink = () => {
     setIsShareDialogOpen(false);
     const link = window.location.href;
-    navigator.clipboard.writeText(link)
-        .then(() => {
-            toast.success('URL copied to clipboard.');
-        })
-        .catch(error => {
-            toast.error('Failed to copy link.');
-        });
+    navigator.clipboard
+      .writeText(link)
+      .then(() => {
+        toast.success('URL copied to clipboard.');
+      })
+      .catch((error) => {
+        toast.error('Failed to copy link.');
+      });
   };
 
   const updatePermission = async (e) => {
     try {
       setLoading(true);
-      setPermission(e.target.value)
+      setPermission(e.target.value);
       await updateDocument(doc.id, {
         ...doc,
         permission: e.target.value,
       });
-      toast.success(`Document permission set to ${e.target.value.toLowerCase()}`);
+      toast.success(
+        `Document permission set to ${e.target.value.toLowerCase()}`
+      );
     } catch (error) {
       toast.error('Error setting document permission:', error);
     } finally {
@@ -52,10 +57,10 @@ const ShareDoc = ({ doc, user }) => {
   const isDisabled = !doc || doc.createdBy.uid !== user.uid;
 
   return (
-    <div className='share-doc'>
-      <ShareButton 
-        isDisabled={isDisabled} 
-        setIsShareDialogOpen={setIsShareDialogOpen} 
+    <div className="share-doc">
+      <ShareButton
+        isDisabled={isDisabled}
+        setIsShareDialogOpen={setIsShareDialogOpen}
       />
       <Dialog
         open={isShareDialogOpen}
@@ -64,15 +69,16 @@ const ShareDoc = ({ doc, user }) => {
         <DialogTitle>Share '{doc && doc.title}'</DialogTitle>
         <DialogContent>
           <Typography gutterBottom>
-            Anyone on the internet with the link can {permission === 'Viewer' ? 'view' : 'edit'}
+            Anyone on the internet with the link can{' '}
+            {permission === 'Viewer' ? 'view' : 'edit'}
           </Typography>
-          <div>          
+          <div>
             <FormControl fullWidth>
               <Select
                 labelId="select-permission"
                 id="select-permission"
                 value={permission}
-                onChange={e => updatePermission(e)}
+                onChange={(e) => updatePermission(e)}
               >
                 {permissions.map((per) => (
                   <MenuItem key={per} value={per}>
@@ -81,11 +87,14 @@ const ShareDoc = ({ doc, user }) => {
                 ))}
               </Select>
             </FormControl>
-            {doc.collaborators.length > 0 && 
-            <Typography variant="subtitle"> 
-              You currently share the document with {doc.collaborators.length === 1 ? `${doc.collaborators.length} person` : `${doc.collaborators.length} people`}
-            </Typography>
-            }
+            {doc.collaborators.length > 0 && (
+              <Typography variant="subtitle">
+                You currently share the document with{' '}
+                {doc.collaborators.length === 1
+                  ? `${doc.collaborators.length} person`
+                  : `${doc.collaborators.length} people`}
+              </Typography>
+            )}
           </div>
         </DialogContent>
         <DialogActions>

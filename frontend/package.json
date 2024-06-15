@@ -43,7 +43,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "jest",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,css,scss,md}\""
   },
   "browserslist": {
     "production": [
@@ -63,6 +64,7 @@
     "@babel/preset-react": "^7.24.1",
     "babel-jest": "^29.7.0",
     "eslint-plugin-react": "^7.34.1",
-    "js-image-compressor": "^2.0.0"
+    "js-image-compressor": "^2.0.0",
+    "prettier": "^3.3.2"
   }
 }

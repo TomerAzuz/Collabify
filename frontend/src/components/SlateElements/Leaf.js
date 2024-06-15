@@ -1,5 +1,4 @@
 const Leaf = (props) => {
-
   const { leaf } = props;
 
   const styles = {
@@ -12,11 +11,8 @@ const Leaf = (props) => {
     backgroundColor: leaf.backgroundColor ? 'yellow' : '',
   };
 
-  return ( 
-    <span
-      {...props.attributes}
-      style={styles}
-    >
+  return (
+    <span {...props.attributes} style={styles}>
       {props.children}
     </span>
   );

@@ -1,9 +1,18 @@
 import React, { useState } from 'react';
-import { useSlate } from 'slate-react'
-import { IconButton, Tooltip, Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from '@mui/material';
+import { useSlate } from 'slate-react';
+import {
+  IconButton,
+  Tooltip,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  TextField,
+} from '@mui/material';
 import { VideoLibrary } from '@mui/icons-material';
 
-import useCustomEditor from '../Hooks/useCustomEditor';
+import useCustomEditor from '../../hooks/useCustomEditor';
 
 const InsertEmbed = () => {
   const editor = useSlate();
@@ -18,7 +27,7 @@ const InsertEmbed = () => {
   const handleClose = () => {
     setOpen(false);
   };
-  
+
   const handleInsertVideo = () => {
     insertVideo(editor, videoUrl);
     handleClose();
@@ -38,7 +47,7 @@ const InsertEmbed = () => {
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Insert Video</DialogTitle>
         <DialogContent>
-          <TextField 
+          <TextField
             autoFocus
             margin="dense"
             id="video-url"

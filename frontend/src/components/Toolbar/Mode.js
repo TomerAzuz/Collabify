@@ -2,14 +2,18 @@ import { Divider, Select, IconButton, Tooltip, MenuItem } from '@mui/material';
 import { Edit, Visibility } from '@mui/icons-material';
 
 const Mode = ({ mode, setMode }) => {
-
   const handleModeChange = (e) => {
     setMode(e.target.value);
   };
 
   return (
     <>
-      <Divider sx={{ margin: '10px' }} orientation="vertical" variant="middle" flexItem />
+      <Divider
+        sx={{ margin: '10px' }}
+        orientation="vertical"
+        variant="middle"
+        flexItem
+      />
       <Tooltip title={`${mode} mode`}>
         <Select
           value={mode}
@@ -17,13 +21,16 @@ const Mode = ({ mode, setMode }) => {
           sx={{
             width: '120px',
             height: '50px',
-            padding: '0px 0px', 
-            boxShadow: 'none', 
+            padding: '0px 0px',
+            boxShadow: 'none',
             '.MuiOutlinedInput-notchedOutline': { border: 0 },
-            '&.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline':  { border: 0 },
-            '&.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': { border: 0 },
+            '&.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline': {
+              border: 0,
+            },
+            '&.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline':
+              { border: 0 },
             '& .MuiSelect-select': {
-              fontWeight: 'thin', 
+              fontWeight: 'thin',
             },
           }}
           MenuProps={{
@@ -43,10 +50,10 @@ const Mode = ({ mode, setMode }) => {
             >
               <Edit sx={{ fontSize: 18 }} />
             </IconButton>
-              <span style={{ fontSize: 14 }}>Editing</span>
+            <span style={{ fontSize: 14 }}>Editing</span>
           </MenuItem>
           <MenuItem value="Viewer">
-            <IconButton 
+            <IconButton
               sx={{
                 padding: 0,
                 marginRight: '6px',
@@ -56,7 +63,7 @@ const Mode = ({ mode, setMode }) => {
               }}
               size="small"
             >
-              <Visibility sx={{ fontSize: 18 }}/>
+              <Visibility sx={{ fontSize: 18 }} />
             </IconButton>
             <span style={{ fontSize: 14 }}>Viewing</span>
           </MenuItem>

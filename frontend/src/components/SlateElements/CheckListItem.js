@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import { Transforms } from 'slate';
 import { useSlateStatic, useReadOnly, ReactEditor } from 'slate-react';
 
@@ -7,7 +7,7 @@ const CheckListItem = (props) => {
   const readOnly = useReadOnly();
   const { checked } = props.element;
   const isChecked = checked || false;
-  
+
   const styles = {
     display: 'flex',
     flexDirection: 'row',
@@ -15,20 +15,16 @@ const CheckListItem = (props) => {
     '& + &': {
       marginTop: 0,
     },
-    textAlign: props.element.textAlign || '',
+    textAlign: props.element.align || '',
     fontSize: `${props.element.fontSize || '14'}pt`,
     fontFamily: props.element.fontFamily || '',
     lineHeight: props.element.lineHeight || 1.0,
     margin: `${props.element.margin || 1}em`,
-    padding: 0
+    padding: 0,
   };
 
-
   return (
-    <div
-      {...props.attributes}
-      style={styles}
-    >
+    <div {...props.attributes} style={styles}>
       <span
         contentEditable={false}
         style={{
@@ -38,13 +34,13 @@ const CheckListItem = (props) => {
         <input
           type="checkbox"
           checked={isChecked}
-          onChange={e => {
+          onChange={(e) => {
             const path = ReactEditor.findPath(editor, props.element);
             const newProps = {
               checked: e.target.checked,
             };
-            Transforms.setNodes(editor, newProps, { at : path });
-          }}  
+            Transforms.setNodes(editor, newProps, { at: path });
+          }}
         />
       </span>
       <span
@@ -55,13 +51,12 @@ const CheckListItem = (props) => {
           opacity: checked ? 0.666 : 1,
           textDecoration: !checked ? 'none' : 'line-through',
           '&:focus': {
-            outline: 'none'
-          }
+            outline: 'none',
+          },
         }}
       >
         {props.children}
       </span>
-
     </div>
   );
 };

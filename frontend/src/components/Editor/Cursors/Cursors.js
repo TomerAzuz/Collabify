@@ -1,30 +1,30 @@
-import { useRemoteCursorOverlayPositions } from '@slate-yjs/react'
-import { useRef } from 'react'
+import { useRemoteCursorOverlayPositions } from '@slate-yjs/react';
+import { useRef } from 'react';
 
-import './Cursors.css'
+import './Cursors.css';
 
 export function Cursors({ children }) {
-  const containerRef = useRef(null)
-  const [cursors] = useRemoteCursorOverlayPositions({ containerRef })
+  const containerRef = useRef(null);
+  const [cursors] = useRemoteCursorOverlayPositions({ containerRef });
 
   return (
     <div className="cursors" ref={containerRef}>
       {children}
-      {cursors.map(cursor => (
+      {cursors.map((cursor) => (
         <Selection key={cursor.clientId} {...cursor} />
       ))}
     </div>
-  )
+  );
 }
 
 function Selection({ data, selectionRects, caretPosition }) {
   if (!data) {
-    return null
+    return null;
   }
 
   const selectionStyle = {
     backgroundColor: data.color,
-  }
+  };
 
   return (
     <>

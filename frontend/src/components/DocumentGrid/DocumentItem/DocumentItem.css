@@ -8,6 +8,7 @@
   height: 320px;
   width: 240px;
   box-sizing: border-box;
+  border: 0.1mm solid lightgrey;
   cursor: pointer;
 }
 
@@ -24,4 +25,11 @@
   display: flex;
   align-items: center;
   padding: 5px;
+  margin-top: auto;
+}
+
+.card-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }

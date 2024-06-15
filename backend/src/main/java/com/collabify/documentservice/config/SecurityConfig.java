@@ -17,7 +17,6 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                // Comment in dev
                 .requiresChannel((requiresChannel) ->
                         requiresChannel
                                 .requestMatchers(r -> r.getHeader("X-Forwarded-Proto") != null)
